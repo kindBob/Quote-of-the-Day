@@ -1,0 +1,155 @@
+// Variables
+$transition-time: .4s;
+// Variables ---
+
+//Basic styles
+body{
+  font-family: 'Montserrat', sans-serif;
+}
+
+.container {
+  max-width: 1345px;
+  margin: 0 auto;
+}
+
+.logo {
+  width: 155px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+  }
+}
+
+.button-list{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.button{
+  padding: 5px 0;
+  background-color: transparent;
+  border: 2px solid #EF3A32;
+  border-radius: 20px;
+  color: #EF3A32;
+  font-weight: bold;
+  text-align: center;
+  transition: $transition-time;
+  cursor: pointer;
+
+  &:hover{
+    color: #ffffff;
+    background-color: #EF3A32;
+  }
+}
+//Basic styles ---
+// Top
+.header {
+
+  &__container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 38px 0;
+  }
+}
+
+.nav-bar {
+  width: 440px;
+
+  &__list {
+    width: 100%;
+  }
+
+  &__element{
+    width: 22.5%;
+
+    &:nth-child(2){
+      width: 48%;
+    }    
+  }
+}
+// Top ---
+// Middle
+.quotes-section{
+  background-color: #dddddd;
+
+  &__container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 55px 0;
+  }
+}
+
+.quotes-element{
+  height: 380px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 25px;
+  padding: 35px 35px 40px 40px;
+  margin-bottom: 35px;
+
+  &:last-child{
+    margin-bottom: 0;
+  }
+
+  &__date{
+    width: 50%;
+    font-size: 50px;
+    color: #EF3A32;
+  }
+
+  &__buttons-container{
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+  }
+
+  &__buttons-list{
+    width: 210px;
+  }
+
+  &__button{
+    width: 46.5%;
+  }
+
+  &__author{
+    display: flex;
+    align-items: flex-end;
+    width: 55%;
+    font-size: 90px;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  &__quote{
+    width: 45%;
+    display: flex;
+    align-items: center;
+    font-size: 25px;
+  }
+}
+
+.quotes-element.--inactive{
+  width: 100%;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: #4D4D4D;
+  border-radius: 25px;
+}
+
+.quotes-element.--inactive .quotes-element__date{
+  color: #ffffff;
+}
+// Middle ---

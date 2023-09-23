@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,500;0,600;1,400&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/normilize.css" />
+    <title>Quote of the Day</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header__container">
+        <div class="logo header__logo">
+          <a href="./index.html"><img src="./assets/website-logo.svg" alt="Logo" /></a>
+        </div>
+        <nav class="nav-bar">
+          <ul class="button-list nav-bar__list">
+            <li class="button nav-bar__element">History</li>
+            <li class="button nav-bar__element">Support Us</li>
+            <li class="button nav-bar__element">Saves</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="section quotes-section">
+      <div class="container quotes-section__container">
+        <div class="quotes-element --active">
+          <div class="quotes-element__date">22.10</div>
+          <div class="quotes-element__buttons-container">
+            <ul class="button-list quotes-element__buttons-list">
+              <li class="button quotes-element__button">Share</li>
+              <li class="button quotes-element__button">Save</li>
+            </ul>
+          </div>
+          <div id="quote-author" class="quotes-element__author">Steve <br> Jobs</div>
+          <div id="quote-text" class="quotes-element__quote">
+            “Your time is limited, so don't waste it living someone else's
+            life.”
+          </div>
+        </div>
+        <div class="quotes-element --inactive">
+          <div class="quotes-element__date">22.10</div>
+        </div>
+        <div class="quotes-element --inactive">
+          <div class="quotes-element__date">22.10</div>
+        </div>
+      </div>
+    </section>
+    <script type="module" src="./scripts/script.js"></script>
+  </body>
+</html>
