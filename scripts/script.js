@@ -1,30 +1,5 @@
-import { generateQuote, checkForSavedQuote } from "./quoteMachine.js";
-
-const currentDate = new Date();
-const tomorrowsDate = new Date(currentDate);
-tomorrowsDate.setDate(tomorrowsDate.getDate() + 1);
-const afterTomorrowsDate = new Date(currentDate);
-afterTomorrowsDate.setDate(afterTomorrowsDate.getDate() + 2);
-
-const currentMonth = currentDate.getMonth() + 1;
-const currentDay = currentDate.getDate();
-
-const tomorrowsMonth = tomorrowsDate.getMonth() + 1;
-const tomorrowsDay = tomorrowsDate.getDate();
-
-const afterTomorrowsMonth = afterTomorrowsDate.getMonth() + 1;
-const afterTomorrowsDay = afterTomorrowsDate.getDate();
-
-const currentDateFormatted = `${currentDay
-  .toString()
-  .padStart(2, "0")}.${currentMonth.toString().padStart(2, "0")}`;
-const tomorrowsDateFormatted = `${tomorrowsDay
-  .toString()
-  .padStart(2, "0")}.${tomorrowsMonth.toString().padStart(2, "0")}`;
-
-const afterTomorrowsDayFormatted = `${afterTomorrowsDay
-  .toString()
-  .padStart(2, "0")}.${afterTomorrowsMonth.toString().padStart(2, "0")}`;
+import { generateQuote } from "./quoteMachine.js";
+import * as TimeMachine from "./timeMachine.js";
 
 const dateOuputs = document.querySelectorAll(".quotes-element__date");
 
@@ -33,18 +8,17 @@ const authorOutput = document.querySelector(".quotes-element__author");
 
 const lineBreak = document.createElement("br");
 
-dateOuputs[0].innerHTML = currentDateFormatted;
-dateOuputs[1].innerHTML = tomorrowsDateFormatted;
-dateOuputs[2].innerHTML = afterTomorrowsDayFormatted;
+dateOuputs[0].innerHTML = TimeMachine.currentDateFormatted;
+dateOuputs[1].innerHTML = TimeMachine.tomorrowsDateFormatted;
+dateOuputs[2].innerHTML = TimeMachine.afterTomorrowsDayFormatted;
 
-if (
-  localStorage.getItem("currentQuote") == null ||
-  localStorage.getItem("currentQuote").id != currentDate
-) {
+const quoteAuthorRegex = /(\S+)\s+([a-z]{3,})/i;
+
+if (localStorage.getItem("currentQuote") == null || JSON.parse(localStorage.getItem("currentQuote")).id != TimeMachine.currentDay) {
+  console.log(JSON.parse(localStorage.getItem("currentQuote")));
   generateQuote().then((quoteObject) => {
-    
     quoteOutput.innerHTML = quoteObject.quote;
-    authorOutput.innerHTML = quoteObject.author.replace(/ /, "<br>");;
+    authorOutput.innerHTML = quoteObject.author.replace(quoteAuthorRegex, "$1<br>$2");
 
     quoteOutput.appendChild(lineBreak);
 
@@ -54,5 +28,5 @@ if (
   let quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
 
   quoteOutput.innerHTML = quoteObject.quote;
-  authorOutput.innerHTML = quoteObject.author.replace(/ /, "<br>");;
+  authorOutput.innerHTML = quoteObject.author.replace(quoteAuthorRegex, "$1<br>$2");
 }

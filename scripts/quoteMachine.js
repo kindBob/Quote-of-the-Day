@@ -23,13 +23,3 @@ export function generateQuote(quote) {
       console.error("Error loading JSON:", error.message);
     });
 }
-
-export function checkForSavedQuote(saveName){
-  if(localStorage.getItem(saveName) != null){
-    return localStorage.getItem(saveName);
-  }
-  else{
-    return false;
-  }
-  
-}
