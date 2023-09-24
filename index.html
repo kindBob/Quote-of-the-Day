@@ -16,15 +16,22 @@
   <body>
     <header class="header">
       <div class="container header__container">
-        <div class="logo header__logo">
-          <a href="./index.html"><img src="./assets/website-logo.svg" alt="Logo" /></a>
-        </div>
         <nav class="nav-bar">
+          <div class="logo header__logo">
+            <a href="./index.html"><img src="./assets/website-logo.svg"
+                alt="Logo" /></a>
+          </div>
+
           <ul class="button-list nav-bar__list">
             <li class="button nav-bar__element">History</li>
             <li class="button nav-bar__element">Support Us</li>
             <li class="button nav-bar__element">Saves</li>
           </ul>
+          <div class="burger-menu nav-bar__burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </nav>
       </div>
     </header>
@@ -32,18 +39,22 @@
     <section class="section quotes-section">
       <div class="container quotes-section__container">
         <div class="quotes-element --active">
-          <div class="quotes-element__date">22.10</div>
-          <div class="quotes-element__buttons-container">
-            <ul class="button-list quotes-element__buttons-list">
-              <li class="button quotes-element__button">Share</li>
-              <li class="button quotes-element__button">Save</li>
-            </ul>
-          </div>
-          <div id="quote-author" class="quotes-element__author">Steve <br> Jobs</div>
-          <div id="quote-text" class="quotes-element__quote">
-            “Your time is limited, so don't waste it living someone else's
-            life.”
-          </div>
+          <div class="quotes-element__inner-container">
+            <div class="quotes-element__front-container">
+              <div class="quotes-element__date">22.10</div>
+              <div id="quote-author" class="quotes-element__author"></div>
+              <div id="quote-text" class="quotes-element__quote">
+              </div>
+            </div>
+            <div class="quotes-element__back-container">
+              <div class="quotes-element__buttons-container">
+                <ul class="button-list quotes-element__buttons-list">
+                  <li class="button quotes-element__button">Share</li>
+                  <li class="button quotes-element__button">Save</li>
+                </ul>
+              </div>
+            </div>  
+          </div>       
         </div>
         <div class="quotes-element --inactive">
           <div class="quotes-element__date">22.10</div>
@@ -53,6 +64,9 @@
         </div>
       </div>
     </section>
-    <script type="module" src="./scripts/script.js"></script>
+
+    <script src="./scripts/documentManager.js"></script>
+    <script src="./scripts/userInteractions.js"></script>
+    <script type="module" src="./scripts/quotesManager.js"></script>
   </body>
 </html>
