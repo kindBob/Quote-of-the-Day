@@ -79,10 +79,6 @@ body {
   position: fixed;
   top: 0;
 }
-.header.--sticky .header__container {
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
 .header__container {
   padding-top: 38px;
   padding-bottom: 38px;
@@ -108,7 +104,7 @@ body {
 }
 
 .header.--sticky + .quotes-section .quotes-section__container {
-  margin-top: 100px;
+  margin-top: 135px;
 }
 
 .quotes-section {
@@ -189,7 +185,7 @@ body {
   width: 45%;
   display: flex;
   align-items: center;
-  font-size: clamp(16px, 1.5vw, 32px);
+  font-size: clamp(16px, 2.2vw, 32px);
 }
 
 .quotes-element.--inactive {
@@ -228,7 +224,7 @@ body {
     background-color: #000000;
   }
   .nav-bar__list {
-    width: min(400px, 100%);
+    width: min(320px, 100%);
     justify-content: center;
     position: fixed;
     top: 0;
@@ -249,7 +245,7 @@ body {
   .quotes-element {
     z-index: 1;
   }
-  .quotes-element:hover .quotes-element__inner-container {
+  .quotes-element.--flipped .quotes-element__inner-container {
     transform: rotateY(180deg);
   }
   .quotes-element__back-container {
@@ -279,7 +275,7 @@ body {
     flex-direction: column;
   }
   .quotes-element__inner-container {
-    padding: 20px;
+    padding: 20px 30px 30px 20px;
   }
   .quotes-element__date {
     width: 100%;
