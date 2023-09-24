@@ -75,10 +75,6 @@ body {
   z-index: 10;
   transition: 0.4s;
 }
-.header.--sticky {
-  position: fixed;
-  top: 0;
-}
 .header__container {
   padding-top: 38px;
   padding-bottom: 38px;
@@ -101,10 +97,6 @@ body {
 }
 .nav-bar__element:nth-child(2) {
   width: 48%;
-}
-
-.header.--sticky + .quotes-section .quotes-section__container {
-  margin-top: 135px;
 }
 
 .quotes-section {
@@ -220,8 +212,18 @@ body {
   .burger-menu.--active span:last-child {
     transform: translateY(-8px) rotateZ(-45deg);
   }
-  .nav-bar__list.--active body {
-    background-color: #000000;
+  .nav-bar::before {
+    content: "";
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4;
+  }
+  .nav-bar.--active::before {
+    display: block;
   }
   .nav-bar__list {
     width: min(320px, 100%);
@@ -233,7 +235,7 @@ body {
     flex-direction: column;
     background-color: #484848;
   }
-  .nav-bar__list.--active {
+  .nav-bar.--active .nav-bar__list {
     right: 0;
     overflow: hidden;
   }

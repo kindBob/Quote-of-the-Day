@@ -1,4 +1,4 @@
-const navBarList = document.querySelector(".nav-bar__list");
+const navBar = document.querySelector(".nav-bar");
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const quoteElement = document.querySelector(".quotes-element");
 
@@ -7,22 +7,28 @@ quoteElement.addEventListener("click", (e) => {
 });
 
 burgerMenu.addEventListener("click", () => {
-  navBarList.classList.toggle("--active");
+  navBar.classList.toggle("--active");
   burgerMenu.classList.toggle("--active");
 
-  navBarList.classList.contains("--active")
+  navBar.classList.contains("--active")
     ? (document.body.style.overflow = "hidden")
     : (document.body.style.overflow = "auto");
 });
 
-for (let i = 0; i < navBarList.children.length; i++) {
-  navBarList.children[i].addEventListener("click", () => {
+document.addEventListener("click", (event) => {
+  if(!quoteElement.contains(event.target)){
+    quoteElement.classList.remove("--flipped");
+  }
+})
+
+
+for (let i = 0; i < navBar.children.length; i++) {
+  navBar.children[1].children[i].addEventListener("click", () => {
     closeNavBarList();
   });
 }
 
 function closeNavBarList() {
-  console.log(1);
-  navBarList.classList.remove("--active");
+  navBar.classList.remove("--active");
   burgerMenu.classList.remove("--active");
 }

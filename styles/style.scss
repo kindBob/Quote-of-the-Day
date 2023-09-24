@@ -86,16 +86,6 @@ body {
   z-index: 10;
   transition: $transition-time;
 
-  &.--sticky {
-    position: fixed;
-    top: 0;
-  }
-
-  &.--sticky &__container {
-    // padding-top: 20px;
-    // padding-bottom: 20px;
-  }
-
   &__container {
     padding-top: 38px;
     padding-bottom: 38px;
@@ -125,10 +115,6 @@ body {
 }
 // Top ---
 // Middle
-.header.--sticky + .quotes-section .quotes-section__container {
-  margin-top: 135px;
-}
-
 .quotes-section {
   background-color: #dddddd;
 
@@ -261,10 +247,23 @@ body {
     }
   }
 
-  .nav-bar__list.--active body {
-    background-color: #000000;
-  }
+  
   .nav-bar {
+    &::before{
+      content: "";
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 4;
+    }
+
+    &.--active::before {
+        display: block;  
+    }
+
     &__list {
       width: min(320px, 100%);
       justify-content: center;
@@ -274,11 +273,11 @@ body {
       height: 100vh;
       flex-direction: column;
       background-color: #484848;
+    }
 
-      &.--active {
-        right: 0;
-        overflow: hidden;
-      }
+    &.--active &__list{
+      right: 0;
+      overflow: hidden;
     }
 
     &__element {
