@@ -37,8 +37,6 @@ dateOuputs[0].innerHTML = currentDateFormatted;
 dateOuputs[1].innerHTML = tomorrowsDateFormatted;
 dateOuputs[2].innerHTML = afterTomorrowsDayFormatted;
 
-localStorage.clear();
-
 if (
   localStorage.getItem("currentQuote") == null ||
   localStorage.getItem("currentQuote").id != currentDate
@@ -56,5 +54,5 @@ if (
   let quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
 
   quoteOutput.innerHTML = quoteObject.quote;
-  authorOutput.innerHTML = quoteObject.author.replace(/ /g, "<br>");;
+  authorOutput.innerHTML = quoteObject.author.replace(/ /, "<br>");;
 }
