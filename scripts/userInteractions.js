@@ -2,16 +2,18 @@ const navBar = document.querySelector(".nav-bar");
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const quoteElement = document.querySelector(".quotes-element");
 
-const shareCard = document.querySelector("#share-card");
+const sharingCard = document.querySelector("#share-card");
 const shareButton = document.querySelector("#quotes-element__share-button");
 
 //Share
-shareButton.addEventListener("click", () => {
-  html2canvas(shareCard, { dpi: 300 }).then((canvas) => {
+shareButton.addEventListener("click", shareCard);
+
+async function shareCard(){
+  html2canvas(sharingCard, { dpi: 300 }).then((canvas) => {
     const imageDataUrl = canvas.toDataURL("image/png", 1.0);
 
     if (navigator.share) {
-      navigator
+      awnavigator
         .share({
           title: "My quote of the Day",
           text: "Check this out!",
@@ -27,7 +29,30 @@ shareButton.addEventListener("click", () => {
       alert("Your browser doesn't support sharing yet");
     }
   });
-});
+}
+
+function shareCard(){
+  html2canvas(sharingCard, { dpi: 300 }).then((canvas) => {
+    const imageDataUrl = canvas.toDataURL("image/png", 1.0);
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "My quote of the Day",
+          text: "Check out the quote of my day, go there and find yours: " + window.location.href,
+          files: [
+            new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
+              type: "image/png",
+            }),
+          ],
+        })
+        .then(() => console.log("Sharing works!"))
+        .catch((error) => console.log(`Problems occured: ${error}`));
+    } else {
+      alert("Your browser doesn't support sharing yet");
+    }
+  });
+}
 
 function dataURItoBlob(dataURI) {
   const byteString = atob(dataURI.split(",")[1]);

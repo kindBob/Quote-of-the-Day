@@ -6,8 +6,6 @@ const dateOuputs = document.querySelectorAll(".quotes-element__date");
 const quoteOutput = document.querySelectorAll(".quotes-element__quote");
 const authorOutput = document.querySelectorAll(".quotes-element__author");
 
-const lineBreak = document.createElement("br");
-
 dateOuputs[0].innerHTML = TimeMachine.currentDateFormatted;
 dateOuputs[1].innerHTML = TimeMachine.tomorrowsDateFormatted;
 dateOuputs[2].innerHTML = TimeMachine.afterTomorrowsDayFormatted;
