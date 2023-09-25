@@ -9,8 +9,8 @@ const shareButton = document.querySelector("#quotes-element__share-button");
 
 //Share
 shareButton.addEventListener("click", () => {
-  html2canvas(shareCard).then((canvas) => {
-    const imageDataUrl = canvas.toDataURL("image/png");
+  html2canvas(shareCard, {dpi: 300}).then((canvas) => {
+    const imageDataUrl = canvas.toDataURL("image/jpeg", 1.0);
 
     if (navigator.share) {
       navigator
@@ -18,7 +18,7 @@ shareButton.addEventListener("click", () => {
           title: "My quote of the Day",
           text: "Check this out!",
           files: [
-            new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
+            new File([dataURItoBlob(imageDataUrl)], "quote-card.jpeg", {
               type: "image/png",
             }),
           ],
