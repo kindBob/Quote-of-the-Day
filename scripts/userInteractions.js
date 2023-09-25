@@ -19,7 +19,7 @@ shareButton.addEventListener("click", () => {
           text: "Check this out!",
           files: [
             new File([dataURItoBlob(imageDataUrl)], "quote-card.jpeg", {
-              type: "image/png",
+              type: "image/jpeg",
             }),
           ],
         })
