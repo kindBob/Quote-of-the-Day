@@ -1,16 +1,14 @@
 const navBar = document.querySelector(".nav-bar");
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const quoteElement = document.querySelector(".quotes-element");
-const quoteElementFrontContainer = document.querySelector(
-  ".quotes-element__front-container"
-);
+
 const shareCard = document.querySelector("#share-card");
 const shareButton = document.querySelector("#quotes-element__share-button");
 
 //Share
 shareButton.addEventListener("click", () => {
-  html2canvas(shareCard, {dpi: 300}).then((canvas) => {
-    const imageDataUrl = canvas.toDataURL("image/jpeg", 1.0);
+  html2canvas(shareCard, { dpi: 300 }).then((canvas) => {
+    const imageDataUrl = canvas.toDataURL("image/png", 1.0);
 
     if (navigator.share) {
       navigator
@@ -18,8 +16,8 @@ shareButton.addEventListener("click", () => {
           title: "My quote of the Day",
           text: "Check this out!",
           files: [
-            new File([dataURItoBlob(imageDataUrl)], "quote-card.jpeg", {
-              type: "image/jpeg",
+            new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
+              type: "image/png",
             }),
           ],
         })

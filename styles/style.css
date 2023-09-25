@@ -190,10 +190,11 @@ body {
   align-items: center;
   width: 250px;
   top: 0;
-  left: 0;
+  left: -100%;
   z-index: -1000;
   background-color: transparent;
   height: 275px;
+  transform: scale(2);
 }
 
 .quotes-element.--sharing-card .quotes-element__inner-container {
@@ -321,8 +322,9 @@ body {
     flex-direction: column;
   }
   .quotes-element__button {
-    width: 125px;
-    margin: 5px 0;
+    width: 145px;
+    margin: 8px 0;
+    padding: 10px 0;
   }
   .quotes-element__front-container {
     flex-direction: column;
