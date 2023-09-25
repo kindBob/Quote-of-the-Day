@@ -16,6 +16,7 @@ $quote-element__authorFSSmall: 24px;
 
 body {
   font-family: "Montserrat", sans-serif;
+  overflow-x: hidden;
 }
 
 .container {
@@ -214,8 +215,8 @@ body {
   justify-content: center;
   align-items: center;
   width: 500px;
-  top: 80vh;
-  left: 20vw;
+  top: 0;
+  left: 0;
   z-index: -1000;
   background-color: transparent;
 }
