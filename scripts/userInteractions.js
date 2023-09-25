@@ -23,7 +23,7 @@ shareButton.addEventListener("click", () => {
             }),
           ],
         })
-        .then(() => console.log("Shared succesfully!"))
+        .then(() => console.log("Sharing works!"))
         .catch((error) => console.log(`Problems occured: ${error}`));
     } else {
       alert("Your browser doesn't support sharing yet");
@@ -44,8 +44,9 @@ function dataURItoBlob(dataURI) {
   return new Blob([ab], { type: mimeString });
 }
 // Share ---
-quoteElement.addEventListener("click", (e) => {
-  quoteElement.classList.toggle("--flipped");
+quoteElement.addEventListener("click", (event) => {
+  if (event.target.id != "quotes-element__share-button")
+    quoteElement.classList.toggle("--flipped");
 });
 
 burgerMenu.addEventListener("click", () => {
