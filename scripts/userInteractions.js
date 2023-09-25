@@ -4,12 +4,12 @@ const quoteElement = document.querySelector(".quotes-element");
 const quoteElementFrontContainer = document.querySelector(
   ".quotes-element__front-container"
 );
+const shareCard = document.querySelector("#share-card");
 const shareButton = document.querySelector("#quotes-element__share-button");
 
 //Share
 shareButton.addEventListener("click", () => {
-  console.log(1);
-  html2canvas(quoteElement).then((canvas) => {
+  html2canvas(shareCard).then((canvas) => {
     const imageDataUrl = canvas.toDataURL("image/png");
 
     if (navigator.share) {
@@ -37,11 +37,11 @@ function dataURItoBlob(dataURI) {
   const ab = new ArrayBuffer(byteString.length);
   const ia = new Uint8Array(ab);
 
-  for(let i = 0; i < byteString.length; i++){
+  for (let i = 0; i < byteString.length; i++) {
     ia[i] = byteString.charCodeAt(i);
   }
 
-  return new Blob([ab], {type: mimeString});
+  return new Blob([ab], { type: mimeString });
 }
 // Share ---
 quoteElement.addEventListener("click", (e) => {

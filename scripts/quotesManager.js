@@ -3,8 +3,8 @@ import * as TimeMachine from "./timeMachine.js";
 
 const dateOuputs = document.querySelectorAll(".quotes-element__date");
 
-const quoteOutput = document.querySelector(".quotes-element__quote");
-const authorOutput = document.querySelector(".quotes-element__author");
+const quoteOutput = document.querySelectorAll(".quotes-element__quote");
+const authorOutput = document.querySelectorAll(".quotes-element__author");
 
 const lineBreak = document.createElement("br");
 
@@ -15,18 +15,21 @@ dateOuputs[2].innerHTML = TimeMachine.afterTomorrowsDayFormatted;
 const quoteAuthorRegex = /(\S+)\s+([a-z]{3,})/i;
 
 if (localStorage.getItem("currentQuote") == null || JSON.parse(localStorage.getItem("currentQuote")).id != TimeMachine.currentDay) {
-  console.log(JSON.parse(localStorage.getItem("currentQuote")));
   generateQuote().then((quoteObject) => {
-    quoteOutput.innerHTML = quoteObject.quote;
-    authorOutput.innerHTML = quoteObject.author.replace(quoteAuthorRegex, "$1<br>$2");
+    for(let i = 0; i < quoteOutput.length; i++){
+      quoteOutput[i].innerHTML = quoteObject.quote;
+      authorOutput[i].innerHTML = quoteObject.author.replace(quoteAuthorRegex, "$1<br>$2");
+    }
 
-    quoteOutput.appendChild(lineBreak);
+    
 
     localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
   });
 } else {
   let quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
-
-  quoteOutput.innerHTML = quoteObject.quote;
-  authorOutput.innerHTML = quoteObject.author.replace(quoteAuthorRegex, "$1<br>$2");
+  
+  for(let i = 0; i < quoteOutput.length; i++){
+    quoteOutput[i].innerHTML = quoteObject.quote;
+    authorOutput[i].innerHTML = quoteObject.author.replace(quoteAuthorRegex, "$1<br>$2");
+  }
 }

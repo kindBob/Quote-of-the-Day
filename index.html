@@ -49,12 +49,13 @@
             <div class="quotes-element__back-container">
               <div class="quotes-element__buttons-container">
                 <ul class="button-list quotes-element__buttons-list">
-                  <li id="quotes-element__share-button" class="button quotes-element__button">Share</li>
+                  <li id="quotes-element__share-button"
+                    class="button quotes-element__button">Share</li>
                   <li class="button quotes-element__button">Save</li>
                 </ul>
               </div>
-            </div>  
-          </div>       
+            </div>
+          </div>
         </div>
         <div class="quotes-element --inactive">
           <div class="quotes-element__date">22.10</div>
@@ -63,9 +64,18 @@
           <div class="quotes-element__date">22.10</div>
         </div>
       </div>
+      <div id="share-card" class="quotes-element --active --sharing-card">
+        <div class="quotes-element__inner-container">
+          <div class="quotes-element__date">22.10</div>
+          <div id="quote-author" class="quotes-element__author"></div>
+          <div id="quote-text" class="quotes-element__quote">
+          </div>
+        </div>
+      </div>
     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
     <script src="./scripts/documentManager.js"></script>
     <script src="./scripts/userInteractions.js"></script>
     <script type="module" src="./scripts/quotesManager.js"></script>
