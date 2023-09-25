@@ -173,6 +173,7 @@ body {
     width: 50%;
     font-size: clamp(28px, 4vw, 50px);
     color: #ef3a32;
+    font-weight: 300;
   }
 
   &__buttons-container {
@@ -202,8 +203,9 @@ body {
   &__quote {
     width: 45%;
     display: flex;
-    align-items: center;
-    font-size: clamp(16px, 2.2vw, 32px);
+    align-items: flex-end;
+    font-size: clamp(16px, 1.7vw, 32px);
+    font-weight: 300;
   }
 }
 
@@ -219,7 +221,7 @@ body {
 
 .quotes-element.--inactive .quotes-element__date {
   color: #ffffff;
-  font-size: 32px;
+  font-size: clamp(28px, 4vw, 50px);
 }
 // Middle ---
 // Adaptive
