@@ -15,7 +15,7 @@ shareButton.addEventListener("click", () => {
     if (navigator.share) {
       navigator
         .share({
-          title: "Share this card",
+          title: "My quote of the Day",
           text: "Check this out!",
           files: [
             new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
