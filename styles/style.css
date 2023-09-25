@@ -194,7 +194,7 @@ body {
   z-index: -1000;
   background-color: transparent;
   height: 275px;
-  transform: scale(3);
+  transform: scale(5);
 }
 
 .quotes-element.--sharing-card .quotes-element__inner-container {
