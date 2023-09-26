@@ -48,9 +48,15 @@ body {
   transition: 0.4s;
   cursor: pointer;
 }
-.button:hover {
+.button:hover, .button:hover a {
   color: #ffffff;
+}
+.button:hover {
   background-color: #ef3a32;
+}
+.button a {
+  text-decoration: none;
+  color: #ef3a32;
 }
 
 .burger-menu {
@@ -128,7 +134,7 @@ body {
   height: 100%;
   background-color: #ffffff;
   border-radius: 25px;
-  padding: 35px 35px 40px 40px;
+  padding: 25px 35px 40px 40px;
   transform-style: preserve-3d;
   transition: 0.4s;
 }
@@ -171,9 +177,12 @@ body {
   display: flex;
   align-items: flex-end;
   width: 55%;
-  font-size: clamp(24px, 7vw, 90px);
+  font-size: clamp(24px, 6vw, 90px);
   text-transform: uppercase;
   line-height: 1;
+}
+.quotes-element__author.--smaller-font-size {
+  font-size: clamp(24px, 5.2vw, 90px);
 }
 .quotes-element__quote {
   width: 45%;

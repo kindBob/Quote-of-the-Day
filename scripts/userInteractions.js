@@ -39,7 +39,7 @@ function shareCard(){
       navigator
         .share({
           title: "My quote of the Day",
-          text: "Check out the quote of my day, go there and find yours: " + window.location.href,
+          text: "Check out my quote of the day. You can find yours here: " + window.location.href,
           files: [
             new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
               type: "image/png",
