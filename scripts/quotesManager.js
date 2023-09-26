@@ -35,15 +35,21 @@ if (
 } else {
   let quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
 
+  console.log(quoteObject.quote.length);
+  if(quoteObject.quote.length >= 230){
+    quoteOutput[0].classList.add("--smaller-font-size");
+  }
+
   if (quoteObject.author.match(spacesRegex).length > 1) {
     authorOutput[0].classList.add("--smaller-font-size");
   }
 
   for (let i = 0; i < quoteOutput.length; i++) {
     quoteOutput[i].innerHTML = quoteObject.quote;
-    authorOutput[i].innerHTML = quoteObject.author.replace(
-      quoteAuthorRegex,
-      "$1<br>$2"
-    );
+    authorOutput[i].innerHTML = quoteObject.author;
+    // authorOutput[i].innerHTML = quoteObject.author.replace(
+    //   quoteAuthorRegex,
+    //   "$1<br>$2"
+    // );
   }
 }

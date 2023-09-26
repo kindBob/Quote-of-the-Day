@@ -8,7 +8,7 @@ const shareButton = document.querySelector("#quotes-element__share-button");
 //Share
 shareButton.addEventListener("click", shareCard);
 
-async function shareCard(){
+async function shareCard() {
   html2canvas(sharingCard, { dpi: 300 }).then((canvas) => {
     const imageDataUrl = canvas.toDataURL("image/png", 1.0);
 
@@ -31,7 +31,7 @@ async function shareCard(){
   });
 }
 
-function shareCard(){
+function shareCard() {
   html2canvas(sharingCard, { dpi: 300 }).then((canvas) => {
     const imageDataUrl = canvas.toDataURL("image/png", 1.0);
 
@@ -39,7 +39,9 @@ function shareCard(){
       navigator
         .share({
           title: "My quote of the Day",
-          text: "Check out my quote of the day. You can find yours here: " + window.location.href,
+          text:
+            "Check out my quote of the day. You can find yours here: " +
+            window.location.href,
           files: [
             new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
               type: "image/png",
@@ -82,15 +84,18 @@ burgerMenu.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (event) => {
-  if (!quoteElement.contains(event.target)) {
+  if (
+    navBar.classList.contains("--active") &&
+    !burgerMenu.contains(event.target)
+  )
+    closeNavBarList();
+
+  if (!quoteElement.contains(event.target))
     quoteElement.classList.remove("--flipped");
-  }
 });
 
 for (let i = 0; i < navBar.children.length; i++) {
-  navBar.children[1].children[i].addEventListener("click", () => {
-    closeNavBarList();
-  });
+  navBar.children[1].children[i].addEventListener("click", closeNavBarList);
 }
 
 function closeNavBarList() {

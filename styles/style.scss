@@ -1,5 +1,5 @@
 // Variables
-$transition-time: 0.4s;
+$transition-time: .7s;
 
 $quote-element__authorFSLarge: 90px;
 $quote-element__authorFSMedium: 60px;
@@ -179,13 +179,6 @@ body {
     padding-right: 40px;
   }
 
-  &__date {
-    width: 50%;
-    font-size: clamp(28px, 4vw, 50px);
-    color: #ef3a32;
-    font-weight: 300;
-  }
-
   &__buttons-container {
     width: 50%;
     display: flex;
@@ -201,6 +194,13 @@ body {
     width: 46.5%;
   }
 
+  &__date {
+    width: 50%;
+    font-size: clamp(25px, 4vw, 50px);
+    color: #ef3a32;
+    font-weight: 300;
+  }
+
   &__author {
     display: flex;
     align-items: flex-end;
@@ -208,6 +208,7 @@ body {
     font-size: clamp(26px, 6vw, 90px);
     text-transform: uppercase;
     line-height: 1;
+    padding-right: 5%;
 
     &.--smaller-font-size{
       font-size: clamp(24px, 5vw, 90px);
@@ -218,8 +219,13 @@ body {
     width: 45%;
     display: flex;
     align-items: flex-end;
-    font-size: clamp(18px, 1.7vw, 28px);
+    font-size: clamp(15px, 2vw, 26px);
     font-weight: 300;
+    line-height: 1.4;
+
+    &.--smaller-font-size{
+      font-size: clamp(12px, 2vw, 26px);
+    }
   }
 }
 
@@ -295,7 +301,7 @@ body {
 
     &.--active {
       * {
-        background-color: #ffffff;
+        //background-color: #ffffff;
       }
 
       & span:nth-child(2) {
@@ -315,20 +321,23 @@ body {
   .nav-bar {
     &::before {
       content: "";
-      display: none;
+      display: block;
       position: absolute;
-      left: 0;
+      pointer-events: none;
+      left: -100%;
       top: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       z-index: 4;
-      background-color: rgba(0,0,0,.8);
-      
-      filter: blur(10px);
+      -webkit-backdrop-filter: blur(2px);
+              backdrop-filter: blur(2px);
+      background-color: rgba(95, 95, 95, 0.1);
+      transition: $transition-time;
     }
 
     &.--active::before {
-      display: block;
+      left: 0;
+      pointer-events: all;
     }
 
     &__list {
@@ -339,7 +348,7 @@ body {
       right: -100%;
       height: 100vh;
       flex-direction: column;
-      background-color: #484848;
+      background-color: #ffffff;  
     }
 
     &.--active &__list {
@@ -356,6 +365,7 @@ body {
 
   .quotes-element {
     z-index: 1;
+    perspective: 1500px;
 
     &.--flipped &__inner-container {
       transform: rotateY(180deg);
@@ -394,7 +404,9 @@ body {
     }
 
     &__inner-container {
-      padding: 20px 30px 30px 20px;
+      padding: 25px 35px 30px 30px; 
+      -webkit-animation: 2s flip 1s ease-in-out; 
+              animation: 2s flip 1s ease-in-out;
     }
 
     &__date {
@@ -404,16 +416,46 @@ body {
 
     &__author {
       width: 100%;
-      height: 35%;
-
+      height: 22%;
       align-items: flex-start;
     }
 
     &__quote {
-      height: 50%;
       width: 100%;
+      height: 65%;
       align-items: flex-end;
     }
   }
 }
 // Adaptive ---
+
+// Animations
+@-webkit-keyframes flip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  30% {
+    transform: rotateY(180deg);
+  }
+  70% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+@keyframes flip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  30% {
+    transform: rotateY(180deg);
+  }
+  70% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+// Animations ---
