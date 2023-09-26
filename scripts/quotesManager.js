@@ -39,8 +39,6 @@ if (
     authorOutput[0].classList.add("--smaller-font-size");
   }
 
-  quoteObject.quote = "\"Life shrinks or expands in proportion to one's courage\"";
-
   for (let i = 0; i < quoteOutput.length; i++) {
     quoteOutput[i].innerHTML = quoteObject.quote;
     authorOutput[i].innerHTML = quoteObject.author.replace(
