@@ -225,6 +225,7 @@ body {
   position: absolute;
   left: 10px;
   top: 28px;
+  padding-right: 10px;
 }
 
 .quotes-element.--sharing-card .quotes-element__date {
@@ -240,7 +241,7 @@ body {
   height: 50%;
   width: 95%;
   align-items: flex-end;
-  font-size: clamp(10px, 70%, 16px);
+  font-size: clamp(10px, 80%, 16px);
   position: absolute;
   bottom: 30px;
   left: 10px;

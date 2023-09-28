@@ -24,10 +24,12 @@ if (
 
     for (let i = 0; i < quoteOutput.length; i++) {
       quoteOutput[i].innerHTML = quoteObject.quote;
-      authorOutput[i].innerHTML = quoteObject.author.replace(
-        quoteAuthorRegex,
-        "$1<br>$2"
-      );
+      authorOutput[i].innerHTML = quoteObject.author;
+      // quoteOutput[i].innerHTML = quoteObject.quote;
+      // authorOutput[i].innerHTML = quoteObject.author.replace(
+      //   quoteAuthorRegex,
+      //   "$1<br>$2"
+      // );
     }
 
     localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
