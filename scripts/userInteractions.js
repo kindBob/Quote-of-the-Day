@@ -1,34 +1,35 @@
 const navBar = document.querySelector(".nav-bar");
+const navBarList = document.querySelector(".nav-bar__list");
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
+const historyOpenButton = document.querySelector("#history-open-button");
+const historyHeader = document.querySelector(".history-header");
+const historyBackButton = document.querySelector("#history__back-button");
+const historySection = document.querySelector("#history-section");
+const mainSection = document.querySelector("#main-section");
+
 const quoteElement = document.querySelector(".quotes-element");
 
-const sharingCard = document.querySelector("#share-card");
-const shareButton = document.querySelector("#quotes-element__share-button");
+const sharingCard = document.querySelector("#sharing-card");
+const shareButtons = document.querySelectorAll(".share-button");
+const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
+const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
+const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 
-//Share
-shareButton.addEventListener("click", shareCard);
+const MAIN_PAGE = window.location.href;
 
-async function shareCard() {
-  html2canvas(sharingCard, { dpi: 300 }).then((canvas) => {
-    const imageDataUrl = canvas.toDataURL("image/png", 1.0);
+// Sharing
+function setupSharingCard(event){
+  const parent = event.target.closest(".quotes-element");
+  
+  const quoteOutput = parent.querySelector(".quotes-element__quote");
+  const authorOutput = parent.querySelector(".quotes-element__author");
+  const dateOutput = parent.querySelector(".quotes-element__date");
 
-    if (navigator.share) {
-      awnavigator
-        .share({
-          title: "My quote of the Day",
-          text: "Check this out!",
-          files: [
-            new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
-              type: "image/png",
-            }),
-          ],
-        })
-        .then(() => console.log("Sharing works!"))
-        .catch((error) => console.log(`Problems occured: ${error}`));
-    } else {
-      alert("Your browser doesn't support sharing yet");
-    }
-  });
+  sharingCardAuthorOutput.innerHTML = authorOutput.textContent;
+  sharingCardQuoteOutput.innerHTML = quoteOutput.textContent;
+  sharingCardDateOutput.innerHTML = dateOutput.textContent;
+
+  shareCard();
 }
 
 function shareCard() {
@@ -41,7 +42,7 @@ function shareCard() {
           title: "My quote of the Day",
           text:
             "Check out my quote of the day. You can find yours here: " +
-            window.location.href,
+            MAIN_PAGE,
           files: [
             new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
               type: "image/png",
@@ -68,12 +69,8 @@ function dataURItoBlob(dataURI) {
 
   return new Blob([ab], { type: mimeString });
 }
-// Share ---
-quoteElement.addEventListener("click", (event) => {
-  if (event.target.id != "quotes-element__share-button")
-    quoteElement.classList.toggle("--flipped");
-});
-
+// Sharing ---
+// Header
 burgerMenu.addEventListener("click", () => {
   navBar.classList.toggle("--active");
   burgerMenu.classList.toggle("--active");
@@ -89,16 +86,46 @@ document.addEventListener("click", (event) => {
     !burgerMenu.contains(event.target)
   )
     closeNavBarList();
-
-  if (!quoteElement.contains(event.target))
-    quoteElement.classList.remove("--flipped");
 });
 
 for (let i = 0; i < navBar.children.length; i++) {
-  navBar.children[1].children[i].addEventListener("click", closeNavBarList);
+  navBarList.children[i].addEventListener("click", closeNavBarList);
 }
+
+historyOpenButton.addEventListener("click", () => {
+  historyHeader.classList.add("--active");
+  historySection.classList.add("--active");
+
+  mainSection.classList.add("--inactive");
+});
 
 function closeNavBarList() {
   navBar.classList.remove("--active");
   burgerMenu.classList.remove("--active");
+
+  navBar.classList.contains("--active")
+    ? (document.body.style.overflow = "hidden")
+    : (document.body.style.overflow = "auto");
 }
+// Header ---
+// Quotes
+quoteElement.addEventListener("click", (event) => {
+  if (event.target.id != "quotes-element__share-button")
+    quoteElement.classList.toggle("--flipped");
+});
+
+document.addEventListener("click", (event) => {
+  if (!quoteElement.contains(event.target))
+    quoteElement.classList.remove("--flipped");
+});
+// Quotes ---
+// Sections
+historyBackButton.addEventListener("click", closeHistory);
+
+function closeHistory() {
+  historyHeader.classList.remove("--active");
+  historySection.classList.remove("--active");
+
+  mainSection.classList.remove("--inactive");
+}
+// Setions ---
