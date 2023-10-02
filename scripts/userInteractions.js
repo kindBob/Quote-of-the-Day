@@ -1,16 +1,23 @@
 const navBar = document.querySelector(".nav-bar");
 const navBarList = document.querySelector(".nav-bar__list");
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
+const mainHeader = document.querySelector("#main-header");
+
 const historyOpenButton = document.querySelector("#history-open-button");
-const historyHeader = document.querySelector(".history-header");
-const historyBackButton = document.querySelector("#history__back-button");
+const historyHeader = document.querySelector("#history-header");
+const historyBackButton = document.querySelector("#history-back-button");
 const historySection = document.querySelector("#history-section");
+
+const savedOpenButton = document.querySelector("#saved-open-button");
+const savedHeader = document.querySelector("#saved-header");
+const savedBackButton = document.querySelector("#saved-back-button");
+const savedSection = document.querySelector("#saved-section")
+
 const mainSection = document.querySelector("#main-section");
 
 const quoteElement = document.querySelector(".quotes-element");
 
 const sharingCard = document.querySelector("#sharing-card");
-const shareButtons = document.querySelectorAll(".share-button");
 const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
 const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
 const sharingCardDateOutput = document.querySelector("#sharing-card-date");
@@ -18,9 +25,9 @@ const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 const MAIN_PAGE = window.location.href;
 
 // Sharing
-function setupSharingCard(event){
+function setupSharingCard(event) {
   const parent = event.target.closest(".quotes-element");
-  
+
   const quoteOutput = parent.querySelector(".quotes-element__quote");
   const authorOutput = parent.querySelector(".quotes-element__author");
   const dateOutput = parent.querySelector(".quotes-element__date");
@@ -97,6 +104,17 @@ historyOpenButton.addEventListener("click", () => {
   historySection.classList.add("--active");
 
   mainSection.classList.add("--inactive");
+
+  mainHeader.classList.add("--inactive");
+});
+
+savedOpenButton.addEventListener("click", () => {
+  savedHeader.classList.add("--active");
+  savedSection.classList.add("--active");
+
+  mainSection.classList.add("--inactive", "--left-side");
+
+  mainHeader.classList.add("--inactive");
 });
 
 function closeNavBarList() {
@@ -104,8 +122,8 @@ function closeNavBarList() {
   burgerMenu.classList.remove("--active");
 
   navBar.classList.contains("--active")
-    ? (document.body.style.overflow = "hidden")
-    : (document.body.style.overflow = "auto");
+    ? (document.body.style.overflowY = "hidden")
+    : (document.body.style.overflowY = "auto");
 }
 // Header ---
 // Quotes
@@ -127,5 +145,18 @@ function closeHistory() {
   historySection.classList.remove("--active");
 
   mainSection.classList.remove("--inactive");
+
+  mainHeader.classList.remove("--inactive");
+}
+
+savedBackButton.addEventListener("click", closeSaved);
+
+function closeSaved() {
+  savedHeader.classList.remove("--active");
+  savedSection.classList.remove("--active");
+
+  mainSection.classList.remove("--inactive", "--left-side");
+
+  mainHeader.classList.remove("--inactive");
 }
 // Setions ---

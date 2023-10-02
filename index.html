@@ -14,7 +14,7 @@
     <title>Quote of the Day</title>
   </head>
   <body>
-    <header class="header main-header">
+    <header id="main-header" class="header main-header">
       <div class="container header__container">
         <nav class="nav-bar  main-header__nav-bar">
           <div class="logo header__logo">
@@ -32,7 +32,8 @@
                 Support Us
               </a>
             </li>
-            <li class="button nav-bar__element  main-header__nav-bar__element">Saves</li>
+            <li id="saved-open-button"
+              class="button nav-bar__element  main-header__nav-bar__element">Saved</li>
           </ul>
           <div
             class="burger-menu nav-bar__burger-menu main-header__nav-bar__burger-menu">
@@ -42,19 +43,32 @@
           </div>
         </nav>
       </div>
+    </header>
 
-      <header class="header history-header">
-        <div class="container header__container">
-          <nav class="nav-bar --always-show">
-            <h2 class="title header__title">
-              History
-            </h2>
-            <ul class="button-list nav-bar__list">
-              <li id="history__back-button" class="button nav-bar__element">Back</li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+    <header id="history-header" class="header history-header">
+      <div class="container header__container">
+        <nav class="nav-bar --always-show">
+          <h2 class="title header__title">
+            History
+          </h2>
+          <ul class="button-list nav-bar__list">
+            <li id="history-back-button" class="button nav-bar__element">Back</li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <header id="saved-header" class="header saved-header">
+      <div class="container header__container">
+        <nav class="nav-bar --always-show">
+          <h2 class="title header__title">
+            Saved Quotes
+          </h2>
+          <ul class="button-list nav-bar__list">
+            <li id="saved-back-button" class="button nav-bar__element">Back</li>
+          </ul>
+        </nav>
+      </div>
     </header>
 
     <section id="main-section" class="section quotes-section main-section">
@@ -70,8 +84,10 @@
             <div class="quotes-element__back-container">
               <div class="quotes-element__buttons-container">
                 <ul class="button-list quotes-element__buttons-list">
-                  <li class="share-button button quotes-element__button">Share</li>
-                  <li class="button quotes-element__button">Save</li>
+                  <li class="share-button button quotes-element__button"
+                    onclick="setupSharingCard(event)">Share</li>
+                  <li
+                    class="button quotes-element__button quotes-element__saving-button">Save</li>
                 </ul>
               </div>
             </div>
@@ -84,14 +100,12 @@
           <div class="quotes-element__date">22.10</div>
         </div>
       </div>
-      <div id="sharing-card" class="quotes-element --active --sharing-card">
-        <div class="quotes-element__inner-container">
-          <div id="sharing-card-date" class="quotes-element__date">22.10</div>
-          <div id="sharing-card-author" class="quotes-element__author"></div>
-          <div id="sharing-card-quote" class="quotes-element__quote">
-          </div>
-        </div>
-      </div>
+
+      <footer class="footer">
+        <p class="content footer__content">
+          Made with ❤ by Malfo
+        </p>
+      </footer>
     </section>
 
     <section id="history-section"
@@ -110,17 +124,69 @@
                 <ul class="button-list quotes-element__buttons-list">
                   <li class="share-button button quotes-element__button"
                     onclick="setupSharingCard(event)">Share</li>
-                  <li class="button quotes-element__button">Save</li>
+                  <li
+                    class="button quotes-element__button quotes-element__saving-button">Save</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+      <footer class="footer">
+        <p class="content footer__content">
+          Made with ❤ by Malfo
+        </p>
+      </footer>
+    </section>
+
+    <section id="saved-section" class="section quotes-section saved__section">
+      <div id="saved-container"
+        class="container quotes-section__container saved__section-container">
+        <div class="quotes-element saved__quote-element">
+          <div class="quotes-element__inner-container">
+            <div class="quotes-element__front-container">
+              <div class="quotes-element__date saved__quotes-element-date"></div>
+              <div class="quotes-element__author saved__quotes-element-author"></div>
+              <div class="quotes-element__quote saved__quotes-element-quote">
+              </div>
+            </div>
+            <div class="quotes-element__back-container">
+              <div class="quotes-element__buttons-container">
+                <ul
+                  class="button-list quotes-element__buttons-list saved__quotes-element-buttons-list">
+                  <li
+                    class="share-button button quotes-element__button saved__quotes-element-button"
+                    onclick="setupSharingCard(event)">Share</li>
+                  <li
+                    class="button quotes-element__button saved__quotes-element-button quotes-element__saving-button">Unsave</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="saved__placeholder">It's empty here...</p>
+
+      <footer class="footer">
+        <p class="content footer__content">
+          Made with ❤ by Malfo
+        </p>
+      </footer>
+    </section>
+
+    <div id="sharing-card" class="quotes-element --active --sharing-card">
+      <div class="quotes-element__inner-container">
+        <div id="sharing-card-date" class="quotes-element__date">22.10</div>
+        <div id="sharing-card-author" class="quotes-element__author"></div>
+        <div id="sharing-card-quote" class="quotes-element__quote">
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
       <script src="./scripts/userInteractions.js"></script>
-      <script type="module" src="./scripts/quotesManager.js"></script>
-    </body>
-  </html>
+    <script type="module" src="./scripts/quotesManager.js"></script>
+  </body>
+</html>
