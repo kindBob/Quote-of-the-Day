@@ -42,6 +42,7 @@ body {
 .title {
   font-size: 38px;
   text-transform: capitalize;
+  line-height: 1.1;
 }
 
 .button-list {
