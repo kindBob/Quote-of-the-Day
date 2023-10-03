@@ -10,12 +10,20 @@ export async function generateQuote() {
     let jsonObjectIndex = Math.floor(Math.random() * quotes.length);
     let quoteObject = {
       id: TimeMachine.currentDateFormatted,
-      quote: `"${quotes[jsonObjectIndex].quote}"`,
-      author: quotes[jsonObjectIndex].author,
+      quote: `"${quotes[jsonObjectIndex].quote.trim()}"`,
+      author: quotes[jsonObjectIndex].author.trim(),
     };
-    quoteObject.author[0] == "-" || quoteObject.author[0] == " "
-      ? (quoteObject.author = quoteObject.author.slice(1))
-      : null;
+
+    const previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
+
+    if (previousQuotes != null) {
+      for (let i = 0; i < previousQuotes.length; i++) {
+        if (quoteObject.quote == previousQuotes[i].quote) {
+          return generateQuote();
+        }
+      }
+    }
+
     return quoteObject;
   } catch (error) {
     console.error("Error loading JSON:", error.message);
