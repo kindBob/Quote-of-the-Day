@@ -195,18 +195,15 @@ function updateQuotes(act) {
           savedQuotes.length >
           document.querySelectorAll(".saved__quote-element").length
         ) {
-          const clone = document
-          .querySelectorAll(".saved__quote-element")[0]
-          .cloneNode(true);
-        savedContainer.prepend(clone);
-
-        console.log("created new clone");
-        } 
+          createClone(
+            savedContainer,
+            document.querySelectorAll(".saved__quote-element")[i]
+          );
+        }
       }
 
       for (let i = 0; i < savedQuotes.length; i++) {
         const element = document.querySelectorAll(".saved__quote-element")[i];
-        console.log(element);
 
         element.querySelector(".saved__quotes-element-date").innerHTML =
           savedQuotes[i].id;
@@ -214,18 +211,16 @@ function updateQuotes(act) {
           savedQuotes[i].author;
         element.querySelector(".saved__quotes-element-quote").innerHTML =
           savedQuotes[i].quote;
-        // if(i != savedQuotes.length - 1){
-        //   const button =  element.querySelector(".quotes-element__saving-button");
-        //   button.addEventListener("click", (event) => {
-        //     manageSavedQuotes(button, event.target.closest(".quotes-element"));
-        //     console.log("trigger on clone worked");
-        //   });
-        // }
       }
     }
   }
 
   setupSavingButtons();
+}
+
+function createClone(parent, element) {
+  const clone = element.cloneNode(true);
+  parent.prepend(clone);
 }
 
 function manageSavedQuotes(button, quoteElement) {
