@@ -1,3 +1,16 @@
 {
-  "saved-button": "Архив"
+  "saved_section-button": "Сохраненные",
+  "history_section-button": "История",
+  "support_us-button": "Поддержите нас",
+
+  "history-title": "История",
+  "saved-title": "Сохраненные цитаты",
+  "saved-placeholder": "Здесь пусто...",
+  "back-button": "Назад",
+
+  "share-button": "Поделиться",
+  "save-button": "Сохранить",
+  "unsave-button": "Удалить",
+
+  "footer-text": "Сделали с ❤ Malfo"
 }

@@ -24,15 +24,16 @@
           </div>
 
           <ul class="button-list nav-bar__list main-header__nav-bar__list">
-            <li id="history-open-button"
+            <li data-i18n-key="history_section-button" id="history-open-button"
               class="button nav-bar__element main-header__nav-bar__element">History</li>
             <li class="button nav-bar__element  main-header__nav-bar__element">
-              <a href="https://donate.stripe.com/test_eVa3evg5Q7JhgesdQQ"
+              <a data-i18n-key="support_us-button"
+                href="https://donate.stripe.com/test_eVa3evg5Q7JhgesdQQ"
                 target="_blank">
                 Support Us
               </a>
             </li>
-            <li data-i18n-key="saved-button" id="saved-open-button"
+            <li data-i18n-key="saved_section-button" id="saved-open-button"
               class="button nav-bar__element  main-header__nav-bar__element">Saved</li>
           </ul>
           <div
@@ -48,11 +49,12 @@
     <header id="history-header" class="header history-header">
       <div class="container header__container">
         <nav class="nav-bar --always-show">
-          <h2 class="title header__title">
+          <h2 data-i18n-key="history-title" class="title header__title">
             History
           </h2>
           <ul class="button-list nav-bar__list">
-            <li id="history-back-button" class="button nav-bar__element">Back</li>
+            <li data-i18n-key="back-button" id="history-back-button"
+              class="button nav-bar__element">Back</li>
           </ul>
         </nav>
       </div>
@@ -61,11 +63,12 @@
     <header id="saved-header" class="header saved-header">
       <div class="container header__container">
         <nav class="nav-bar --always-show">
-          <h2 class="title header__title">
+          <h2 data-i18n-key="saved-title" class="title header__title">
             Saved Quotes
           </h2>
           <ul class="button-list nav-bar__list">
-            <li id="saved-back-button" class="button nav-bar__element">Back</li>
+            <li data-i18n-key="back-button" id="saved-back-button"
+              class="button nav-bar__element">Back</li>
           </ul>
         </nav>
       </div>
@@ -84,9 +87,11 @@
             <div class="quotes-element__back-container">
               <div class="quotes-element__buttons-container">
                 <ul class="button-list quotes-element__buttons-list">
-                  <li class="share-button button quotes-element__button"
+                  <li data-i18n-key="share-button"
+                    class="share-button button quotes-element__button"
                     onclick="setupSharingCard(event)">Share</li>
                   <li
+                    data-i18n-key="save-button"
                     class="button quotes-element__button quotes-element__saving-button">Save</li>
                 </ul>
               </div>
@@ -102,7 +107,7 @@
       </div>
 
       <footer class="footer">
-        <p class="content footer__content">
+        <p data-i18n-key="footer-text" class="content footer__content">
           Made with ❤ by Malfo
         </p>
       </footer>
@@ -122,9 +127,11 @@
             <div class="quotes-element__back-container">
               <div class="quotes-element__buttons-container">
                 <ul class="button-list quotes-element__buttons-list">
-                  <li class="share-button button quotes-element__button"
+                  <li data-i18n-key="share-button"
+                    class="share-button button quotes-element__button"
                     onclick="setupSharingCard(event)">Share</li>
                   <li
+                    data-i18n-key="save-button"
                     class="button quotes-element__button quotes-element__saving-button">Save</li>
                 </ul>
               </div>
@@ -134,7 +141,7 @@
       </div>
 
       <footer class="footer">
-        <p class="content footer__content">
+        <p data-i18n-key="footer-text" class="content footer__content">
           Made with ❤ by Malfo
         </p>
       </footer>
@@ -156,9 +163,11 @@
                 <ul
                   class="button-list quotes-element__buttons-list saved__quotes-element-buttons-list">
                   <li
+                    data-i18n-key="share-button"
                     class="share-button button quotes-element__button saved__quotes-element-button"
                     onclick="setupSharingCard(event)">Share</li>
                   <li
+                    data-i18n-key="unsave-button"
                     class="button quotes-element__button saved__quotes-element-button quotes-element__saving-button">Unsave</li>
                 </ul>
               </div>
@@ -166,10 +175,10 @@
           </div>
         </div>
       </div>
-      <p class="saved__placeholder">It's empty here...</p>
+      <p data-i18n-key="saved-placeholder" class="saved__placeholder">It's empty here...</p>
 
       <footer class="footer">
-        <p class="content footer__content">
+        <p data-i18n-key="footer-text" class="content footer__content">
           Made with ❤ by Malfo
         </p>
       </footer>
@@ -184,8 +193,9 @@
       </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
-    <script src="./scripts/languageManager.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script type="module" src="./scripts/languageManager.js"></script>
     <script src="./scripts/userInteractions.js"></script>
     <script type="module" src="./scripts/quotesManager.js"></script>
   </body>

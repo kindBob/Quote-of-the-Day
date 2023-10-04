@@ -58,8 +58,8 @@ body {
 }
 
 .button-list {
+  width: fit-content;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   list-style-type: none;
   margin: 0;
@@ -67,7 +67,8 @@ body {
 }
 
 .button {
-  padding: 5px 0;
+  width: fit-content;
+  padding: 5px 20px;
   background-color: transparent;
   border: 2px solid #ef3a32;
   border-radius: 20px;
@@ -162,16 +163,21 @@ body {
   justify-content: space-between;
 
   &__list {
-    width: 440px;
+    justify-content: flex-end;
     transition: $transition-time;
     z-index: 5;
   }
 
   &__element {
-    width: 22.5%;
+    margin-left: 20px;
 
     &:nth-child(2) {
-      width: 48%;
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+
+    &:first-child{
+      margin-left: 0;
     }
   }
 }
@@ -328,11 +334,15 @@ body {
   }
 
   &__buttons-list {
-    width: 210px;
+    justify-content: flex-end;
   }
 
   &__button {
-    width: 46.5%;
+    margin-left: 20px;
+
+    &:first-child{
+      margin-left: 0;
+    }
   }
 
   &__date {

@@ -46,8 +46,8 @@ body {
 }
 
 .button-list {
+  width: fit-content;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   list-style-type: none;
   margin: 0;
@@ -55,7 +55,8 @@ body {
 }
 
 .button {
-  padding: 5px 0;
+  width: fit-content;
+  padding: 5px 20px;
   background-color: transparent;
   border: 2px solid #ef3a32;
   border-radius: 20px;
@@ -139,15 +140,19 @@ body {
   justify-content: space-between;
 }
 .nav-bar__list {
-  width: 440px;
+  justify-content: flex-end;
   transition: 0.6s;
   z-index: 5;
 }
 .nav-bar__element {
-  width: 22.5%;
+  margin-left: 20px;
 }
 .nav-bar__element:nth-child(2) {
-  width: 48%;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+.nav-bar__element:first-child {
+  margin-left: 0;
 }
 
 .quotes-section {
@@ -282,10 +287,13 @@ body {
   align-items: flex-start;
 }
 .quotes-element__buttons-list {
-  width: 210px;
+  justify-content: flex-end;
 }
 .quotes-element__button {
-  width: 46.5%;
+  margin-left: 20px;
+}
+.quotes-element__button:first-child {
+  margin-left: 0;
 }
 .quotes-element__date {
   width: 50%;

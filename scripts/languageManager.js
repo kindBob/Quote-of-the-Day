@@ -1,11 +1,12 @@
 const defaultLocale = "en";
 const supportedLocales = ["en", "ru"];
 
-let locale;
+let locale = null;
 let translations = {};
+export let initialLocale = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const initialLocale = supportedOrDefault(browserLocales(true));
+  initialLocale = supportedOrDefault(browserLocales(true));
 
   setLocale(initialLocale);
 });
@@ -15,6 +16,9 @@ async function setLocale(newLocale) {
   const newTranslations = await fetchTranslationsFor(newLocale);
   locale = newLocale;
   translations = newTranslations;
+
+  document.querySelector("html").setAttribute("lang", initialLocale);
+
   translatePage();
 }
 
