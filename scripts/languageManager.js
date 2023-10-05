@@ -1,5 +1,5 @@
 const defaultLocale = "en";
-const supportedLocales = ["en", "ru"];
+const supportedLocales = ["en", "ru", "uk"];
 
 let locale = null;
 let translations = {};
@@ -23,7 +23,10 @@ async function setLocale(newLocale) {
 }
 
 async function fetchTranslationsFor(newLocale) {
-  const response = await fetch(`../json/languages/${newLocale}.json`);
+  let response = null;
+  
+  initialLocale != "uk" ? response = await fetch(`../json/languages/${newLocale}.json`) : response = await fetch(`../json/languages/ru.json`);
+  
   return await response.json();
 }
 
@@ -47,6 +50,6 @@ function supportedOrDefault(locales) {
 
 function browserLocales(languageCodeOnly = false) {
   return navigator.languages.map((locale) =>
-    languageCodeOnly ? locale.split("-")[0] : locale,
+    languageCodeOnly ? locale.split("-")[0] : locale
   );
 }

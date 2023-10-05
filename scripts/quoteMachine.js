@@ -2,7 +2,7 @@ import * as TimeMachine from "./timeMachine.js";
 
 export async function generateQuote() {
   try {
-    const response = await fetch("../json/quotes-dataBase.json");
+    const response = await fetch("../json/quotes.json");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -14,6 +14,16 @@ export async function generateQuote() {
       "author-en": quotes[jsonObjectIndex]["author-en"].trim(),
       "quote-ru": `"${quotes[jsonObjectIndex]["quote-ru"].trim()}"`,
       "author-ru": quotes[jsonObjectIndex]["author-ru"].trim(),
+      "quote-uk": (quotes[jsonObjectIndex]["quote-uk"] = quotes[
+        jsonObjectIndex
+      ]["quote-uk"]
+        ? `${quotes[jsonObjectIndex]["quote-uk"].trim()}`
+        : undefined),
+      "author-uk": (quotes[jsonObjectIndex]["author-uk"] = quotes[
+        jsonObjectIndex
+      ]["author-uk"]
+        ? quotes[jsonObjectIndex]["author-uk"].trim()
+        : undefined),
     };
 
     const previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));

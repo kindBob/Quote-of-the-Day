@@ -26,8 +26,6 @@ let savedQuotes = [];
 let initialLocaleAuthor = null;
 let initialLocaleQuote = null;
 
-//localStorage.clear();
-
 document.addEventListener("DOMContentLoaded", () => {
   initialLocaleAuthor = `author-${initialLocale}`;
   initialLocaleQuote = `quote-${initialLocale}`;
@@ -57,9 +55,24 @@ function getQuotes() {
 
 function setupQuotes() {
   const quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
+  let quoteObjectQuote = null;
+  let quoteObjectAuthor = null;
 
-  const quoteObjectAuthor = quoteObject[initialLocaleAuthor];
-  const quoteObjectQuote = quoteObject[initialLocaleQuote];
+  quoteObjectQuote = quoteObject[initialLocaleQuote];
+  quoteObjectAuthor = quoteObject[initialLocaleAuthor];
+
+  console.log(initialLocaleQuote);
+
+  if (initialLocale == "uk") {
+    !quoteObject.hasOwnProperty("quote-uk")
+      ? quoteObjectQuote = quoteObject["quote-ru"]
+      : null;
+
+    !quoteObject.hasOwnProperty("author-uk")
+      ? quoteObjectAuthor = quoteObject["author-ru"]
+      : null;
+  }
+  
 
   if (quoteObjectQuote.length >= 230) {
     currentQuoteOutput.classList.add("--smaller-font-size");
@@ -116,11 +129,6 @@ function setupPreviousQuotes() {
 }
 
 function setupSavingButtons() {
-  // document
-  //   .querySelectorAll(".quotes-element__saving-button")
-  //   .forEach((button) => {
-  //     removeAllEventListeners(button);
-  //   });
   document
     .querySelectorAll(".quotes-element__saving-button")
     .forEach((button) => {
@@ -129,16 +137,6 @@ function setupSavingButtons() {
         manageSavedQuotes(button, event.target.closest(".quotes-element"));
       });
     });
-}
-function hasEventTypeListener(element, eventType) {
-  const eventListeners = element.__eventListeners || {};
-
-  return !!eventListeners[eventType];
-}
-
-function removeAllEventListeners(element) {
-  const clone = element.cloneNode(true);
-  element.replaceWith(clone);
 }
 
 function updateQuotes(act) {
@@ -209,9 +207,9 @@ function createClone(parent, element) {
 }
 
 async function getLocalizationContent() {
-    let response = await fetch(`../json/languages/${initialLocale}.json`);
-    let localizationContent = await response.json();
-    return localizationContent;
+  let response = await fetch(`../json/languages/${initialLocale}.json`);
+  let localizationContent = await response.json();
+  return localizationContent;
 }
 
 async function manageSavedQuotes(button, quoteElement) {
