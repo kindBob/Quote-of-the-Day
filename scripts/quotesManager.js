@@ -26,6 +26,12 @@ let savedQuotes = [];
 let initialLocaleAuthor = null;
 let initialLocaleQuote = null;
 
+if (!localStorage.getItem("cleared")) {
+  localStorage.clear();
+  localStorage.setItem("cleared", 1);
+  console.log("cleared");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initialLocaleAuthor = `author-${initialLocale}`;
   initialLocaleQuote = `quote-${initialLocale}`;
@@ -61,18 +67,15 @@ function setupQuotes() {
   quoteObjectQuote = quoteObject[initialLocaleQuote];
   quoteObjectAuthor = quoteObject[initialLocaleAuthor];
 
-  console.log(initialLocaleQuote);
-
   if (initialLocale == "uk") {
     !quoteObject.hasOwnProperty("quote-uk")
-      ? quoteObjectQuote = quoteObject["quote-ru"]
+      ? (quoteObjectQuote = quoteObject["quote-ru"])
       : null;
 
     !quoteObject.hasOwnProperty("author-uk")
-      ? quoteObjectAuthor = quoteObject["author-ru"]
+      ? (quoteObjectAuthor = quoteObject["author-ru"])
       : null;
   }
-  
 
   if (quoteObjectQuote.length >= 230) {
     currentQuoteOutput.classList.add("--smaller-font-size");
@@ -132,7 +135,6 @@ function setupSavingButtons() {
   document
     .querySelectorAll(".quotes-element__saving-button")
     .forEach((button) => {
-      console.log(button + "doesn't have event listener");
       button.addEventListener("click", (event) => {
         manageSavedQuotes(button, event.target.closest(".quotes-element"));
       });

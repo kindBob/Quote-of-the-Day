@@ -312,7 +312,7 @@ body {
   padding-right: 5%;
 }
 .quotes-element__author.--smaller-font-size {
-  font-size: clamp(24px, 5vw, 90px);
+  font-size: clamp(24px, 5.5vw, 90px);
 }
 .quotes-element__quote {
   width: 45%;
@@ -323,7 +323,7 @@ body {
   line-height: 1.4;
 }
 .quotes-element__quote.--smaller-font-size {
-  font-size: clamp(12px, 2vw, 26px);
+  font-size: clamp(14px, 2vw, 26px);
 }
 
 .quotes-element.--sharing-card {

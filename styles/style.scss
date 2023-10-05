@@ -363,7 +363,7 @@ body {
     padding-right: 5%;
 
     &.--smaller-font-size {
-      font-size: clamp(24px, 5vw, 90px);
+      font-size: clamp(24px, 5.5vw, 90px);
     }
   }
 
@@ -376,7 +376,7 @@ body {
     line-height: 1.4;
 
     &.--smaller-font-size {
-      font-size: clamp(12px, 2vw, 26px);
+      font-size: clamp(14px, 2vw, 26px);
     }
   }
 }
