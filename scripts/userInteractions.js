@@ -11,11 +11,11 @@ const historySection = document.querySelector("#history-section");
 const savedOpenButton = document.querySelector("#saved-open-button");
 const savedHeader = document.querySelector("#saved-header");
 const savedBackButton = document.querySelector("#saved-back-button");
-const savedSection = document.querySelector("#saved-section")
+const savedSection = document.querySelector("#saved-section");
 
 const mainSection = document.querySelector("#main-section");
 
-const quoteElement = document.querySelector(".quotes-element");
+const quotesElements = document.querySelectorAll(".quotes-element");
 
 const sharingCard = document.querySelector("#sharing-card");
 const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
@@ -127,14 +127,19 @@ function closeNavBarList() {
 }
 // Header ---
 // Quotes
-quoteElement.addEventListener("click", (event) => {
-  if (event.target.id != "quotes-element__share-button")
-    quoteElement.classList.toggle("--flipped");
+quotesElements.forEach((element) => {
+  element.addEventListener("click", (event) => {
+    if (event.target.id != "quotes-element__share-button") {
+      element.classList.toggle("--flipped");
+    }
+  });
 });
 
 document.addEventListener("click", (event) => {
-  if (!quoteElement.contains(event.target))
-    quoteElement.classList.remove("--flipped");
+  quotesElements.forEach((element) => {
+    if (!element.contains(event.target))
+    element.classList.remove("--flipped");
+  })
 });
 // Quotes ---
 // Sections

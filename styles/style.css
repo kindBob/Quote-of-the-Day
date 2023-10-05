@@ -466,9 +466,11 @@ body {
     overflow: hidden;
   }
   .main-header__nav-bar__element {
-    width: 50%;
-    max-width: 150px;
+    min-width: 200px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin: 50px 0;
+    border-radius: 50px;
   }
   .main-header__nav-bar__element:first-child {
     margin-top: 100px;
@@ -500,9 +502,11 @@ body {
     flex-direction: column;
   }
   .quotes-element__button {
-    width: 145px;
-    margin: 8px 0;
-    padding: 10px 0;
+    min-width: 150px;
+    margin: 10px 0;
+    border-radius: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
   .quotes-element__front-container {
     flex-direction: column;
