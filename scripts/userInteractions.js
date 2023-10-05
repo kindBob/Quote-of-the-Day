@@ -129,7 +129,7 @@ function closeNavBarList() {
 // Quotes
 quotesElements.forEach((element) => {
   element.addEventListener("click", (event) => {
-    if (event.target.id != "quotes-element__share-button") {
+    if (!event.target.classList.contains("button-list") && !event.target.classList.contains("button")) {
       element.classList.toggle("--flipped");
     }
   });
