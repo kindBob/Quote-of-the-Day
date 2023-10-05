@@ -228,6 +228,7 @@ body {
   display: none;
 }
 .saved__placeholder {
+  width: 100%;
   position: absolute;
   text-align: center;
   top: calc(50% - 6vh);
