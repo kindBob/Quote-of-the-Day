@@ -4,7 +4,7 @@
   "support_us-button": "Поддержите нас",
 
   "history-title": "История",
-  "saved-title": "Сохраненные цитаты",
+  "saved-title": "Сохраненные",
   "saved-placeholder": "Здесь пусто...",
   "back-button": "Назад",
 
@@ -12,5 +12,7 @@
   "save-button": "Сохранить",
   "unsave-button": "Удалить",
 
-  "footer-text": "Сделали с ❤ Malfo"
+  "footer-text": "Сделано с ❤ Malfo",
+
+  "sharing-card-secondary-text": "Взгляните на мою цитату дня. Ваша уже ждет вас здесь"
 }

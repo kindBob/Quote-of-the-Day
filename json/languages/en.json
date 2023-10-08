@@ -10,7 +10,9 @@
 
   "share-button": "Share",
   "save-button": "Save",
-  "unsave-button": "Unsave",
+  "unsave-button": "Remove",
 
-  "footer-text": "Made with ❤ by Malfo"
+  "footer-text": "Made with ❤ by Malfo",
+
+  "sharing-card-secondary-text": "Check out my quote of the day. You can find yours here"
 }

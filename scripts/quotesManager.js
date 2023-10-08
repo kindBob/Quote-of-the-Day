@@ -1,6 +1,7 @@
-import { generateQuote } from "./quoteMachine.js";
 import * as TimeMachine from "./timeMachine.js";
-import { initialLocale } from "./languageManager.js";
+import { generateQuote } from "./quoteMachine.js";
+import { initialLocale, getLocalizationData } from "./languageManager.js";
+import { setupSharingCard } from "./userInteractions.js";
 
 const dateOuputs = document.querySelectorAll(".quotes-element__date");
 
@@ -29,7 +30,6 @@ let initialLocaleQuote = null;
 if (!localStorage.getItem("cleared")) {
   localStorage.clear();
   localStorage.setItem("cleared", 1);
-  console.log("cleared");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -77,19 +77,43 @@ function setupQuotes() {
       : null;
   }
 
+  // fetch("../json/quotes.json").then((response) => {
+  //   return response.json()
+  // }).then((data) => {
+  //   for(let i = 0; i < data.length; i++){
+  //     if(quoteObjectQuote.length < data[i]["quote-en"].length){
+  //       quoteObjectQuote = data[i]["quote-en"];
+  //       currentQuoteOutput.innerHTML = quoteObjectQuote;
+  //     }
+  //     if(quoteObjectAuthor.length < data[i]["author-en"].length){
+  //       quoteObjectAuthor = data[i]["author-en"];
+  //       currentAuthorOutput.innerHTML = quoteObjectAuthor;
+  //     }
+  //   }
+
+  //   if (quoteObjectQuote.length >= 230) {
+  //     currentQuoteOutput.classList.add("--smaller-font-size");
+  //     sharingCardQuoteOutput.classList.add("--smaller-font-size");
+  //   }
+
+  //   if (quoteObjectAuthor.length > 14) {
+  //     currentAuthorOutput.classList.add("--smaller-font-size");
+  //     sharingCardAuthorOutput.classList.add("--smaller-font-size");
+  //   }
+  // })
+
   if (quoteObjectQuote.length >= 230) {
     currentQuoteOutput.classList.add("--smaller-font-size");
+    sharingCardQuoteOutput.classList.add("--smaller-font-size");
   }
 
-  if (quoteObjectAuthor.split(" ").length > 2) {
+  if (quoteObjectAuthor.length > 14) {
     currentAuthorOutput.classList.add("--smaller-font-size");
+    sharingCardAuthorOutput.classList.add("--smaller-font-size");
   }
 
   currentQuoteOutput.innerHTML = quoteObjectQuote;
   currentAuthorOutput.innerHTML = quoteObjectAuthor;
-
-  sharingCardQuoteOutput.innerHTML = quoteObjectQuote;
-  sharingCardAuthorOutput.innerHTML = quoteObjectAuthor;
 
   if (localStorage.getItem("previousQuotes")) {
     previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
@@ -111,6 +135,17 @@ function setupQuotes() {
 
   setupPreviousQuotes();
   updateQuotes();
+  setupSavingButtons();
+  setupSectionsContent();
+  setSharingButtonsEL(document.querySelectorAll(".share-button"));
+}
+
+function setSharingButtonsEL(elements) {
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].addEventListener("click", (event) => {
+      setupSharingCard(event);
+    });
+  }
 }
 
 function setupPreviousQuotes() {
@@ -142,35 +177,16 @@ function setupSavingButtons() {
 }
 
 function updateQuotes(act) {
+  const firstSavedQuote = document.querySelectorAll(".saved__quote-element")[0];
+
   if (savedQuotes.length == 0) {
-    document
-      .querySelectorAll(".saved__quote-element")[0]
-      .classList.add("--hidden");
+    firstSavedQuote.classList.add("--hidden");
     savedSection.classList.add("--is-empty");
   } else {
-    document
-      .querySelectorAll(".saved__quote-element")[0]
-      .classList.remove("--hidden");
+    firstSavedQuote.classList.remove("--hidden");
     savedSection.classList.remove("--is-empty");
 
     if (act !== "unsave") {
-      for (let i = 0; i < savedQuotes.length; i++) {
-        document
-          .querySelectorAll(".quotes-element__saving-button")
-          .forEach((button) => {
-            if (
-              savedQuotes[i].id ===
-              button
-                .closest(".quotes-element")
-                .querySelector(".quotes-element__date").innerHTML
-            ) {
-              getLocalizationContent().then((content) => {
-                button.innerHTML = content["unsave-button"];
-              });
-            }
-          });
-      }
-
       for (let i = 0; i < savedQuotes.length - 1; i++) {
         if (
           savedQuotes.length >
@@ -180,10 +196,33 @@ function updateQuotes(act) {
             savedContainer,
             document.querySelectorAll(".saved__quote-element")[i]
           );
-          clone.addEventListener("click", (event) => {
-            manageSavedQuotes(clone, event.target.closest(".quotes-element"));
-          });
+          clone
+            .querySelector(".quotes-element__saving-button")
+            .addEventListener("click", () => {
+              manageSavedQuotes(
+                clone.querySelector(".quotes-element__saving-button"),
+                clone
+              );
+            });
+          setSharingButtonsEL(clone.querySelector(".share-button"));
         }
+      }
+
+      for (let i = 0; i < savedQuotes.length; i++) {
+        document
+          .querySelectorAll(".quotes-element__saving-button")
+          .forEach((button) => {
+            if (
+              savedQuotes[i].id ==
+              button
+                .closest(".quotes-element")
+                .querySelector(".quotes-element__date").innerHTML
+            ) {
+              getLocalizationData().then((content) => {
+                button.innerHTML = content["unsave-button"];
+              });
+            }
+          });
       }
 
       for (let i = 0; i < savedQuotes.length; i++) {
@@ -198,8 +237,6 @@ function updateQuotes(act) {
       }
     }
   }
-
-  // setupSavingButtons();
 }
 
 function createClone(parent, element) {
@@ -208,17 +245,20 @@ function createClone(parent, element) {
   return clone;
 }
 
-async function getLocalizationContent() {
-  let response = await fetch(`../json/languages/${initialLocale}.json`);
-  let localizationContent = await response.json();
-  return localizationContent;
+function setupSectionsContent() {
+  previousQuotes.length <= 1
+    ? historyContainer.classList.add("--content-centered")
+    : historyContainer.classList.remove("--content-centered");
+
+  savedQuotes.length <= 1
+    ? savedContainer.classList.add("--content-centered")
+    : savedContainer.classList.remove("--content-centered");
 }
 
 async function manageSavedQuotes(button, quoteElement) {
-  let response = await fetch(`../json/languages/${initialLocale}.json`);
-  let localizationContent = await response.json();
+  const localizationData = await getLocalizationData();
 
-  if (button.innerHTML == localizationContent["save-button"]) {
+  if (button.innerHTML == localizationData["save-button"]) {
     for (let i = 0; i < previousQuotes.length; i++) {
       if (
         previousQuotes[i].id ==
@@ -234,31 +274,27 @@ async function manageSavedQuotes(button, quoteElement) {
         savedQuotes[i].id ==
         quoteElement.querySelector(".quotes-element__date").innerHTML
       ) {
-        for (
-          let j = 0;
-          j < document.querySelectorAll(".quotes-element__date").length;
-          j++
-        ) {
-          if (
-            savedQuotes[i].id ==
-            document.querySelectorAll(".quotes-element__date")[j].innerHTML
-          ) {
-            document
-              .querySelectorAll(".quotes-element__date")
-              [j].closest(".quotes-element")
-              .querySelectorAll(".quotes-element__button")[1].innerHTML =
-              localizationContent["save-button"];
+        let allDOMDates = document.querySelectorAll(".quotes-element__date");
+        let dates = [];
+        for(let i = 0; i < allDOMDates.length; i++){
+          if(allDOMDates[i].closest(".quotes-element").classList.contains("--sharing-card")){
+            continue;
+          }
 
+          dates.push(allDOMDates[i]);
+        }
+
+        for (let j = 0; j < dates.length; j++) {
+          if (savedQuotes[i].id == dates[j].innerHTML) {
+            dates[j]
+              .closest(".quotes-element")
+              .querySelector(".quotes-element__saving-button").innerHTML =
+              localizationData["save-button"];
             if (
-              document
-                .querySelectorAll(".quotes-element__date")
-                [j].closest(".saved__quote-element") &&
+              dates[j].closest(".saved__quote-element") &&
               savedQuotes.length > 1
             ) {
-              document
-                .querySelectorAll(".quotes-element__date")
-                [j].closest(".saved__quote-element")
-                .remove();
+              dates[j].closest(".saved__quote-element").remove();
             }
           }
         }
@@ -268,10 +304,10 @@ async function manageSavedQuotes(button, quoteElement) {
       }
     }
     updateQuotes("unsave");
+    setupSectionsContent();
     return;
   }
 
   updateQuotes();
+  setupSectionsContent();
 }
-
-setupSavingButtons();

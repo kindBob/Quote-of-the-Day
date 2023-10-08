@@ -7,12 +7,14 @@ $quote-element__authorFSSmall: 24px;
 
 $header-height: 130px;
 $footer-height: 12vh;
+$quote-date-height: 60px;
 // Variables ---
 
 // Basic styles
 ::-moz-selection {
   background-color: rgba(0, 0, 0, 0.2);
 }
+
 ::selection {
   background-color: rgba(0, 0, 0, 0.2);
 }
@@ -69,7 +71,8 @@ body {
 
 .button {
   width: fit-content;
-  padding: 5px 20px;
+  min-width: 100px;
+  padding: 5px 25px;
   background-color: transparent;
   border: 2px solid #ef3a32;
   border-radius: 20px;
@@ -173,8 +176,7 @@ body {
     margin-left: 20px;
 
     &:nth-child(2) {
-      padding-left: 30px;
-      padding-right: 30px;
+      min-width: 200px;
     }
 
     &:first-child{
@@ -235,6 +237,11 @@ body {
   transform: scale(0);
   z-index: 5;
   transition: $transition-time;
+}
+
+.history__container.--content-centered, .saved__container.--content-centered{
+  justify-content: center;
+  height: calc((100vh - $header-height) - $footer-height);
 }
 
 .history {
@@ -305,7 +312,7 @@ body {
     height: 100%;
     background-color: #ffffff;
     border-radius: 25px;
-    padding: 25px 35px 40px 40px;
+    padding: 30px 35px 35px 40px;
     transition: $transition-time;
   }
 
@@ -323,8 +330,9 @@ body {
     width: 100%;
     height: 100%;
     display: flex;
+    align-items: flex-start;
     justify-content: flex-end;
-    padding-top: 40px;
+    padding-top: 30px;
     padding-right: 40px;
   }
 
@@ -340,7 +348,7 @@ body {
   }
 
   &__button {
-    margin-left: 20px;
+    margin-left: 15px;
 
     &:first-child{
       margin-left: 0;
@@ -348,8 +356,11 @@ body {
   }
 
   &__date {
-    width: 50%;
-    font-size: clamp(25px, 4vw, 50px);
+    display: flex;
+    max-height: $quote-date-height;
+    align-items: start;
+    width: 100%;
+    font-size: clamp(28px, 5vw, 50px);
     color: #ef3a32;
     font-weight: 300;
   }
@@ -358,26 +369,30 @@ body {
     display: flex;
     align-items: flex-end;
     width: 55%;
+    height: calc(100% - $quote-date-height);
     font-size: clamp(26px, 6vw, 90px);
     text-transform: uppercase;
     line-height: 1;
     padding-right: 5%;
 
     &.--smaller-font-size {
-      font-size: clamp(24px, 5.5vw, 90px);
+      font-size: clamp(24px, 5vw, 90px);
     }
   }
 
   &__quote {
     width: 45%;
+    height: fit-content;
+    min-height: calc(100% - $quote-date-height);
+    flex: 1;
     display: flex;
     align-items: flex-end;
-    font-size: clamp(17px, 2.8vw, 26px);
+    font-size: clamp(17px, 3vw, 26px);
     font-weight: 300;
     line-height: 1.4;
 
     &.--smaller-font-size {
-      font-size: clamp(14px, 2vw, 26px);
+      font-size: clamp(14.5px, 2vw, 24px);
     }
   }
 }
@@ -388,8 +403,8 @@ body {
   justify-content: center;
   align-items: center;
   width: 250px;
-  top: 0;
-  left: -500%;
+  top: -500%;
+  left: 0;
   z-index: -1000;
   background-color: transparent;
   height: 275px;
@@ -404,33 +419,44 @@ body {
 
 .quotes-element.--sharing-card .quotes-element__author {
   width: 100%;
-  height: 35%;
+  height: fit-content;
   font-size: 23px;
   align-items: flex-start;
   position: absolute;
   left: 10px;
   top: 28px;
   padding-right: 10px;
+
+  &.--smaller-font-size{
+    font-size: 20px;
+  }
 }
 
 .quotes-element.--sharing-card .quotes-element__date {
   width: 100%;
-  max-height: 50px;
+  height: 50px;
   font-size: 23px;
   position: absolute;
   left: 10px;
-  top: -5px;
+  top: -20px;
+  display: flex;
+  align-items: flex-end;
 }
 
 .quotes-element.--sharing-card .quotes-element__quote {
-  height: 50%;
+  height: fit-content;
   width: 95%;
   align-items: flex-end;
-  font-size: clamp(10px, 80%, 16px);
+  flex: 1;
+  font-size: 13px;
   position: absolute;
   bottom: 30px;
   left: 10px;
   padding-right: 10px;
+
+  &.--smaller-font-size{
+    font-size: 12.3px;
+  }
 }
 
 .quotes-element.--inactive {
@@ -444,6 +470,9 @@ body {
 }
 
 .quotes-element.--inactive .quotes-element__date {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   color: #ffffff;
   font-size: clamp(28px, 4vw, 50px);
 }
@@ -463,24 +492,32 @@ body {
 // Adaptive
 @media (max-width: 1024px) {
   .quotes-element {
+    &__inner-container{
+      padding: 15px 35px 0 30px;
+    }
+
     &__front-container {
       flex-direction: column;
     }
 
     &__author {
-      width: 64%;
-      height: 20%;
-      padding-right: 0;
-      align-items: flex-start;
+      width: 60%;
+      height: fit-content;
     }
 
     &__quote {
       width: 100%;
-      height: 60%;
+      min-height: auto;
       align-items: flex-end;
+      padding-bottom: 20px;
     }
   }
+
+  .quotes-element.--sharing-card .quotes-element__quote {
+    bottom: 5px;
+  }
 }
+
 @media (max-width: 768px) {
   .burger-menu {
     display: block;
@@ -596,18 +633,43 @@ body {
 
     &__inner-container {
       transform-style: preserve-3d;
-      padding: 25px 35px 0 30px;
+      padding: 15px 35px 20px 20px;
       // -webkit-animation: 2s flip 1s ease-in-out;
       //animation: 2s flip 1s ease-in-out;
     }
 
     &__date {
       width: 100%;
-      max-height: 50px;
     }
 
     &__author {
       width: 100%;
+      height: fit-content;
+    }
+
+    &__quote{
+      flex: 1;
+      height: fit-content;
+    }
+  }
+}
+
+@media (max-width: 350px){
+  .quotes-element {
+    &__inner-container{
+      padding-right: 20px;
+      //padding-left: 10px;
+    }
+    &__author {
+      padding-right: 0;
+    }
+
+    &__quote {
+      padding-right: 0;
+
+      &.--smaller-font-size{
+        padding-bottom: 0;
+      }
     }
   }
 }

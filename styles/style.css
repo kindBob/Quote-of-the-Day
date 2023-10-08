@@ -57,7 +57,8 @@ body {
 
 .button {
   width: fit-content;
-  padding: 5px 20px;
+  min-width: 100px;
+  padding: 5px 25px;
   background-color: transparent;
   border: 2px solid #ef3a32;
   border-radius: 20px;
@@ -149,8 +150,7 @@ body {
   margin-left: 20px;
 }
 .nav-bar__element:nth-child(2) {
-  padding-left: 30px;
-  padding-right: 30px;
+  min-width: 200px;
 }
 .nav-bar__element:first-child {
   margin-left: 0;
@@ -204,6 +204,11 @@ body {
   transform: scale(0);
   z-index: 5;
   transition: 0.6s;
+}
+
+.history__container.--content-centered, .saved__container.--content-centered {
+  justify-content: center;
+  height: calc(100vh - 130px - 12vh);
 }
 
 .history__section {
@@ -262,7 +267,7 @@ body {
   height: 100%;
   background-color: #ffffff;
   border-radius: 25px;
-  padding: 25px 35px 40px 40px;
+  padding: 30px 35px 35px 40px;
   transition: 0.6s;
 }
 .quotes-element__front-container {
@@ -278,8 +283,9 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
+  align-items: flex-start;
   justify-content: flex-end;
-  padding-top: 40px;
+  padding-top: 30px;
   padding-right: 40px;
 }
 .quotes-element__buttons-container {
@@ -292,14 +298,17 @@ body {
   justify-content: flex-end;
 }
 .quotes-element__button {
-  margin-left: 20px;
+  margin-left: 15px;
 }
 .quotes-element__button:first-child {
   margin-left: 0;
 }
 .quotes-element__date {
-  width: 50%;
-  font-size: clamp(25px, 4vw, 50px);
+  display: flex;
+  max-height: 60px;
+  align-items: start;
+  width: 100%;
+  font-size: clamp(28px, 5vw, 50px);
   color: #ef3a32;
   font-weight: 300;
 }
@@ -307,24 +316,28 @@ body {
   display: flex;
   align-items: flex-end;
   width: 55%;
+  height: calc(100% - 60px);
   font-size: clamp(26px, 6vw, 90px);
   text-transform: uppercase;
   line-height: 1;
   padding-right: 5%;
 }
 .quotes-element__author.--smaller-font-size {
-  font-size: clamp(24px, 5.5vw, 90px);
+  font-size: clamp(24px, 5vw, 90px);
 }
 .quotes-element__quote {
   width: 45%;
+  height: fit-content;
+  min-height: calc(100% - 60px);
+  flex: 1;
   display: flex;
   align-items: flex-end;
-  font-size: clamp(17px, 2.8vw, 26px);
+  font-size: clamp(17px, 3vw, 26px);
   font-weight: 300;
   line-height: 1.4;
 }
 .quotes-element__quote.--smaller-font-size {
-  font-size: clamp(14px, 2vw, 26px);
+  font-size: clamp(14.5px, 2vw, 24px);
 }
 
 .quotes-element.--sharing-card {
@@ -333,8 +346,8 @@ body {
   justify-content: center;
   align-items: center;
   width: 250px;
-  top: 0;
-  left: -500%;
+  top: -500%;
+  left: 0;
   z-index: -1000;
   background-color: transparent;
   height: 275px;
@@ -349,7 +362,7 @@ body {
 
 .quotes-element.--sharing-card .quotes-element__author {
   width: 100%;
-  height: 35%;
+  height: fit-content;
   font-size: 23px;
   align-items: flex-start;
   position: absolute;
@@ -357,25 +370,34 @@ body {
   top: 28px;
   padding-right: 10px;
 }
+.quotes-element.--sharing-card .quotes-element__author.--smaller-font-size {
+  font-size: 20px;
+}
 
 .quotes-element.--sharing-card .quotes-element__date {
   width: 100%;
-  max-height: 50px;
+  height: 50px;
   font-size: 23px;
   position: absolute;
   left: 10px;
-  top: -5px;
+  top: -20px;
+  display: flex;
+  align-items: flex-end;
 }
 
 .quotes-element.--sharing-card .quotes-element__quote {
-  height: 50%;
+  height: fit-content;
   width: 95%;
   align-items: flex-end;
-  font-size: clamp(10px, 80%, 16px);
+  flex: 1;
+  font-size: 13px;
   position: absolute;
   bottom: 30px;
   left: 10px;
   padding-right: 10px;
+}
+.quotes-element.--sharing-card .quotes-element__quote.--smaller-font-size {
+  font-size: 12.3px;
 }
 
 .quotes-element.--inactive {
@@ -389,6 +411,9 @@ body {
 }
 
 .quotes-element.--inactive .quotes-element__date {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   color: #ffffff;
   font-size: clamp(28px, 4vw, 50px);
 }
@@ -405,19 +430,24 @@ body {
 }
 
 @media (max-width: 1024px) {
+  .quotes-element__inner-container {
+    padding: 15px 35px 0 30px;
+  }
   .quotes-element__front-container {
     flex-direction: column;
   }
   .quotes-element__author {
-    width: 64%;
-    height: 20%;
-    padding-right: 0;
-    align-items: flex-start;
+    width: 60%;
+    height: fit-content;
   }
   .quotes-element__quote {
     width: 100%;
-    height: 60%;
+    min-height: auto;
     align-items: flex-end;
+    padding-bottom: 20px;
+  }
+  .quotes-element.--sharing-card .quotes-element__quote {
+    bottom: 5px;
   }
 }
 @media (max-width: 768px) {
@@ -515,14 +545,32 @@ body {
   }
   .quotes-element__inner-container {
     transform-style: preserve-3d;
-    padding: 25px 35px 0 30px;
+    padding: 15px 35px 20px 20px;
   }
   .quotes-element__date {
     width: 100%;
-    max-height: 50px;
   }
   .quotes-element__author {
     width: 100%;
+    height: fit-content;
+  }
+  .quotes-element__quote {
+    flex: 1;
+    height: fit-content;
+  }
+}
+@media (max-width: 350px) {
+  .quotes-element__inner-container {
+    padding-right: 20px;
+  }
+  .quotes-element__author {
+    padding-right: 0;
+  }
+  .quotes-element__quote {
+    padding-right: 0;
+  }
+  .quotes-element__quote.--smaller-font-size {
+    padding-bottom: 0;
   }
 }
 @-webkit-keyframes quote-card-flip {

@@ -1,3 +1,5 @@
+import {getLocalizationData} from "./languageManager.js";
+
 const navBar = document.querySelector(".nav-bar");
 const navBarList = document.querySelector(".nav-bar__list");
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
@@ -25,7 +27,7 @@ const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 const MAIN_PAGE = window.location.href;
 
 // Sharing
-function setupSharingCard(event) {
+export function setupSharingCard(event) {
   const parent = event.target.closest(".quotes-element");
 
   const quoteOutput = parent.querySelector(".quotes-element__quote");
@@ -39,16 +41,18 @@ function setupSharingCard(event) {
   shareCard();
 }
 
-function shareCard() {
-  html2canvas(sharingCard, { dpi: 300 }).then((canvas) => {
+async function shareCard() {
+  html2canvas(sharingCard, { dpi: 300 }).then(async (canvas) => {
     const imageDataUrl = canvas.toDataURL("image/png", 1.0);
+    const localizationData = await getLocalizationData();
+    const secondaryText = localizationData["sharing-card-secondary-text"];
 
     if (navigator.share) {
       navigator
         .share({
           title: "My quote of the Day",
           text:
-            "Check out my quote of the day. You can find yours here: " +
+            `${secondaryText}: ` +
             MAIN_PAGE,
           files: [
             new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
@@ -56,7 +60,6 @@ function shareCard() {
             }),
           ],
         })
-        .then(() => console.log("Sharing works!"))
         .catch((error) => console.log(`Problems occured: ${error}`));
     } else {
       alert("Your browser doesn't support sharing yet");
