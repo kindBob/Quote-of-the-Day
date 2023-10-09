@@ -1,4 +1,4 @@
-export const currentDate = new Date();
+export const currentDate = new Date("10-11-2023");
 export const tomorrowsDate = new Date(currentDate);
 tomorrowsDate.setDate(tomorrowsDate.getDate() + 1);
 export const afterTomorrowsDate = new Date(currentDate);

@@ -75,13 +75,21 @@ function setupQuotes() {
     //setMaxValues(quoteObjectQuote, quoteObjectAuthor);
 
     if (quoteObjectQuote.length >= 230) {
-        currentQuoteOutput.classList.add("--smaller-font-size");
-        sharingCardQuoteOutput.classList.add("--smaller-font-size");
+        const quoteOutputsList = document.querySelectorAll(".quotes-element__quote");
+        for (let index = 0; index < quoteOutputsList.length; index++) {
+            const element = quoteOutputsList[index];
+
+            element.classList.add("--smaller-font-size");
+        }
     }
 
     if (quoteObjectAuthor.length > 18) {
-        currentAuthorOutput.classList.add("--smaller-font-size");
-        sharingCardAuthorOutput.classList.add("--smaller-font-size");
+        const authorOutputsList = document.querySelectorAll(".quotes-element__author");
+        for (let index = 0; index < authorOutputsList.length; index++) {
+            const element = authorOutputsList[index];
+
+            element.classList.add("--smaller-font-size");
+        }
     }
 
     currentQuoteOutput.innerHTML = quoteObjectQuote;
