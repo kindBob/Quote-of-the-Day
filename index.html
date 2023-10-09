@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,71 +18,48 @@
         <title>Quote of the Day</title>
     </head>
     <body>
-        <header id="main-header" class="header main-header">
-            <div class="container header__container">
-                <nav class="nav-bar main-header__nav-bar">
-                    <div class="logo header__logo">
-                        <a href="./index.html" draggable="false"
-                            ><img src="./assets//website-logo/website-logo.svg" alt="Logo" draggable="false"
-                        /></a>
-                    </div>
-
-                    <ul class="button-list nav-bar__list main-header__nav-bar__list">
-                        <li
-                            data-i18n-key="history_section-button"
-                            id="history-open-button"
-                            class="button nav-bar__element main-header__nav-bar__element">
-                            History
-                        </li>
-                        <li class="button nav-bar__element main-header__nav-bar__element">
-                            <a
-                                data-i18n-key="support_us-button"
-                                href="https://donate.stripe.com/test_eVa3evg5Q7JhgesdQQ"
-                                target="_blank">
-                                Support Us
-                            </a>
-                        </li>
-                        <li
-                            data-i18n-key="saved_section-button"
-                            id="saved-open-button"
-                            class="button nav-bar__element main-header__nav-bar__element">
-                            Saved
-                        </li>
-                    </ul>
-                    <div class="burger-menu nav-bar__burger-menu main-header__nav-bar__burger-menu">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </nav>
-            </div>
-        </header>
-
-        <header id="history-header" class="header history-header">
-            <div class="container header__container">
-                <nav class="nav-bar --always-show">
-                    <h2 data-i18n-key="history-title" class="title header__title">History</h2>
-                    <ul class="button-list nav-bar__list">
-                        <li data-i18n-key="back-button" id="history-back-button" class="button nav-bar__element">
-                            Back
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
-
-        <header id="saved-header" class="header saved-header">
-            <div class="container header__container">
-                <nav class="nav-bar --always-show">
-                    <h2 data-i18n-key="saved-title" class="title header__title">Saved Quotes</h2>
-                    <ul class="button-list nav-bar__list">
-                        <li data-i18n-key="back-button" id="saved-back-button" class="button nav-bar__element">Back</li>
-                    </ul>
-                </nav>
-            </div>
-        </header>
+        <div class="header-bg-filler"></div>
 
         <section id="main-section" class="section quotes-section main-section">
+            <header id="main-header" class="header main-header">
+                <div class="container header__container">
+                    <nav class="nav-bar main-header__nav-bar">
+                        <div class="logo header__logo">
+                            <a href="./index.html" draggable="false"
+                                ><img src="./assets//website-logo/website-logo.svg" alt="Logo" draggable="false"
+                            /></a>
+                        </div>
+
+                        <ul class="button-list nav-bar__list main-header__nav-bar__list">
+                            <li
+                                data-i18n-key="history_section-button"
+                                id="history-open-button"
+                                class="button nav-bar__element main-header__nav-bar__element">
+                                History
+                            </li>
+                            <li class="button nav-bar__element main-header__nav-bar__element">
+                                <a
+                                    data-i18n-key="support_us-button"
+                                    href="https://donate.stripe.com/test_eVa3evg5Q7JhgesdQQ"
+                                    target="_blank">
+                                    Support Us
+                                </a>
+                            </li>
+                            <li
+                                data-i18n-key="saved_section-button"
+                                id="saved-open-button"
+                                class="button nav-bar__element main-header__nav-bar__element">
+                                Saved
+                            </li>
+                        </ul>
+                        <div class="burger-menu nav-bar__burger-menu main-header__nav-bar__burger-menu">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </nav>
+                </div>
+            </header>
             <div class="container quotes-section__container">
                 <div id="current-quote-element" class="quotes-element">
                     <div class="quotes-element__inner-container">
@@ -121,6 +98,18 @@
         </section>
 
         <section id="history-section" class="section quotes-section history__section">
+            <header id="history-header" class="header history-header">
+                <div class="container header__container">
+                    <nav class="nav-bar --always-show">
+                        <h2 data-i18n-key="history-title" class="title header__title">History</h2>
+                        <ul class="button-list nav-bar__list">
+                            <li data-i18n-key="back-button" id="history-back-button" class="button nav-bar__element">
+                                Back
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
             <div id="history-container" class="container quotes-section__container history__container">
                 <div class="quotes-element history__quote-element">
                     <div class="quotes-element__inner-container">
@@ -153,6 +142,19 @@
         </section>
 
         <section id="saved-section" class="section quotes-section saved__section">
+            <header id="saved-header" class="header saved-header">
+                <div class="container header__container">
+                    <nav class="nav-bar --always-show">
+                        <h2 data-i18n-key="saved-title" class="title header__title">Saved Quotes</h2>
+                        <ul class="button-list nav-bar__list">
+                            <li data-i18n-key="back-button" id="saved-back-button" class="button nav-bar__element">
+                                Back
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
             <div id="saved-container" class="container quotes-section__container saved__container">
                 <div class="quotes-element --dummy">
                     <div class="quotes-element__inner-container">
@@ -179,8 +181,9 @@
                         </div>
                     </div>
                 </div>
+
+                <p data-i18n-key="saved-placeholder" class="saved__placeholder">It's empty here...</p>
             </div>
-            <p data-i18n-key="saved-placeholder" class="saved__placeholder">It's empty here...</p>
 
             <footer class="footer">
                 <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p>

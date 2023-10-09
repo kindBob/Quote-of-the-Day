@@ -1,7 +1,7 @@
 import * as TimeMachine from "./timeMachine.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
-import { setupSharingCard } from "./userInteractions.js";
+import { setupSharingCard, setFlipQuoteEL } from "./userInteractions.js";
 
 const dateOuputs = document.querySelectorAll(".quotes-element__date");
 
@@ -79,7 +79,7 @@ function setupQuotes() {
         sharingCardQuoteOutput.classList.add("--smaller-font-size");
     }
 
-    if (quoteObjectAuthor.length > 14) {
+    if (quoteObjectAuthor.length > 18) {
         currentAuthorOutput.classList.add("--smaller-font-size");
         sharingCardAuthorOutput.classList.add("--smaller-font-size");
     }
@@ -192,6 +192,7 @@ function updateQuotes(act) {
                         manageSavedQuotes(clone.querySelector(".quotes-element__saving-button"), clone);
                     });
                     setSharingButtonsEL(clone.querySelector(".share-button"));
+                    setFlipQuoteEL(clone);
                 }
             }
 
@@ -230,7 +231,7 @@ function setupSectionsContent() {
         ? historyContainer.classList.add("--content-centered")
         : historyContainer.classList.remove("--content-centered");
 
-    savedQuotes.length == 1
+    savedQuotes.length <= 1
         ? savedContainer.classList.add("--content-centered")
         : savedContainer.classList.remove("--content-centered");
 }
@@ -241,7 +242,6 @@ async function manageSavedQuotes(button, quoteElement) {
     if (button.innerHTML == localizationData["save-button"]) {
         for (let i = 0; i < previousQuotes.length; i++) {
             if (previousQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
-                quoteElement.classList.remove("--hiding-animation");
                 savedQuotes.unshift(previousQuotes[i]);
                 localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
             }
@@ -264,11 +264,6 @@ async function manageSavedQuotes(button, quoteElement) {
                         dates[j].closest(".quotes-element").querySelector(".quotes-element__saving-button").innerHTML =
                             localizationData["save-button"];
                         if (dates[j].closest(".saved__quote-element")) {
-                            // dates[j].closest(".saved__quote-element").classList.add("--hiding-animation");
-                            // dates[j].closest(".saved__quote-element").addEventListener("transitionend", () => {
-                            //     dates[j].closest(".saved__quote-element").remove();
-                            // });
-                            //dates[j].closest(".saved__quote-element").remove();
                             callElementRemoval(dates[j].closest(".saved__quote-element"));
                         }
                     }
@@ -278,8 +273,6 @@ async function manageSavedQuotes(button, quoteElement) {
                 localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
             }
         }
-        //updateQuotes("unsave");
-        //setupSectionsContent();
         return;
     }
 
