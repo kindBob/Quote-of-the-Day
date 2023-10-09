@@ -1,4 +1,4 @@
-import {getLocalizationData} from "./languageManager.js";
+import { getLocalizationData } from "./languageManager.js";
 
 const navBar = document.querySelector(".nav-bar");
 const navBarList = document.querySelector(".nav-bar__list");
@@ -51,9 +51,7 @@ async function shareCard() {
       navigator
         .share({
           title: "My quote of the Day",
-          text:
-            `${secondaryText}: ` +
-            MAIN_PAGE,
+          text: `${secondaryText}: ` + MAIN_PAGE,
           files: [
             new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
               type: "image/png",
@@ -130,20 +128,25 @@ function closeNavBarList() {
 }
 // Header ---
 // Quotes
-quotesElements.forEach((element) => {
-  element.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("button-list") && !event.target.classList.contains("button")) {
-      element.classList.toggle("--flipped");
-    }
-  });
-});
-
-document.addEventListener("click", (event) => {
+if (screen.width <= 768) {
   quotesElements.forEach((element) => {
-    if (!element.contains(event.target))
-    element.classList.remove("--flipped");
-  })
-});
+    element.addEventListener("click", (event) => {
+      if (
+        !event.target.classList.contains("button-list") &&
+        !event.target.classList.contains("button")
+      ) {
+        element.classList.toggle("--flipped");
+      }
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    quotesElements.forEach((element) => {
+      if (!element.contains(event.target))
+        element.classList.remove("--flipped");
+    });
+  });
+}
 // Quotes ---
 // Sections
 historyBackButton.addEventListener("click", closeHistory);

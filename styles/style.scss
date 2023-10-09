@@ -1,5 +1,5 @@
 // Variables
-$transition-time: 0.6s;
+$transition-length: 0.6s;
 
 $quote-element__authorFSLarge: 90px;
 $quote-element__authorFSMedium: 60px;
@@ -111,7 +111,7 @@ body {
     width: 100%;
     height: 3px;
     margin: 5px auto;
-    transition: calc($transition-time / 100 * 50);
+    transition: calc($transition-length / 100 * 50);
     background-color: #000000;
   }
 }
@@ -125,14 +125,14 @@ body {
   height: $header-height;
   background-color: #ffffff;
   z-index: 10;
-  transition: $transition-time;
+  transition: $transition-length;
 
-  &.--inactive{
+  &.--inactive {
     transform: translateY(-$header-height);
   }
 
   &__container {
-    transition: $transition-time;
+    transition: $transition-length;
   }
 }
 
@@ -141,7 +141,7 @@ body {
   position: absolute;
   top: -$header-height;
   left: 0;
-  transition: $transition-time;
+  transition: $transition-length;
 
   &.--active {
     top: 0;
@@ -168,7 +168,7 @@ body {
 
   &__list {
     justify-content: flex-end;
-    transition: $transition-time;
+    transition: $transition-length;
     z-index: 5;
   }
 
@@ -179,7 +179,7 @@ body {
       min-width: 200px;
     }
 
-    &:first-child{
+    &:first-child {
       margin-left: 0;
     }
   }
@@ -196,6 +196,7 @@ body {
     align-items: center;
     padding-top: 55px;
     padding-bottom: 55px;
+    min-height: calc((100vh - $header-height) - $footer-height);
   }
 }
 
@@ -210,7 +211,7 @@ body {
   right: 0;
   transform: scale(1);
   z-index: 3;
-  transition: $transition-time;
+  transition: $transition-length;
 
   &.--inactive {
     left: 100%;
@@ -236,12 +237,11 @@ body {
   top: $header-height;
   transform: scale(0);
   z-index: 5;
-  transition: $transition-time;
+  transition: $transition-length;
 }
 
-.history__container.--content-centered, .saved__container.--content-centered{
+.--content-centered {
   justify-content: center;
-  height: calc((100vh - $header-height) - $footer-height);
 }
 
 .history {
@@ -258,6 +258,7 @@ body {
 .saved {
   &__section {
     left: 100%;
+    overflow: hidden;
 
     &.--active {
       left: 0;
@@ -266,12 +267,16 @@ body {
   }
 
   &__quote-element {
-    transition: $transition-time;
+    transition: $transition-length;
+
+    &.--hidden {
+      height: 0;
+      width: 0;
+    }
   }
 
-  &__quote-element.--hidden {
-    //animation: quote-element-hiding $transition-time forwards;
-    display: none;
+  &__quote-element.--hiding-animation {
+    animation: quote-hiding $transition-length forwards;
   }
 
   &__placeholder {
@@ -284,13 +289,13 @@ body {
     font-size: 25px;
     color: #ffffff;
     opacity: 0;
-    transition: $transition-time;
+    transition: $transition-length;
     display: none;
   }
 
   &__section.--is-empty &__placeholder {
     display: block;
-    opacity: 1;
+    animation: placeholder-appearance $transition-length forwards;
   }
 }
 
@@ -298,10 +303,14 @@ body {
   height: 380px;
   width: 100%;
   background-color: transparent;
-  margin-bottom: 35px;
+  margin-top: 35px;
 
-  &:last-child {
-    margin-bottom: 0;
+  &.--dummy {
+    display: none;
+  }
+
+  &:first-child {
+    margin-top: 0;
   }
 
   &__inner-container {
@@ -313,7 +322,7 @@ body {
     background-color: #ffffff;
     border-radius: 25px;
     padding: 30px 35px 35px 40px;
-    transition: $transition-time;
+    transition: $transition-length;
   }
 
   &__front-container {
@@ -350,7 +359,7 @@ body {
   &__button {
     margin-left: 15px;
 
-    &:first-child{
+    &:first-child {
       margin-left: 0;
     }
   }
@@ -371,6 +380,7 @@ body {
     width: 55%;
     height: calc(100% - $quote-date-height);
     font-size: clamp(26px, 6vw, 90px);
+    text-wrap: balance;
     text-transform: uppercase;
     line-height: 1;
     padding-right: 5%;
@@ -427,7 +437,7 @@ body {
   top: 28px;
   padding-right: 10px;
 
-  &.--smaller-font-size{
+  &.--smaller-font-size {
     font-size: 20px;
   }
 }
@@ -454,7 +464,7 @@ body {
   left: 10px;
   padding-right: 10px;
 
-  &.--smaller-font-size{
+  &.--smaller-font-size {
     font-size: 12.3px;
   }
 }
@@ -492,7 +502,7 @@ body {
 // Adaptive
 @media (max-width: 1024px) {
   .quotes-element {
-    &__inner-container{
+    &__inner-container {
       padding: 15px 35px 0 30px;
     }
 
@@ -552,7 +562,7 @@ body {
       -webkit-backdrop-filter: blur(2px);
       backdrop-filter: blur(2px);
       background-color: rgba(95, 95, 95, 0.1);
-      transition: $transition-time;
+      transition: $transition-length;
     }
 
     &.--active::before {
@@ -633,7 +643,7 @@ body {
 
     &__inner-container {
       transform-style: preserve-3d;
-      padding: 15px 35px 20px 20px;
+      padding: 20px 35px 20px 30px;
       // -webkit-animation: 2s flip 1s ease-in-out;
       //animation: 2s flip 1s ease-in-out;
     }
@@ -647,16 +657,16 @@ body {
       height: fit-content;
     }
 
-    &__quote{
+    &__quote {
       flex: 1;
       height: fit-content;
     }
   }
 }
 
-@media (max-width: 350px){
+@media (max-width: 364px) {
   .quotes-element {
-    &__inner-container{
+    &__inner-container {
       padding-right: 20px;
       //padding-left: 10px;
     }
@@ -667,7 +677,7 @@ body {
     &__quote {
       padding-right: 0;
 
-      &.--smaller-font-size{
+      &.--smaller-font-size {
         padding-bottom: 0;
       }
     }
@@ -705,23 +715,15 @@ body {
   }
 }
 
-@-webkit-keyframes quote-element-hiding {
-  99% {
-    transform: scale(0);
-    display: none;
-  }
-  100% {
-    display: none;
+@keyframes quote-hiding {
+  to {
+    transform: translateX(200vh) scale(0);
   }
 }
 
-@keyframes quote-element-hiding {
-  99% {
-    transform: scale(0);
-    display: none;
-  }
-  100% {
-    display: none;
+@keyframes placeholder-appearance {
+  to {
+    opacity: 1;
   }
 }
 // Animations ---
