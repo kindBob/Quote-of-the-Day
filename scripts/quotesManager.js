@@ -27,9 +27,9 @@ let savedQuotes = [];
 let initialLocaleAuthor = null;
 let initialLocaleQuote = null;
 
-if (!localStorage.getItem("cleared")) {
+if (!localStorage.getItem("clearedSecondTime")) {
     localStorage.clear();
-    localStorage.setItem("cleared", 1);
+    localStorage.setItem("clearedSecondTime", 1);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
