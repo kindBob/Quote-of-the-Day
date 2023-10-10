@@ -554,9 +554,6 @@ body {
     margin: 50px 0;
     border-radius: 50px;
   }
-  .main-header__nav-bar__element:first-child {
-    margin-top: 100px;
-  }
   .quotes-element {
     z-index: 1;
     perspective: 1500px;
