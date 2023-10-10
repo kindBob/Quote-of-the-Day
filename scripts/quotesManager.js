@@ -160,8 +160,8 @@ function setSharingButtonsEL(elements) {
 function setupPreviousQuotes() {
     if (previousQuotes.length > 1) {
         for (let i = 0; i < previousQuotes.length - 1; i++) {
-            const quoteElementClone = historyQuote.cloneNode(1);
-            historyContainer.prepend(quoteElementClone);
+            const clone = createClone(historyContainer, document.querySelector(".history__quote-element"));
+            setFlipQuoteEL(clone);
         }
     }
 

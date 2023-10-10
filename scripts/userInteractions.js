@@ -7,13 +7,13 @@ const mainHeader = document.querySelector("#main-header");
 
 const historyOpenButton = document.querySelector("#history-open-button");
 const historyHeader = document.querySelector("#history-header");
-const historyBackButton = document.querySelector("#history-back-button");
 const historySection = document.querySelector("#history-section");
+const historyBackButtons = historySection.querySelectorAll(".back-button");
 
 const savedOpenButton = document.querySelector("#saved-open-button");
 const savedHeader = document.querySelector("#saved-header");
-const savedBackButton = document.querySelector("#saved-back-button");
 const savedSection = document.querySelector("#saved-section");
+const savedBackButtons = savedSection.querySelectorAll(".back-button");
 
 const mainSection = document.querySelector("#main-section");
 
@@ -133,9 +133,8 @@ function closeNavBarList(cb) {
     navBarList.addEventListener("transitionend", cb);
     setTimeout(() => {
         navBarList.removeEventListener("transitionend", cb);
+        setDocumentOverflow();
     }, 500);
-
-    setDocumentOverflow();
 }
 
 function setDocumentOverflow() {
@@ -178,7 +177,7 @@ document.addEventListener("click", (event) => {
 });
 // Quotes ---
 // Sections
-historyBackButton.addEventListener("click", closeHistory);
+historyBackButtons.forEach((button) => button.addEventListener("click", closeHistory));
 
 function closeHistory() {
     historyHeader.classList.remove("--active");
@@ -189,7 +188,7 @@ function closeHistory() {
     mainHeader.classList.remove("--inactive");
 }
 
-savedBackButton.addEventListener("click", closeSaved);
+savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved));
 
 function closeSaved() {
     savedHeader.classList.remove("--active");

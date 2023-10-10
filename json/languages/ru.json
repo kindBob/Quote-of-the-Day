@@ -1,18 +1,18 @@
 {
-  "saved_section-button": "Сохраненные",
-  "history_section-button": "История",
-  "support_us-button": "Поддержите нас",
+    "saved_section-button": "Архив",
+    "history_section-button": "История",
+    "support_us-button": "Поддержите нас",
 
-  "history-title": "История",
-  "saved-title": "Сохраненные",
-  "saved-placeholder": "Здесь пусто...",
-  "back-button": "Назад",
+    "history-title": "История",
+    "saved-title": "Архив",
+    "saved-placeholder": "Здесь пусто...",
+    "back-button": "Назад",
 
-  "share-button": "Поделиться",
-  "save-button": "Сохранить",
-  "unsave-button": "Удалить",
+    "share-button": "Поделиться",
+    "save-button": "Добавить",
+    "unsave-button": "Удалить",
 
-  "footer-text": "Сделано с ❤ Malfo",
+    "footer-text": "Сделано с ❤ Malfo",
 
-  "sharing-card-secondary-text": "Взгляните на мою цитату дня. Ваша уже ждет вас здесь"
+    "sharing-card-secondary-text": "Взгляните на мою цитату дня. Ваша уже ждет вас здесь"
 }

@@ -1,4 +1,5 @@
 export const currentDate = new Date();
+//localStorage.clear();
 export const tomorrowsDate = new Date(currentDate);
 tomorrowsDate.setDate(tomorrowsDate.getDate() + 1);
 export const afterTomorrowsDate = new Date(currentDate);

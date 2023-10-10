@@ -32,7 +32,7 @@
 
                         <ul class="button-list nav-bar__list main-header__nav-bar__list">
                             <li
-                                data-i18n-key="history_section-button"
+                                data-i18n-key="history-title"
                                 id="history-open-button"
                                 class="button nav-bar__element main-header__nav-bar__element">
                                 History
@@ -60,8 +60,9 @@
                     </nav>
                 </div>
             </header>
+
             <div class="container quotes-section__container">
-                <div id="current-quote-element" class="quotes-element">
+                <div id="current-quote-element" class="quotes-element --clickable">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
                             <div class="quotes-element__date"></div>
@@ -103,15 +104,15 @@
                     <nav class="nav-bar --always-show">
                         <h2 data-i18n-key="history-title" class="title header__title">History</h2>
                         <ul class="button-list nav-bar__list">
-                            <li data-i18n-key="back-button" id="history-back-button" class="button nav-bar__element">
-                                Back
-                            </li>
+                            <li data-i18n-key="back-button" class="back-button button nav-bar__element">Back</li>
+                            <li class="back-button nav-bar__element --cross"></li>
                         </ul>
                     </nav>
                 </div>
             </header>
+
             <div id="history-container" class="container quotes-section__container history__container">
-                <div class="quotes-element history__quote-element">
+                <div class="quotes-element history__quote-element --clickable">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
                             <div class="quotes-element__date history__quotes-element-date"></div>
@@ -147,16 +148,15 @@
                     <nav class="nav-bar --always-show">
                         <h2 data-i18n-key="saved-title" class="title header__title">Saved Quotes</h2>
                         <ul class="button-list nav-bar__list">
-                            <li data-i18n-key="back-button" id="saved-back-button" class="button nav-bar__element">
-                                Back
-                            </li>
+                            <li data-i18n-key="back-button" class="back-button button nav-bar__element">Back</li>
+                            <li class="back-button nav-bar__element --cross"></li>
                         </ul>
                     </nav>
                 </div>
             </header>
 
             <div id="saved-container" class="container quotes-section__container saved__container">
-                <div class="quotes-element --dummy">
+                <div class="quotes-element --dummy --clickable">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
                             <div class="quotes-element__date saved__quotes-element-date"></div>
