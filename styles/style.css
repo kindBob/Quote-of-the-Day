@@ -64,7 +64,7 @@ body {
   align-items: center;
   width: fit-content;
   min-width: 100px;
-  padding: 5px 25px;
+  padding: 5.5px 25px;
   background-color: transparent;
   border: 2px solid #ef3a32;
   border-radius: 20px;
@@ -247,15 +247,18 @@ body {
   left: 0;
   transform: scale(1);
 }
-.saved__quote-element {
-  transition: 0.6s;
-}
 .saved__quote-element.--hidden {
   height: 0;
   width: 0;
 }
 .saved__quote-element.--hiding-animation {
-  animation: quote-hiding 0.8s forwards;
+  transition: all 0.6s ease; /* Adjust duration and easing as needed */
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  transform: translate(100%) scale(0);
+  overflow: hidden;
 }
 .saved__placeholder {
   width: 100%;
@@ -276,6 +279,7 @@ body {
   width: 100%;
   background-color: transparent;
   margin-top: 35px;
+  transition: 0.6s;
 }
 .quotes-element.--dummy {
   display: none;
@@ -345,7 +349,7 @@ body {
   text-wrap: balance;
   text-transform: uppercase;
   line-height: 1;
-  padding-right: 5%;
+  padding-right: 2%;
 }
 .quotes-element__author.--smaller-font-size {
   font-size: clamp(24px, 5vw, 90px);
@@ -516,7 +520,7 @@ body {
     pointer-events: all;
   }
   .main-header__nav-bar__list {
-    width: min(320px, 100%);
+    width: 320px;
     justify-content: center;
     position: fixed;
     top: 0;
@@ -589,6 +593,9 @@ body {
   }
 }
 @media (max-width: 364px) {
+  .main-header__nav-bar__list {
+    width: 100%;
+  }
   .quotes-element__inner-container {
     padding-right: 20px;
     padding-left: 20px;

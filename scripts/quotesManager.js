@@ -12,7 +12,6 @@ const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
 const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
 
 const historyContainer = document.querySelector("#history-container");
-const historyQuote = document.querySelector(".history__quote-element");
 
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
@@ -27,10 +26,17 @@ let savedQuotes = [];
 let initialLocaleAuthor = null;
 let initialLocaleQuote = null;
 
-if (!localStorage.getItem("clearedSecondTime")) {
+if (!localStorage.getItem("rap")) {
     localStorage.clear();
-    localStorage.setItem("clearedSecondTime", 1);
+    localStorage.setItem("rap", 1);
 }
+
+document.addEventListener("keydown", (e) => {
+    if (e.key == "s") {
+        localStorage.clear();
+        location.reload();
+    }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     initialLocaleAuthor = `author-${initialLocale}`;
@@ -114,7 +120,7 @@ function setupQuotes() {
     localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
 
     setupPreviousQuotes();
-    updateQuotes();
+    updateSavedQuotes();
     setupSavingButtons();
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
@@ -182,7 +188,7 @@ function setupSavingButtons() {
     });
 }
 
-function updateQuotes(act) {
+function updateSavedQuotes(act) {
     const dummyElement = document.querySelector(".quotes-element.--dummy");
 
     if (savedQuotes.length == 0) {
@@ -194,12 +200,15 @@ function updateQuotes(act) {
             for (let i = 0; i < savedQuotes.length; i++) {
                 if (savedQuotes.length > document.querySelectorAll(".saved__quote-element").length) {
                     let clone = createClone(savedContainer, dummyElement);
-                    clone.classList.remove("--dummy");
+                    // clone.classList.remove("--dummy");
+                    // clone.querySelector(".quotes-element__date").classList.remove("--dummy");
+                    removeClassRecursively(clone, "--dummy");
                     clone.classList.add("saved__quote-element");
                     clone.querySelector(".quotes-element__saving-button").addEventListener("click", () => {
                         manageSavedQuotes(clone.querySelector(".quotes-element__saving-button"), clone);
                     });
-                    setSharingButtonsEL(clone.querySelector(".share-button"));
+
+                    setSharingButtonsEL([clone.querySelector(".share-button")]);
                     setFlipQuoteEL(clone);
                 }
             }
@@ -225,6 +234,17 @@ function updateQuotes(act) {
                 element.querySelector(".saved__quotes-element-quote").innerHTML = savedQuotes[i][initialLocaleQuote];
             }
         }
+    }
+}
+
+function removeClassRecursively(element, className) {
+    if (element.classList.contains(className)) {
+        element.classList.remove(className);
+    }
+
+    const children = element.children;
+    for (let i = 0; i < children.length; i++) {
+        removeClassRecursively(children[i], className);
     }
 }
 
@@ -257,15 +277,7 @@ async function manageSavedQuotes(button, quoteElement) {
     } else {
         for (let i = 0; i < savedQuotes.length; i++) {
             if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
-                let allDOMDates = document.querySelectorAll(".quotes-element__date");
-                let dates = [];
-                for (let i = 0; i < allDOMDates.length; i++) {
-                    if (allDOMDates[i].closest(".quotes-element").classList.contains("--sharing-card")) {
-                        continue;
-                    }
-
-                    dates.push(allDOMDates[i]);
-                }
+                let dates = document.querySelectorAll(".quotes-element__date:not(.--sharing-card, .--dummy)");
 
                 for (let j = 0; j < dates.length; j++) {
                     if (savedQuotes[i].id == dates[j].innerHTML) {
@@ -284,46 +296,34 @@ async function manageSavedQuotes(button, quoteElement) {
         return;
     }
 
-    updateQuotes();
-    setupSectionsContent();
-}
-
-function finishElementRemoval(element) {
-    element.remove();
-    updateQuotes("unsave");
+    updateSavedQuotes();
     setupSectionsContent();
 }
 
 function callElementRemoval(element) {
-    let start = null;
-    let startHeight = parseInt(window.getComputedStyle(element, null).height);
+    // element.style.height = "0";
+    // element.style.transform = "translate(100%, 0) scale(0)";
+    // element.querySelector(".quotes-element__inner-container").style.padding = 0 + "px";
 
-    element.querySelector(".quotes-element__inner-container").style.padding = 0 + "px";
+    // element.classList.add("--hiding-animation");
 
+    // window.requestAnimationFrame(() => elementRemovalCheck(element));
     element.classList.add("--hiding-animation");
-
-    window.requestAnimationFrame((timestamp) => {
-        elementRemoval(timestamp, element, 10, start, startHeight);
-    });
+    elementRemovalCheck(element);
 }
 
-function elementRemoval(timestamp, element, duration, start, startHeight) {
-    if (!start) start = timestamp;
-    const progress = timestamp - start;
-
-    // Calculate the percentage of time elapsed
-    const percentage = Math.min(1, progress / duration);
-
-    // Calculate the new height based on the percentage
-    const newHeight = startHeight * (1 - percentage);
-
-    element.style.height = newHeight + "px";
-
-    if (element.offsetHeight == 0) {
+function elementRemovalCheck(element) {
+    if (element.offsetHeight <= 1) {
         finishElementRemoval(element);
-    } else {
-        window.requestAnimationFrame((timestamp) => {
-            elementRemoval(timestamp, element, duration, start, startHeight);
-        });
+
+        return;
     }
+
+    window.requestAnimationFrame(() => elementRemovalCheck(element));
+}
+
+function finishElementRemoval(element) {
+    element.remove();
+    updateSavedQuotes("unsave");
+    setupSectionsContent();
 }
