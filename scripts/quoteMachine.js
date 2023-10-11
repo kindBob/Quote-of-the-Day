@@ -1,4 +1,6 @@
-import * as TimeMachine from "./timeMachine.js";
+import DateManager from "./dateManager.js";
+
+const dateManager = new DateManager();
 
 export async function generateQuote() {
     try {
@@ -10,7 +12,7 @@ export async function generateQuote() {
 
         let jsonObjectIndex = Math.floor(Math.random() * quotes.length);
         let quoteObject = {
-            id: TimeMachine.currentDateFormatted,
+            id: dateManager.getCurrentFormattedDate(),
             "quote-en": `"${quotes[jsonObjectIndex]["quote-en"].trim()}"`,
             "author-en": quotes[jsonObjectIndex]["author-en"].trim(),
             "quote-ru": `"${quotes[jsonObjectIndex]["quote-ru"].trim()}"`,
@@ -29,9 +31,10 @@ export async function generateQuote() {
 
         if (previousQuotes) {
             for (let i = 0; i < previousQuotes.length; i++) {
+                console.log(previousQuotes[i]["quote-en"]);
                 if (quoteObject["quote-en"] == previousQuotes[i]["quote-en"]) {
-                    generateQuote();
-                    return;
+                    console.log("hey there");
+                    return generateQuote();
                 }
             }
         }

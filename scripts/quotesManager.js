@@ -1,4 +1,4 @@
-import * as TimeMachine from "./timeMachine.js";
+import DateManager from "./dateManager.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
 import { setupSharingCard, setFlipQuoteEL } from "./userInteractions.js";
@@ -16,9 +16,11 @@ const historyContainer = document.querySelector("#history-container");
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
 
-dateOuputs[0].innerHTML = TimeMachine.currentDateFormatted;
-dateOuputs[1].innerHTML = TimeMachine.tomorrowsDateFormatted;
-dateOuputs[2].innerHTML = TimeMachine.afterTomorrowsDayFormatted;
+const dateManager = new DateManager();
+
+dateOuputs[0].innerHTML = dateManager.getCurrentFormattedDate();
+dateOuputs[1].innerHTML = dateManager.getTomorrowsFormattedDate();
+dateOuputs[2].innerHTML = dateManager.getAfterTomorrowsFormattedDate();
 
 let previousQuotes = [];
 let savedQuotes = [];
@@ -32,9 +34,18 @@ if (!localStorage.getItem("rap")) {
 }
 
 document.addEventListener("keydown", (e) => {
-    if (e.key == "s") {
-        localStorage.clear();
-        location.reload();
+    switch (e.key) {
+        case "s":
+            localStorage.clear();
+            location.reload();
+
+            break;
+
+        case "a":
+            dateManager.changeCurrentDate(dateManager.currentDate.getDate() + 1);
+            location.reload();
+
+            break;
     }
 });
 
@@ -52,7 +63,7 @@ function getQuotes() {
 
     if (
         localStorage.getItem("currentQuote") == null ||
-        JSON.parse(localStorage.getItem("currentQuote")).id != TimeMachine.currentDateFormatted
+        JSON.parse(localStorage.getItem("currentQuote")).id != dateManager.getCurrentFormattedDate()
     ) {
         generateQuote().then((quoteObject) => {
             localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
@@ -80,24 +91,6 @@ function setupQuotes() {
 
     //setMaxValues(quoteObjectQuote, quoteObjectAuthor);
 
-    if (quoteObjectQuote.length >= 230) {
-        const quoteOutputsList = document.querySelectorAll(".quotes-element__quote");
-        for (let index = 0; index < quoteOutputsList.length; index++) {
-            const element = quoteOutputsList[index];
-
-            element.classList.add("--smaller-font-size");
-        }
-    }
-
-    if (quoteObjectAuthor.length > 18) {
-        const authorOutputsList = document.querySelectorAll(".quotes-element__author");
-        for (let index = 0; index < authorOutputsList.length; index++) {
-            const element = authorOutputsList[index];
-
-            element.classList.add("--smaller-font-size");
-        }
-    }
-
     currentQuoteOutput.innerHTML = quoteObjectQuote;
     currentAuthorOutput.innerHTML = quoteObjectAuthor;
 
@@ -110,7 +103,7 @@ function setupQuotes() {
     } else {
         if (previousQuotes[0].id != quoteObject.id) {
             if (previousQuotes.length > 10) {
-                previousQuotes.pop();
+                console.log(previousQuotes.pop());
             }
 
             previousQuotes.unshift(quoteObject);
@@ -124,6 +117,7 @@ function setupQuotes() {
     setupSavingButtons();
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
+    setupFontSizes();
 }
 
 function setMaxValues(quoteObjectQuote, quoteObjectAuthor) {
@@ -178,6 +172,19 @@ function setupPreviousQuotes() {
         document.querySelectorAll(".history__quotes-element-quote")[i].innerHTML =
             previousQuotes[i][initialLocaleQuote];
     }
+}
+
+function setupFontSizes() {
+    const quoteOutputsList = document.querySelectorAll(".quotes-element__quote");
+    const authorOutputsList = document.querySelectorAll(".quotes-element__author");
+
+    quoteOutputsList.forEach((output) =>
+        output.textContent.length >= 230 ? output.classList.add("--smaller-font-size") : null
+    );
+
+    authorOutputsList.forEach((output) =>
+        output.textContent.length >= 18 ? output.classList.add("--smaller-font-size") : null
+    );
 }
 
 function setupSavingButtons() {
