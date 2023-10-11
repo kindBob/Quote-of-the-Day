@@ -31,9 +31,7 @@ export async function generateQuote() {
 
         if (previousQuotes) {
             for (let i = 0; i < previousQuotes.length; i++) {
-                console.log(previousQuotes[i]["quote-en"]);
                 if (quoteObject["quote-en"] == previousQuotes[i]["quote-en"]) {
-                    console.log("hey there");
                     return generateQuote();
                 }
             }

@@ -2,7 +2,7 @@
 $transition-length: 0.6s;
 
 $header-height: 130px;
-$footer-height: 12vh;
+$footer-height: 14vh;
 $quote-date-height: 60px;
 
 $header-bg: #fff;
@@ -46,7 +46,7 @@ body {
 }
 
 .logo {
-  width: 155px;
+  width: 125px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -170,6 +170,23 @@ body {
   }
 }
 
+.malfo-logo {
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: $footer-height;
+
+  &__image {
+    height: 50%;
+  }
+
+  path,
+  polygon {
+    fill: #000;
+  }
+}
+
 .--content-centered {
   justify-content: center;
 }
@@ -230,15 +247,6 @@ body {
     min-width: 200px;
   }
 }
-
-.header-bg-filler {
-  position: absolute;
-  left: 0;
-  top: 0;
-  // width: 100vw;
-  // height: $header-height;
-  background-color: $header-bg;
-}
 // Top ---
 // Middle
 .quotes-section {
@@ -257,6 +265,7 @@ body {
     padding-top: 55px;
     padding-bottom: 55px;
     min-height: calc(100vh - $header-height - $footer-height);
+    transition: $transition-length;
   }
 }
 
@@ -299,18 +308,13 @@ body {
   }
 
   &__quote-element {
-    &.--hidden {
-      height: 0;
-      width: 0;
-    }
-
     &.--hiding-animation {
-      transition: all $transition-length ease; /* Adjust duration and easing as needed */
+      transition: all $transition-length ease;
       opacity: 0;
       height: 0;
       padding: 0;
       margin: 0;
-      transform: translate(100%) scale(0);
+      transform: translate(100%) scale(0) translateZ(0);
       overflow: hidden;
     }
   }
@@ -355,7 +359,7 @@ body {
     height: 100%;
     background-color: #ffffff;
     border-radius: 25px;
-    padding: 30px 35px 35px 40px;
+    padding: 30px 40px 35px 40px;
     transition: $transition-length;
   }
 
@@ -417,6 +421,7 @@ body {
     text-wrap: balance;
     text-transform: uppercase;
     line-height: 1;
+    text-wrap: pretty;
     padding-right: 2%;
 
     &.--smaller-font-size {
@@ -432,13 +437,19 @@ body {
     min-height: calc(100% - $quote-date-height);
     flex: 1;
     display: flex;
+    justify-content: flex-end;
     align-items: flex-end;
     font-size: clamp(17px, 3vw, 26px);
     font-weight: 300;
     line-height: 1.4;
+    text-wrap: pretty;
 
     &.--smaller-font-size {
       font-size: clamp(14.5px, 2vw, 24px);
+    }
+
+    &.--bigger-font-size {
+      font-size: clamp(17px, 3.5vw, 35px);
     }
   }
 }
@@ -537,6 +548,7 @@ body {
   width: 100%;
   z-index: 10;
   background-color: #ffffff;
+  font-size: clamp(16px, 1vw, 24px);
 }
 // Bottom ---
 // Adaptive
@@ -561,6 +573,7 @@ body {
       width: 100%;
       min-height: auto;
       align-items: flex-end;
+      justify-content: flex-start;
       padding-bottom: 20px;
     }
   }
@@ -571,6 +584,16 @@ body {
 }
 
 @media (max-width: 768px) {
+  $footer-height: 12vh;
+
+  .malfo-logo {
+    height: $footer-height;
+  }
+
+  .footer {
+    height: $footer-height;
+  }
+
   .back-button.--cross {
     display: flex;
     width: 20px;
@@ -721,8 +744,8 @@ body {
 
   .quotes-element {
     &__inner-container {
-      padding-right: 20px;
-      padding-left: 20px;
+      padding-right: 17px;
+      padding-left: 17px;
     }
     &__author {
       padding-right: 0;
