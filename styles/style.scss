@@ -260,7 +260,7 @@ body {
   z-index: 3;
   transition: $transition-length + 0.3;
   background-color: #dddddd;
-  overflow: hidden;
+  //overflow: hidden;
 
   &__container {
     display: flex;
@@ -275,17 +275,20 @@ body {
 .main-section {
   left: 0;
   width: 100%;
+  overflow: auto;
 
   &.--inactive {
     left: 200%;
     height: 0;
     width: 0;
+    overflow: hidden;
   }
 
   &.--inactive.--left-side {
     left: -100%;
     height: 0;
     width: 0;
+    overflow: hidden;
   }
 }
 
@@ -294,11 +297,13 @@ body {
     left: -100%;
     height: 0;
     width: 0;
+    overflow: hidden;
 
     &.--active {
       left: 0;
       height: 100%;
       width: 100%;
+      overflow: auto;
     }
   }
 }
@@ -308,11 +313,13 @@ body {
     right: -100%;
     height: 0;
     width: 0;
+    overflow: hidden;
 
     &.--active {
       right: 0;
       height: 100%;
       width: 100%;
+      overflow: auto;
     }
   }
 
@@ -458,7 +465,7 @@ body {
     }
 
     &.--bigger-font-size {
-      font-size: clamp(17px, 3.5vw, 35px);
+      font-size: clamp(17px, 3.5vw, 32px);
     }
   }
 }
