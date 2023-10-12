@@ -3,10 +3,11 @@ import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
 import { setupSharingCard, setFlipQuoteEL } from "./userInteractions.js";
 
-const dateOuputs = document.querySelectorAll(".quotes-element__date");
-
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
+const currentDateOutput = document.querySelector("#current-date");
+
+const inactiveQuoteDates = document.querySelectorAll(".quotes-element__date.--inactive");
 
 const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
 const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
@@ -17,10 +18,6 @@ const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
 
 const dateManager = new DateManager();
-
-dateOuputs[0].innerHTML = dateManager.getCurrentFormattedDate();
-dateOuputs[1].innerHTML = dateManager.getTomorrowsFormattedDate();
-dateOuputs[2].innerHTML = dateManager.getAfterTomorrowsFormattedDate();
 
 let previousQuotes = [];
 let savedQuotes = [];
@@ -109,10 +106,12 @@ function setupQuotes() {
 
     //setMaxValues(quoteObjectQuote, quoteObjectAuthor);
 
-    quoteObjectQuote = '"Dream big and dare to fail"';
-
     currentQuoteOutput.innerHTML = quoteObjectQuote;
     currentAuthorOutput.innerHTML = quoteObjectAuthor;
+    currentDateOutput.innerHTML = dateManager.getCurrentFormattedDate();
+
+    inactiveQuoteDates[0].innerHTML = dateManager.getTomorrowsFormattedDate();
+    inactiveQuoteDates[1].innerHTML = dateManager.getAfterTomorrowsFormattedDate();
 
     if (localStorage.getItem("previousQuotes")) {
         previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));

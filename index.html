@@ -23,13 +23,60 @@
         <title>Quote of the Day</title>
     </head>
     <body>
+        <section id="history-section" class="section quotes-section history__section">
+            <header id="history-header" class="header history-header">
+                <div class="container header__container">
+                    <nav class="nav-bar --always-show">
+                        <h2 data-i18n-key="history-title" class="title header__title">History</h2>
+                        <ul class="button-list nav-bar__list">
+                            <li data-i18n-key="back-button" class="back-button button nav-bar__element">Back</li>
+                            <li class="back-button nav-bar__element --cross"></li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
+            <div id="history-container" class="container quotes-section__container history__container">
+                <div class="quotes-element history__quote-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li
+                                        data-i18n-key="save-button"
+                                        class="button quotes-element__button quotes-element__saving-button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer">
+                <!-- <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p> -->
+                <div class="malfo-logo">
+                    <img class="malfo-logo__image" src="/assets/malfo-logo--no-bg.png" alt="malfo logo" />
+                </div>
+            </footer>
+        </section>
+
         <section id="main-section" class="section quotes-section main-section">
             <header id="main-header" class="header main-header">
                 <div class="container header__container">
                     <nav class="nav-bar main-header__nav-bar">
                         <div class="logo header__logo">
                             <a href="./index.html" draggable="false"
-                                ><img src="./assets//website-logo/logo-1.png" alt="Logo" draggable="false"
+                                ><img src="./assets//website-logo/logo-3.png" alt="Logo" draggable="false"
                             /></a>
                         </div>
 
@@ -68,7 +115,7 @@
                 <div id="current-quote-element" class="quotes-element --clickable">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
-                            <div class="quotes-element__date"></div>
+                            <div id="current-date" class="quotes-element__date"></div>
                             <div id="current-author" class="quotes-element__author"></div>
                             <div id="current-quote" class="quotes-element__quote"></div>
                         </div>
@@ -89,57 +136,10 @@
                     </div>
                 </div>
                 <div class="quotes-element --inactive">
-                    <div class="quotes-element__date">22.10</div>
+                    <div class="quotes-element__date --inactive">22.10</div>
                 </div>
                 <div class="quotes-element --inactive">
-                    <div class="quotes-element__date">22.10</div>
-                </div>
-            </div>
-
-            <footer class="footer">
-                <!-- <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p> -->
-                <div class="malfo-logo">
-                    <img class="malfo-logo__image" src="/assets/malfo-logo--no-bg.png" alt="malfo logo" />
-                </div>
-            </footer>
-        </section>
-
-        <section id="history-section" class="section quotes-section history__section">
-            <header id="history-header" class="header history-header">
-                <div class="container header__container">
-                    <nav class="nav-bar --always-show">
-                        <h2 data-i18n-key="history-title" class="title header__title">History</h2>
-                        <ul class="button-list nav-bar__list">
-                            <li data-i18n-key="back-button" class="back-button button nav-bar__element">Back</li>
-                            <li class="back-button nav-bar__element --cross"></li>
-                        </ul>
-                    </nav>
-                </div>
-            </header>
-
-            <div id="history-container" class="container quotes-section__container history__container">
-                <div class="quotes-element history__quote-element --clickable">
-                    <div class="quotes-element__inner-container">
-                        <div class="quotes-element__front-container">
-                            <div class="quotes-element__date history__quotes-element-date"></div>
-                            <div class="quotes-element__author history__quotes-element-author"></div>
-                            <div class="quotes-element__quote history__quotes-element-quote"></div>
-                        </div>
-                        <div class="quotes-element__back-container">
-                            <div class="quotes-element__buttons-container">
-                                <ul class="button-list quotes-element__buttons-list">
-                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
-                                        Share
-                                    </li>
-                                    <li
-                                        data-i18n-key="save-button"
-                                        class="button quotes-element__button quotes-element__saving-button">
-                                        Save
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="quotes-element__date --inactive">22.10</div>
                 </div>
             </div>
 

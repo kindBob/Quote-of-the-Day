@@ -1,9 +1,9 @@
 import { getLocalizationData } from "./languageManager.js";
 
-const navBar = document.querySelector(".nav-bar");
-const navBarList = document.querySelector(".nav-bar__list");
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
+const mainNavBar = mainHeader.querySelector(".nav-bar");
+const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
 
 const historyOpenButton = document.querySelector("#history-open-button");
 const historyHeader = document.querySelector("#history-header");
@@ -84,21 +84,19 @@ function dataURItoBlob(dataURI) {
 // Sharing ---
 // Header
 burgerMenu.addEventListener("click", () => {
-    navBar.classList.toggle("--active");
+    mainNavBar.classList.toggle("--active");
     burgerMenu.classList.toggle("--active");
 
     setDocumentOverflow();
 });
 
 document.addEventListener("click", (event) => {
-    navBar.classList.contains("--active") && !burgerMenu.contains(event.target) && !navBarList.contains(event.target)
+    mainNavBar.classList.contains("--active") &&
+    !burgerMenu.contains(event.target) &&
+    !mainNavBarList.contains(event.target)
         ? closeNavBarList()
         : null;
 });
-
-for (let i = 0; i < navBar.children.length; i++) {
-    //navBarList.children[i].addEventListener("click", closeNavBarList);
-}
 
 historyOpenButton.addEventListener("click", () => {
     onMobile ? closeNavBarList(openHistorySection) : openHistorySection();
@@ -127,20 +125,20 @@ function openSavedSection() {
 }
 
 function closeNavBarList(cb) {
-    navBar.classList.remove("--active");
+    mainNavBar.classList.remove("--active");
     burgerMenu.classList.remove("--active");
 
-    navBarList.addEventListener("transitionend", cb);
+    mainNavBarList.addEventListener("transitionend", cb);
     setTimeout(() => {
-        navBarList.removeEventListener("transitionend", cb);
+        mainNavBarList.removeEventListener("transitionend", cb);
         setDocumentOverflow();
     }, 500);
 }
 
 function setDocumentOverflow() {
-    navBar.classList.contains("--active")
-        ? ((document.body.style.overflowY = "hidden"), (document.documentElement.style.overflowY = "hidden"))
-        : ((document.body.style.overflowY = "auto"), (document.documentElement.style.overflowY = "auto"));
+    mainNavBar.classList.contains("--active")
+        ? (document.body.style.overflowY = "hidden")
+        : (document.body.style.overflowY = "auto");
 }
 // Header ---
 // Quotes
