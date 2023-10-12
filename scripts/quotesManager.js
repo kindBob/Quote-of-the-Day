@@ -306,15 +306,18 @@ async function manageSavedQuotes(button, quoteElement) {
         let dates = document.querySelectorAll(".quotes-element__date:not(.--sharing-card, .--dummy)");
 
         for (let i = 0; i < savedQuotes.length; i++) {
-            for (let j = 0; j < dates.length; j++) {
-                if (savedQuotes[i].id == dates[j].innerHTML) {
-                    dates[j].closest(".quotes-element").querySelector(".quotes-element__saving-button").innerHTML =
-                        localizationData["save-button"];
-                    if (dates[j].closest(".saved__quote-element")) {
-                        callElementRemoval(dates[j].closest(".saved__quote-element"));
+            if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
+                for (let j = 0; j < dates.length; j++) {
+                    if (savedQuotes[i].id == dates[j].innerHTML) {
+                        dates[j].closest(".quotes-element").querySelector(".quotes-element__saving-button").innerHTML =
+                            localizationData["save-button"];
+                        if (dates[j].closest(".saved__quote-element")) {
+                            callElementRemoval(dates[j].closest(".saved__quote-element"));
+                        }
                     }
                 }
             }
+
             savedQuotes.splice(i, 1);
             localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
         }

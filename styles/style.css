@@ -223,6 +223,7 @@ body {
   z-index: 3;
   transition: 0.9s;
   background-color: #dddddd;
+  overflow-x: hidden;
 }
 .quotes-section__container {
   display: flex;
@@ -231,50 +232,50 @@ body {
   padding-top: 55px;
   padding-bottom: 55px;
   min-height: calc(100vh - 130px - 13vh);
+  scroll-behavior: smooth;
 }
 
 .main-section {
   left: 0;
   width: 100%;
-  overflow: auto;
+  overflow-y: auto;
 }
 .main-section.--inactive {
   left: 200%;
   height: 0;
   width: 0;
-  overflow: hidden;
+  overflow-y: hidden;
 }
 .main-section.--inactive.--left-side {
   left: -100%;
+}
+
+.history__section,
+.saved__section {
   height: 0;
   width: 0;
-  overflow: hidden;
+  overflow-y: hidden;
+}
+
+.history__section.--active,
+.saved__section.--active {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
 }
 
 .history__section {
   left: -100%;
-  height: 0;
-  width: 0;
-  overflow: hidden;
 }
 .history__section.--active {
   left: 0;
-  height: 100%;
-  width: 100%;
-  overflow: auto;
 }
 
 .saved__section {
   right: -100%;
-  height: 0;
-  width: 0;
-  overflow: hidden;
 }
 .saved__section.--active {
   right: 0;
-  height: 100%;
-  width: 100%;
-  overflow: auto;
 }
 .saved__quote-element.--hiding-animation {
   transition: all 0.6s ease;
