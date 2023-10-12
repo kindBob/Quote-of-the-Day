@@ -2,7 +2,7 @@
 $transition-length: 0.6s;
 
 $header-height: 130px;
-$footer-height: 14vh;
+$footer-height: 13vh;
 $quote-date-height: 60px;
 
 $headerNFooter-bg: #fff;
@@ -600,20 +600,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  $footer-height: 12vh;
-
-  .malfo-logo {
-    height: $footer-height;
-  }
-
-  .footer {
-    height: $footer-height;
-
-    &__bg-filler {
-      height: $footer-height;
-    }
-  }
-
   .logo {
     width: 135px;
   }

@@ -148,7 +148,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 14vh;
+  height: 13vh;
 }
 .malfo-logo__image {
   height: 50%;
@@ -230,7 +230,7 @@ body {
   align-items: center;
   padding-top: 55px;
   padding-bottom: 55px;
-  min-height: calc(100vh - 130px - 14vh);
+  min-height: calc(100vh - 130px - 13vh);
 }
 
 .main-section {
@@ -491,7 +491,7 @@ body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  height: 14vh;
+  height: 13vh;
   width: 100%;
   background-color: #ffffff;
   font-size: clamp(16px, 1vw, 24px);
@@ -522,15 +522,6 @@ body {
   }
 }
 @media (max-width: 768px) {
-  .malfo-logo {
-    height: 12vh;
-  }
-  .footer {
-    height: 12vh;
-  }
-  .footer__bg-filler {
-    height: 12vh;
-  }
   .logo {
     width: 135px;
   }
