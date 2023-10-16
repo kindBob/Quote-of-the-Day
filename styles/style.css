@@ -372,7 +372,7 @@ body {
   height: calc(100% - 60px);
   font-size: clamp(26px, 6vw, 90px);
   text-transform: uppercase;
-  line-height: 1;
+  line-height: 0.9;
   text-wrap: balance;
   padding-right: 2%;
   word-spacing: -0.1vw;
@@ -380,6 +380,7 @@ body {
 }
 .quotes-element__author.--smaller-font-size {
   font-size: clamp(26px, 5.5vw, 90px);
+  text-wrap: wrap;
 }
 .quotes-element__quote {
   width: 45%;

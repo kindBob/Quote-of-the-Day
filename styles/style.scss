@@ -433,7 +433,7 @@ body {
     height: calc(100% - $quote-date-height);
     font-size: clamp(26px, 6vw, 90px);
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 0.9;
     text-wrap: balance;
     padding-right: 2%;
     word-spacing: -0.1vw;
@@ -441,6 +441,7 @@ body {
 
     &.--smaller-font-size {
       font-size: clamp(26px, 5.5vw, 90px);
+      text-wrap: wrap;
     }
   }
 
