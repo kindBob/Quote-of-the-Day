@@ -24,9 +24,9 @@ const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 
 const MAIN_PAGE = window.location.href;
 
-let onMobile = false;
+let smallScreen = false;
 
-screen.width < 768 ? (onMobile = true) : (onMobile = false);
+screen.width < 768 ? (smallScreen = true) : (smallScreen = false);
 
 setFlipQuoteEL();
 
@@ -99,7 +99,7 @@ document.addEventListener("click", (event) => {
 });
 
 historyOpenButton.addEventListener("click", () => {
-    onMobile ? closeNavBarList(openHistorySection) : openHistorySection();
+    smallScreen ? closeNavBarList(openHistorySection) : openHistorySection();
 });
 
 function openHistorySection() {
@@ -112,7 +112,7 @@ function openHistorySection() {
 }
 
 savedOpenButton.addEventListener("click", () => {
-    onMobile ? closeNavBarList(openSavedSection) : openSavedSection();
+    smallScreen ? closeNavBarList(openSavedSection) : openSavedSection();
 });
 
 function openSavedSection() {
@@ -143,7 +143,7 @@ function setDocumentOverflow() {
 // Header ---
 // Quotes
 export function setFlipQuoteEL(element) {
-    if (!onMobile) return;
+    if (!smallScreen) return;
 
     if (element) {
         element.addEventListener("click", (event) => {

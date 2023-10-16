@@ -54,8 +54,8 @@ body {
   }
 }
 
-.title {
-  font-size: clamp(28px, 3vw, 35px);
+.section-title {
+  font-size: clamp(30px, 3vw, 35px);
   padding-right: 15px;
   text-transform: capitalize;
   line-height: 1.1;
@@ -203,11 +203,6 @@ body {
   &__container {
     transition: $transition-length;
   }
-
-  &__bg-filler {
-    height: $header-height;
-    top: 0;
-  }
 }
 
 .history-header .nav-bar,
@@ -258,7 +253,7 @@ body {
   max-width: 100vw;
   position: absolute;
   z-index: 3;
-  transition: $transition-length + 0.3;
+  transition: 1s;
   background-color: #dddddd;
   overflow-x: hidden;
 
@@ -268,8 +263,11 @@ body {
     align-items: center;
     padding-top: 55px;
     padding-bottom: 55px;
-    min-height: calc(100vh - $header-height - $footer-height);
-    scroll-behavior: smooth;
+    transition: $transition-length;
+
+    &.--fixed-height {
+      min-height: calc(100vh - $header-height - $footer-height);
+    }
   }
 }
 
@@ -338,7 +336,7 @@ body {
   &__placeholder {
     width: 100%;
     text-align: center;
-    font-size: clamp(20px, 4vw, 26px);
+    font-size: clamp(23px, 4vw, 26px);
     color: #ffffff;
     opacity: 0;
     transition: $transition-length;
@@ -436,13 +434,13 @@ body {
     font-size: clamp(26px, 6vw, 90px);
     text-transform: uppercase;
     line-height: 1;
-    text-wrap: pretty;
+    text-wrap: balance;
     padding-right: 2%;
     word-spacing: -0.1vw;
     letter-spacing: -2px;
 
     &.--smaller-font-size {
-      font-size: clamp(24px, 5vw, 90px);
+      font-size: clamp(26px, 5.5vw, 90px);
     }
   }
 
@@ -456,7 +454,7 @@ body {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    font-size: clamp(17px, 3vw, 26px);
+    font-size: clamp(17px, 2.25vw, 26px);
     font-weight: 300;
     line-height: 1.4;
 
@@ -465,7 +463,7 @@ body {
     }
 
     &.--bigger-font-size {
-      font-size: clamp(17px, 3.5vw, 32px);
+      font-size: clamp(20px, 3.5vw, 30px);
     }
   }
 }
@@ -495,7 +493,7 @@ body {
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
-  font-size: 23px;
+  font-size: 25px;
   align-items: flex-start;
   position: absolute;
   left: 10px;
@@ -533,6 +531,9 @@ body {
 
   &.--smaller-font-size {
     font-size: 12.3px;
+  }
+  &.--bigger-font-size {
+    font-size: 15px;
   }
 }
 
@@ -590,12 +591,17 @@ body {
       min-height: auto;
       align-items: flex-end;
       justify-content: flex-start;
-      padding-bottom: 20px;
+      padding-bottom: 30px;
+      font-size: clamp(17px, 2.5vw, 26px);
+
+      &.--smaller-font-size {
+        padding-bottom: 15px;
+      }
     }
   }
 
   .quotes-element.--sharing-card .quotes-element__quote {
-    bottom: 5px;
+    bottom: 8px;
   }
 }
 
@@ -720,7 +726,7 @@ body {
 
     &__inner-container {
       transform-style: preserve-3d;
-      padding: 20px 35px 20px 30px;
+      padding: 20px 35px 0 27.5px;
       // -webkit-animation: 2s flip 1s ease-in-out;
       //animation: 2s flip 1s ease-in-out;
     }

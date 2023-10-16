@@ -17,6 +17,11 @@ const historyContainer = document.querySelector("#history-container");
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
 
+if (!localStorage.getItem("rap")) {
+    localStorage.clear();
+    localStorage.setItem("rap", 1);
+}
+
 const dateManager = new DateManager();
 
 let previousQuotes = [];
@@ -25,44 +30,52 @@ let savedQuotes = [];
 let initialLocaleAuthor = null;
 let initialLocaleQuote = null;
 
-// const ACCESS_KEY = "f06acd1ab63a00144b2c78b0bf4c5e00";
-// const myIPAdress = "88.155.185.137";
-
-// let developerModeIsOn = false;
-
-// fetch("https://api.ipify.org?format=json")
-//     .then((response) => response.json())
-//     .then((data) => {
-//         data.ip == myIPAdress ? (developerModeIsOn = true) : null;
-//     });
-
-// async function checkIPData(ipAdress) {
-//     const response = await fetch(`https://api.ipapi.com/api/${ipAdress}?access_key=${ACCESS_KEY}`);
-//     const data = await response.json();
-
-//     console.log(data);
-// }
-
-if (!localStorage.getItem("rap")) {
-    localStorage.clear();
-    localStorage.setItem("rap", 1);
-}
+//Dev mode
+let developerMode = null;
+localStorage.getItem("developerMode") ? (developerMode = true) : (developerMode = false);
+let keysPressed = {};
+const keysCombination = ["Control", "b"];
 
 document.addEventListener("keydown", (e) => {
     switch (e.key) {
-        case "s":
-            localStorage.clear();
-            location.reload();
+        case keysCombination[0]:
+            keysPressed[e.key] = true;
 
             break;
+
+        case keysCombination[1]:
+            keysPressed[e.key] = true;
+
+            break;
+
+        case "s":
+            if (developerMode) {
+                localStorage.clear();
+                location.reload();
+
+                break;
+            }
 
         case "a":
-            dateManager.changeCurrentDate(dateManager.currentDate.getDate() + 1);
-            location.reload();
+            if (developerMode) {
+                dateManager.changeCurrentDate(dateManager.currentDate.getDate() + 1);
+                location.reload();
 
-            break;
+                break;
+            }
+    }
+
+    if (keysPressed[keysCombination[0]] && keysPressed[keysCombination[1]] && !developerMode) {
+        console.log("Developer mode");
+        developerMode = true;
+        localStorage.setItem("developerMode", developerMode);
     }
 });
+
+document.addEventListener("keyup", (e) => {
+    delete keysPressed[e.key];
+});
+//Dev mode ---
 
 document.addEventListener("DOMContentLoaded", () => {
     initialLocaleAuthor = `author-${initialLocale}`;
@@ -121,10 +134,6 @@ function setupQuotes() {
         previousQuotes.unshift(quoteObject);
     } else {
         if (previousQuotes[0].id != quoteObject.id) {
-            if (previousQuotes.length > 10) {
-                console.log(previousQuotes.pop());
-            }
-
             previousQuotes.unshift(quoteObject);
         }
     }
@@ -133,7 +142,7 @@ function setupQuotes() {
 
     setupPreviousQuotes();
     updateSavedQuotes();
-    setupSavingButtons();
+    setupSavingButtonsEL();
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupFontSizes();
@@ -199,7 +208,7 @@ function setupFontSizes() {
 
     quoteOutputsList.forEach((output) => {
         output.textContent.length >= 230 ? output.classList.add("--smaller-font-size") : null;
-        output.textContent.length <= 35 ? output.classList.add("--bigger-font-size") : null;
+        output.textContent.length <= 40 ? output.classList.add("--bigger-font-size") : null;
     });
 
     authorOutputsList.forEach((output) =>
@@ -207,7 +216,7 @@ function setupFontSizes() {
     );
 }
 
-function setupSavingButtons() {
+function setupSavingButtonsEL() {
     document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)").forEach((button) => {
         button.addEventListener("click", (event) => {
             manageSavedQuotes(button, event.target.closest(".quotes-element"));
@@ -216,49 +225,61 @@ function setupSavingButtons() {
 }
 
 function updateSavedQuotes(act) {
-    const dummyElement = document.querySelector(".quotes-element.--dummy");
+    const isEmpty = savedQuotes.length == 0;
 
-    if (savedQuotes.length == 0) {
-        savedSection.classList.add("--is-empty");
-    } else {
+    if (!isEmpty) {
         savedSection.classList.remove("--is-empty");
 
         if (act != "unsave") {
-            for (let i = 0; i < savedQuotes.length; i++) {
-                if (savedQuotes.length > document.querySelectorAll(".saved__quote-element").length) {
-                    let clone = createClone(savedContainer, dummyElement);
-                    removeClassRecursively(clone, "--dummy");
-                    clone.classList.add("saved__quote-element");
-                    clone.querySelector(".quotes-element__saving-button").addEventListener("click", () => {
-                        manageSavedQuotes(clone.querySelector(".quotes-element__saving-button"), clone);
-                    });
+            createSavedQuotesElements();
+            setupSavingButtonsText();
+            setupSavedQuotesElementsText();
+            setupFontSizes();
+        }
+    } else {
+        savedSection.classList.add("--is-empty");
+    }
+}
 
-                    setSharingButtonsEL([clone.querySelector(".share-button")]);
-                    setFlipQuoteEL(clone);
-                }
-            }
+function createSavedQuotesElements() {
+    const dummyElement = document.querySelector(".quotes-element.--dummy");
 
-            for (let i = 0; i < savedQuotes.length; i++) {
-                document.querySelectorAll(".quotes-element__saving-button").forEach((button) => {
-                    if (
-                        savedQuotes[i].id ==
-                        button.closest(".quotes-element").querySelector(".quotes-element__date").innerHTML
-                    ) {
-                        getLocalizationData().then((content) => {
-                            button.innerHTML = content["unsave-button"];
-                        });
-                    }
+    for (let i = 0; i < savedQuotes.length; i++) {
+        if (savedQuotes.length > document.querySelectorAll(".saved__quote-element").length) {
+            let clone = createClone(savedContainer, dummyElement);
+            removeClassRecursively(clone, "--dummy");
+            clone.classList.add("saved__quote-element");
+            clone.querySelector(".quotes-element__saving-button").addEventListener("click", () => {
+                manageSavedQuotes(clone.querySelector(".quotes-element__saving-button"), clone);
+            });
+
+            setSharingButtonsEL([clone.querySelector(".share-button")]);
+            setFlipQuoteEL(clone);
+        }
+    }
+}
+
+function setupSavingButtonsText() {
+    for (let i = 0; i < savedQuotes.length; i++) {
+        document.querySelectorAll(".quotes-element__saving-button").forEach((button) => {
+            if (
+                savedQuotes[i].id == button.closest(".quotes-element").querySelector(".quotes-element__date").innerHTML
+            ) {
+                getLocalizationData().then((content) => {
+                    button.innerHTML = content["unsave-button"];
                 });
             }
+        });
+    }
+}
 
-            for (let i = 0; i < savedQuotes.length; i++) {
-                const element = document.querySelectorAll(".saved__quote-element")[i];
+function setupSavedQuotesElementsText() {
+    for (let i = 0; i < savedQuotes.length; i++) {
+        const element = document.querySelectorAll(".saved__quote-element")[i];
 
-                element.querySelector(".saved__quotes-element-date").innerHTML = savedQuotes[i].id;
-                element.querySelector(".saved__quotes-element-author").innerHTML = savedQuotes[i][initialLocaleAuthor];
-                element.querySelector(".saved__quotes-element-quote").innerHTML = savedQuotes[i][initialLocaleQuote];
-            }
-        }
+        element.querySelector(".saved__quotes-element-date").innerHTML = savedQuotes[i].id;
+        element.querySelector(".saved__quotes-element-author").innerHTML = savedQuotes[i][initialLocaleAuthor];
+        element.querySelector(".saved__quotes-element-quote").innerHTML = savedQuotes[i][initialLocaleQuote];
     }
 }
 
@@ -285,8 +306,8 @@ function setupSectionsContent() {
         : historyContainer.classList.remove("--content-centered");
 
     savedQuotes.length <= 1
-        ? savedContainer.classList.add("--content-centered")
-        : savedContainer.classList.remove("--content-centered");
+        ? savedContainer.classList.add("--content-centered", "--fixed-height")
+        : savedContainer.classList.remove("--content-centered", "--fixed-height");
 }
 
 async function manageSavedQuotes(button, quoteElement) {
@@ -307,8 +328,13 @@ async function manageSavedQuotes(button, quoteElement) {
 
         for (let i = 0; i < savedQuotes.length; i++) {
             if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
+                let currentSavedQuote = savedQuotes[i];
+
+                savedQuotes.splice(i, 1);
+                localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
+
                 for (let j = 0; j < dates.length; j++) {
-                    if (savedQuotes[i].id == dates[j].innerHTML) {
+                    if (currentSavedQuote.id == dates[j].innerHTML) {
                         dates[j].closest(".quotes-element").querySelector(".quotes-element__saving-button").innerHTML =
                             localizationData["save-button"];
                         if (dates[j].closest(".saved__quote-element")) {
@@ -317,9 +343,6 @@ async function manageSavedQuotes(button, quoteElement) {
                     }
                 }
             }
-
-            savedQuotes.splice(i, 1);
-            localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
         }
     }
 }
@@ -327,6 +350,8 @@ async function manageSavedQuotes(button, quoteElement) {
 function callElementRemoval(element) {
     element.classList.add("--hiding-animation");
     elementRemovalCheck(element);
+
+    setupSectionsContent();
 }
 
 function elementRemovalCheck(element) {
@@ -341,6 +366,6 @@ function elementRemovalCheck(element) {
 
 function finishElementRemoval(element) {
     element.remove();
-    updateSavedQuotes("unsave");
     setupSectionsContent();
+    updateSavedQuotes("unsave");
 }
