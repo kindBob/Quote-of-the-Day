@@ -276,7 +276,7 @@ body {
   right: 0;
 }
 .saved__container.--fixed-height {
-  height: calc(87vh - 130px);
+  min-height: calc(87vh - 130px);
 }
 .saved__quote-element.--hiding-animation {
   transition: all 0.6s ease;

@@ -322,7 +322,7 @@ body {
   }
 
   &__container.--fixed-height {
-    height: calc(100vh - $footer-height - $header-height);
+    min-height: calc(100vh - $footer-height - $header-height);
   }
 
   &__quote-element {

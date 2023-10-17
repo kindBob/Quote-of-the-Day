@@ -208,12 +208,19 @@ function setupFontSizes() {
     const authorOutputsList = document.querySelectorAll(".quotes-element__author");
 
     quoteOutputsList.forEach((output) => {
-        output.textContent.length >= 230 ? output.classList.add("--smaller-font-size") : null;
-        output.textContent.length <= 40 ? output.classList.add("--bigger-font-size") : null;
+        console.log(output.textContent.length, output.closest(".quotes-element"));
+        output.textContent.length >= 230
+            ? output.classList.add("--smaller-font-size")
+            : output.classList.remove("--smaller-font-size");
+        output.textContent.length <= 40
+            ? output.classList.add("--bigger-font-size")
+            : output.classList.remove("--bigger-font-size");
     });
 
     authorOutputsList.forEach((output) =>
-        output.textContent.length >= 18 ? output.classList.add("--smaller-font-size") : null
+        output.textContent.length >= 18
+            ? output.classList.add("--smaller-font-size")
+            : output.classList.remove("--smaller-font-size")
     );
 }
 
