@@ -84,19 +84,20 @@ function getQuotes() {
         savedQuotes = JSON.parse(localStorage.getItem("savedQuotes"));
     }
 
-    if (
-        !localStorage.getItem("currentQuote") ||
-        JSON.parse(localStorage.getItem("currentQuote")).id != dateManager.getCurrentFormattedDate()
-    ) {
-        alert(2);
-        generateQuote().then((quoteObject) => {
-            localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
-
-            setupQuotes();
-        });
+    if (localStorage.getItem("currentQuote")) {
+        if (JSON.parse(localStorage.getItem("currentQuote")).id == dateManager.getCurrentFormattedDate()) setupQuotes();
+        else callQuoteGeneration;
     } else {
-        setupQuotes();
+        callQuoteGeneration();
     }
+}
+
+function callQuoteGeneration() {
+    generateQuote().then((quoteObject) => {
+        localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
+
+        setupQuotes();
+    });
 }
 
 function setupQuotes() {
