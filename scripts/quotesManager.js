@@ -17,9 +17,10 @@ const historyContainer = document.querySelector("#history-container");
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
 
-if (!localStorage.getItem("rap")) {
+if (!localStorage.getItem("rap2")) {
     localStorage.clear();
-    localStorage.setItem("rap", 1);
+    localStorage.setItem("rap2", 1);
+    location.reload();
 }
 
 const dateManager = new DateManager();
