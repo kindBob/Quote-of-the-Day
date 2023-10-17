@@ -73,6 +73,13 @@ document.addEventListener("keyup", (e) => {
 //Dev mode ---
 
 document.addEventListener("DOMContentLoaded", () => {
+    if (!localStorage.getItem("globalClearing")) {
+        localStorage.clear();
+        localStorage.setItem("globalClearing");
+
+        location.reload();
+    }
+
     initialLocaleAuthor = `author-${initialLocale}`;
     initialLocaleQuote = `quote-${initialLocale}`;
 
