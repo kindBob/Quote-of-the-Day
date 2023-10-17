@@ -264,10 +264,6 @@ body {
     padding-top: 55px;
     padding-bottom: 55px;
     transition: $transition-length;
-
-    &.--fixed-height {
-      min-height: calc(100vh - $header-height - $footer-height);
-    }
   }
 }
 
@@ -309,6 +305,10 @@ body {
     &.--active {
       left: 0;
     }
+  }
+
+  &__container {
+    min-height: calc(100vh - $header-height - $footer-height);
   }
 }
 

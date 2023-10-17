@@ -229,9 +229,6 @@ body {
   padding-bottom: 55px;
   transition: 0.6s;
 }
-.quotes-section__container.--fixed-height {
-  min-height: calc(100vh - 130px - 13vh);
-}
 
 .main-section {
   left: 0;
@@ -267,6 +264,9 @@ body {
 }
 .history__section.--active {
   left: 0;
+}
+.history__container {
+  min-height: calc(100vh - 130px - 13vh);
 }
 
 .saved__section {
