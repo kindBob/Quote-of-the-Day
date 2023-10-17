@@ -20,8 +20,6 @@ export async function generateQuote() {
             "author-ru": quotes[jsonObjectIndex]["author-ru"].trim(),
         };
 
-        alert(quoteObject);
-
         if (quotes["quote-uk"]) {
             quoteObject["quote-uk"] = `${quoteData["quote-uk"].trim()}`;
         }
