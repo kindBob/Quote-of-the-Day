@@ -26,6 +26,8 @@ const MAIN_PAGE = window.location.href;
 
 let smallScreen = false;
 
+export let isSavedSectionOpened = false;
+
 screen.width < 768 ? (smallScreen = true) : (smallScreen = false);
 
 setFlipQuoteEL();
@@ -116,6 +118,8 @@ savedOpenButton.addEventListener("click", () => {
 });
 
 function openSavedSection() {
+    isSavedSectionOpened = true;
+
     savedHeader.classList.add("--active");
     savedSection.classList.add("--active");
 
@@ -163,7 +167,8 @@ export function setFlipQuoteEL(element) {
 function flipQuote(event) {
     const target = event.target;
     const element = event.target.closest(".quotes-element");
-    if (!target.classList.contains(".quotes-element__buttons-container") && !target.classList.contains("button")) {
+    console.log(event.target);
+    if (!target.classList.contains("quotes-element__buttons-list") && !target.classList.contains("button")) {
         element.classList.toggle("--flipped");
     }
 }
@@ -189,6 +194,8 @@ function closeHistory() {
 savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved));
 
 function closeSaved() {
+    isSavedSectionOpened = false;
+
     savedHeader.classList.remove("--active");
     savedSection.classList.remove("--active");
 

@@ -1,7 +1,13 @@
+if (!localStorage.getItem("r")) {
+    localStorage.clear();
+    localStorage.setItem("r", 1);
+    location.reload();
+}
+
 import DateManager from "./dateManager.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
-import { setupSharingCard, setFlipQuoteEL } from "./userInteractions.js";
+import { setupSharingCard, setFlipQuoteEL, isSavedSectionOpened } from "./userInteractions.js";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
@@ -16,12 +22,6 @@ const historyContainer = document.querySelector("#history-container");
 
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
-
-if (!localStorage.getItem("rap3")) {
-    localStorage.clear();
-    localStorage.setItem("rap3", 1);
-    location.reload();
-}
 
 const dateManager = new DateManager();
 
@@ -208,7 +208,6 @@ function setupFontSizes() {
     const authorOutputsList = document.querySelectorAll(".quotes-element__author");
 
     quoteOutputsList.forEach((output) => {
-        console.log(output.textContent.length, output.closest(".quotes-element"));
         output.textContent.length >= 230
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
@@ -349,6 +348,11 @@ async function manageSavedQuotes(button, quoteElement) {
                         dates[j].closest(".quotes-element").querySelector(".quotes-element__saving-button").innerHTML =
                             localizationData["save-button"];
                         if (dates[j].closest(".saved__quote-element")) {
+                            if (!isSavedSectionOpened) {
+                                finishElementRemoval(dates[j].closest(".saved__quote-element"));
+                                return;
+                            }
+
                             callElementRemoval(dates[j].closest(".saved__quote-element"));
                         }
                     }
