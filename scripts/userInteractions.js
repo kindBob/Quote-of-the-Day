@@ -163,7 +163,7 @@ export function setFlipQuoteEL(element) {
 function flipQuote(event) {
     const target = event.target;
     const element = event.target.closest(".quotes-element");
-    if (!target.classList.contains("button-list") && !target.classList.contains("button")) {
+    if (!target.classList.contains(".quotes-element__buttons-container") && !target.classList.contains("button")) {
         element.classList.toggle("--flipped");
     }
 }
