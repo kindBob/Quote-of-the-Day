@@ -500,6 +500,8 @@ body {
   left: 10px;
   top: 28px;
   padding-right: 20px;
+  letter-spacing: normal;
+  word-spacing: normal;
 
   &.--smaller-font-size {
     font-size: 20px;
@@ -526,7 +528,7 @@ body {
   flex: 1;
   font-size: 13px;
   position: absolute;
-  bottom: 30px;
+  bottom: 25px;
   left: 10px;
   padding-right: 10px;
 
@@ -594,15 +596,11 @@ body {
       justify-content: flex-start;
       padding-bottom: 30px;
       font-size: clamp(17px, 2.5vw, 26px);
-
-      &.--smaller-font-size {
-        padding-bottom: 15px;
-      }
     }
   }
 
   .quotes-element.--sharing-card .quotes-element__quote {
-    bottom: 8px;
+    bottom: -5px;
   }
 }
 
@@ -774,10 +772,6 @@ body {
 
     &__quote {
       padding-right: 0;
-
-      &.--smaller-font-size {
-        padding-bottom: 0;
-      }
     }
   }
 }

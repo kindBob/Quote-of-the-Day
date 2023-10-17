@@ -1,6 +1,7 @@
 import DateManager from "./dateManager.js";
 
 const dateManager = new DateManager();
+let withQuotes = false;
 
 export async function generateQuote() {
     try {
@@ -13,18 +14,24 @@ export async function generateQuote() {
         let jsonObjectIndex = Math.floor(Math.random() * quotes.length);
         let quoteObject = {
             id: dateManager.getCurrentFormattedDate(),
-            "quote-en": `"${quotes[jsonObjectIndex]["quote-en"].trim()}"`,
+            "quote-en": `${quotes[jsonObjectIndex]["quote-en"].trim()}`,
             "author-en": quotes[jsonObjectIndex]["author-en"].trim(),
-            "quote-ru": `"${quotes[jsonObjectIndex]["quote-ru"].trim()}"`,
+            "quote-ru": `${quotes[jsonObjectIndex]["quote-ru"].trim()}`,
             "author-ru": quotes[jsonObjectIndex]["author-ru"].trim(),
         };
 
         if (quotes["quote-uk"]) {
-            quoteObject["quote-uk"] = `"${quoteData["quote-uk"].trim()}"`;
+            quoteObject["quote-uk"] = `${quoteData["quote-uk"].trim()}`;
         }
 
         if (quotes["author-uk"]) {
             quoteObject["author-uk"] = quoteData["author-uk"].trim();
+        }
+
+        if (withQuotes) {
+            quoteObject["quote-en"] = `"${quoteObject["quote-en"]}"`;
+            quoteObject["quote-ru"] = `"${quoteObject["quote-ru"]}"`;
+            quoteObject["quote-uk"] = `"${quoteObject["quote-uk"]}"`;
         }
 
         const previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
