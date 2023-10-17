@@ -275,7 +275,7 @@ body {
 .saved__section.--active {
   right: 0;
 }
-.saved__container {
+.saved__container.--fixed-height {
   height: calc(87vh - 130px);
 }
 .saved__quote-element.--hiding-animation {

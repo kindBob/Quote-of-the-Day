@@ -321,7 +321,7 @@ body {
     }
   }
 
-  &__container {
+  &__container.--fixed-height {
     height: calc(100vh - $footer-height - $header-height);
   }
 
