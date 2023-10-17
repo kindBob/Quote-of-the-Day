@@ -120,6 +120,8 @@ function setupQuotes() {
 
     //setMaxValues(quoteObjectQuote, quoteObjectAuthor);
 
+    alert(quoteObjectQuote);
+
     currentQuoteOutput.innerHTML = quoteObjectQuote;
     currentAuthorOutput.innerHTML = quoteObjectAuthor;
     currentDateOutput.innerHTML = dateManager.getCurrentFormattedDate();
@@ -269,15 +271,14 @@ function createSavedQuotesElements() {
     }
 }
 
-function setupSavingButtonsText() {
+async function setupSavingButtonsText() {
+    const data = await getLocalizationData();
     for (let i = 0; i < savedQuotes.length; i++) {
         document.querySelectorAll(".quotes-element__saving-button").forEach((button) => {
             if (
                 savedQuotes[i].id == button.closest(".quotes-element").querySelector(".quotes-element__date").innerHTML
             ) {
-                getLocalizationData().then((content) => {
-                    button.innerHTML = content["unsave-button"];
-                });
+                button.innerHTML = data["unsave-button"];
             }
         });
     }
