@@ -173,7 +173,7 @@ export function setFlipQuoteEL(element) {
 function flipQuote(event) {
     const target = event.target;
     const element = event.target.closest(".quotes-element");
-    console.log(event.target);
+
     if (!target.classList.contains("quotes-element__buttons-list") && !target.classList.contains("button")) {
         element.classList.toggle("--flipped");
     }
@@ -181,7 +181,9 @@ function flipQuote(event) {
 
 document.addEventListener("click", (event) => {
     document.querySelectorAll(".quotes-element").forEach((element) => {
-        if (!element.contains(event.target)) element.classList.remove("--flipped");
+        if (!element.contains(event.target)) {
+            element.classList.remove("--flipped");
+        }
     });
 });
 // Quotes ---
