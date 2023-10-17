@@ -1,6 +1,6 @@
-if (!localStorage.getItem("r")) {
+if (!localStorage.getItem("ra")) {
     localStorage.clear();
-    localStorage.setItem("r", 1);
+    localStorage.setItem("ra", 1);
     location.reload();
 }
 
@@ -91,7 +91,7 @@ function getQuotes() {
     }
 
     if (
-        localStorage.getItem("currentQuote") == null ||
+        !localStorage.getItem("currentQuote") ||
         JSON.parse(localStorage.getItem("currentQuote")).id != dateManager.getCurrentFormattedDate()
     ) {
         generateQuote().then((quoteObject) => {
@@ -119,8 +119,6 @@ function setupQuotes() {
     }
 
     //setMaxValues(quoteObjectQuote, quoteObjectAuthor);
-
-    alert(quoteObjectQuote);
 
     currentQuoteOutput.innerHTML = quoteObjectQuote;
     currentAuthorOutput.innerHTML = quoteObjectAuthor;
