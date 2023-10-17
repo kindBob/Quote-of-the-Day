@@ -39,7 +39,7 @@ function translatePage() {
 function translateElement(element) {
     const key = element.getAttribute("data-i18n-key");
     const translation = translations[key];
-    element.innerText = translation;
+    element.textContent = translation;
 }
 
 function isSupported(locale) {

@@ -323,7 +323,7 @@ body {
   height: 100%;
   background-color: #ffffff;
   border-radius: 25px;
-  padding: 30px 40px 35px 40px;
+  padding: 35px 40px 35px;
   transition: 0.6s;
 }
 .quotes-element__front-container {
@@ -355,16 +355,24 @@ body {
 }
 .quotes-element__button {
   margin-left: 15px;
+  position: relative;
 }
 .quotes-element__button:first-child {
   margin-left: 0;
 }
+.quotes-element__button-click-trigger {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+}
 .quotes-element__date {
   display: flex;
   max-height: 60px;
-  align-items: start;
+  align-items: center;
   width: 100%;
-  font-size: clamp(28px, 5vw, 50px);
+  font-size: clamp(32px, 5.5vw, 55px);
   color: #ef3a32;
   font-weight: 300;
 }
@@ -382,10 +390,10 @@ body {
   letter-spacing: -2px;
 }
 .quotes-element__author.--bigger-font-size {
-  font-size: clamp(26px, 7vw, 120px);
+  font-size: clamp(32px, 7vw, 120px);
 }
 .quotes-element__author.--smaller-font-size {
-  font-size: clamp(26px, 5.5vw, 90px);
+  font-size: clamp(26px, 5.3vw, 90px);
   text-wrap: wrap;
 }
 .quotes-element__quote {
@@ -401,12 +409,14 @@ body {
   font-size: clamp(17px, 2.25vw, 26px);
   font-weight: 300;
   line-height: 1.4;
+  text-align: left;
 }
 .quotes-element__quote.--smaller-font-size {
-  font-size: clamp(14.5px, 2vw, 24px);
+  font-size: clamp(15px, 2.2vw, 24px);
 }
 .quotes-element__quote.--bigger-font-size {
-  font-size: clamp(20px, 3.5vw, 30px);
+  font-size: clamp(22px, 3.5vw, 34px);
+  text-align: right;
 }
 
 .quotes-element.--sharing-card {
@@ -493,7 +503,7 @@ body {
   justify-content: center;
   text-align: center;
   color: #ffffff;
-  font-size: clamp(28px, 4vw, 50px);
+  font-size: clamp(28px, 5.5vw, 50px);
 }
 
 .footer {
@@ -516,7 +526,7 @@ body {
     flex-direction: column;
   }
   .quotes-element__author {
-    width: 60%;
+    width: 70%;
     height: -webkit-fit-content;
     height: -moz-fit-content;
     height: fit-content;
@@ -528,6 +538,7 @@ body {
     justify-content: flex-start;
     padding-bottom: 30px;
     font-size: clamp(17px, 2.5vw, 26px);
+    text-align: left !important;
   }
   .quotes-element.--sharing-card .quotes-element__quote {
     bottom: -5px;
@@ -617,6 +628,9 @@ body {
     align-items: center;
     padding: 0;
   }
+  .quotes-element__buttons-container {
+    padding: 25px;
+  }
   .quotes-element__buttons-list {
     width: 100%;
     flex-direction: column;
@@ -650,6 +664,9 @@ body {
     height: -moz-fit-content;
     height: fit-content;
   }
+  .quotes-element__quote.--smaller-font-size {
+    font-size: clamp(15px, 3.2vw, 18px);
+  }
 }
 @media (max-width: 364px) {
   .logo {
@@ -660,13 +677,20 @@ body {
   }
   .quotes-element__inner-container {
     padding-right: 17px;
-    padding-left: 17px;
+    padding-left: 20px;
+    padding-top: 15px;
   }
   .quotes-element__author {
     padding-right: 0;
   }
   .quotes-element__quote {
     padding-right: 0;
+  }
+  .quotes-element__quote:not(.--bigger-font-size) {
+    padding-bottom: 17.5px;
+  }
+  .quotes-element__quote.--smaller-font-size {
+    font-size: clamp(15px, 2.2vw, 24px);
   }
 }
 @-webkit-keyframes quote-card-flip {

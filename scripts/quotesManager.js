@@ -99,7 +99,7 @@ async function callQuoteGeneration() {
     setupQuotes();
 }
 
-function setupQuotes() {
+async function setupQuotes() {
     const quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
     let quoteObjectQuote = null;
     let quoteObjectAuthor = null;
@@ -113,7 +113,7 @@ function setupQuotes() {
         !quoteObject.hasOwnProperty("author-uk") ? (quoteObjectAuthor = quoteObject["author-ru"]) : null;
     }
 
-    //setMaxValues(quoteObjectQuote, quoteObjectAuthor);
+    //await setMaxValues(quoteObjectQuote, quoteObjectAuthor);
 
     currentQuoteOutput.innerHTML = quoteObjectQuote;
     currentAuthorOutput.innerHTML = quoteObjectAuthor;
@@ -144,33 +144,22 @@ function setupQuotes() {
     setupFontSizes();
 }
 
-function setMaxValues(quoteObjectQuote, quoteObjectAuthor) {
-    fetch("../json/quotes.json")
-        .then((response) => {
-            return response.json();
-        })
-        .then((data) => {
-            for (let i = 0; i < data.length; i++) {
-                if (quoteObjectQuote.length < data[i]["quote-en"].length) {
-                    quoteObjectQuote = data[i]["quote-en"];
-                    currentQuoteOutput.innerHTML = quoteObjectQuote;
-                }
-                if (quoteObjectAuthor.length < data[i]["author-en"].length) {
-                    quoteObjectAuthor = data[i]["author-en"];
-                    currentAuthorOutput.innerHTML = quoteObjectAuthor;
-                }
-            }
+async function setMaxValues(quoteObjectQuote, quoteObjectAuthor) {
+    const res = await fetch("../json/quotes.json");
+    const data = await res.json();
 
-            if (quoteObjectQuote.length >= 230) {
-                currentQuoteOutput.classList.add("--smaller-font-size");
-                sharingCardQuoteOutput.classList.add("--smaller-font-size");
-            }
+    for (let i = 0; i < data.length; i++) {
+        if (quoteObjectQuote.length < data[i][initialLocaleQuote].length) {
+            quoteObjectQuote = data[i][initialLocaleQuote];
+        }
+        console.log(data[i][initialLocaleAuthor].length);
+        if (quoteObjectAuthor.length < data[i][initialLocaleAuthor].length) {
+            quoteObjectAuthor = data[i][initialLocaleAuthor];
+        }
+    }
 
-            if (quoteObjectAuthor.length > 14) {
-                currentAuthorOutput.classList.add("--smaller-font-size");
-                sharingCardAuthorOutput.classList.add("--smaller-font-size");
-            }
-        });
+    currentQuoteOutput.textContent = quoteObjectQuote;
+    currentAuthorOutput.textContent = quoteObjectAuthor;
 }
 
 function setSharingButtonsEL(elements) {
@@ -203,10 +192,12 @@ function setupFontSizes() {
     const authorOutputsList = document.querySelectorAll(".quotes-element__author");
 
     quoteOutputsList.forEach((output) => {
+        console.log(output.textContent.length, output);
+
         output.textContent.length >= 230
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
-        output.textContent.length <= 40
+        output.textContent.length <= 50
             ? output.classList.add("--bigger-font-size")
             : output.classList.remove("--bigger-font-size");
     });
@@ -215,7 +206,7 @@ function setupFontSizes() {
         output.textContent.length >= 18
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
-        output.textContent.length <= 12
+        output.textContent.length <= 15
             ? output.classList.add("--bigger-font-size")
             : output.classList.remove("--bigger-font-size");
     });
@@ -267,11 +258,12 @@ function createSavedQuotesElements() {
 async function setupSavingButtonsText() {
     const data = await getLocalizationData();
     for (let i = 0; i < savedQuotes.length; i++) {
-        document.querySelectorAll(".quotes-element__saving-button").forEach((button) => {
+        document.querySelectorAll(".quotes-element__saving-button").forEach((buttonText) => {
             if (
-                savedQuotes[i].id == button.closest(".quotes-element").querySelector(".quotes-element__date").innerHTML
+                savedQuotes[i].id ==
+                buttonText.closest(".quotes-element").querySelector(".quotes-element__date").textContent
             ) {
-                button.innerHTML = data["unsave-button"];
+                buttonText.textContent = data["unsave-button"];
             }
         });
     }
