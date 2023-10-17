@@ -76,8 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initialLocaleAuthor = `author-${initialLocale}`;
     initialLocaleQuote = `quote-${initialLocale}`;
 
-    alert(1);
-    console.log(1);
+    alert(initialLocaleQuote);
 
     getQuotes();
 });
@@ -91,6 +90,7 @@ function getQuotes() {
         !localStorage.getItem("currentQuote") ||
         JSON.parse(localStorage.getItem("currentQuote")).id != dateManager.getCurrentFormattedDate()
     ) {
+        alert(2);
         generateQuote().then((quoteObject) => {
             localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
 
