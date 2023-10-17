@@ -73,12 +73,12 @@ document.addEventListener("keyup", (e) => {
 //Dev mode ---
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (!localStorage.getItem("globalClearing")) {
-        localStorage.clear();
-        localStorage.setItem("globalClearing");
+    // if (!localStorage.getItem("globalClearing")) {
+    //     localStorage.clear();
+    //     localStorage.setItem("globalClearing", 1);
 
-        location.reload();
-    }
+    //     location.reload();
+    // }
 
     initialLocaleAuthor = `author-${initialLocale}`;
     initialLocaleQuote = `quote-${initialLocale}`;
@@ -91,20 +91,21 @@ function getQuotes() {
         savedQuotes = JSON.parse(localStorage.getItem("savedQuotes"));
     }
 
-    if (localStorage.getItem("currentQuote")) {
+    console.log(localStorage.getItem("currentQuote"));
+
+    if (localStorage.getItem("currentQuote") !== null) {
         if (JSON.parse(localStorage.getItem("currentQuote")).id == dateManager.getCurrentFormattedDate()) setupQuotes();
-        else callQuoteGeneration;
+        else callQuoteGeneration();
     } else {
         callQuoteGeneration();
     }
 }
 
-function callQuoteGeneration() {
-    generateQuote().then((quoteObject) => {
-        localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
+async function callQuoteGeneration() {
+    const quoteObject = await generateQuote();
+    localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
 
-        setupQuotes();
-    });
+    setupQuotes();
 }
 
 function setupQuotes() {
