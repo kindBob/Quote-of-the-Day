@@ -17,11 +17,11 @@ const historyContainer = document.querySelector("#history-container");
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
 
-// if (!localStorage.getItem("rap2")) {
-//     localStorage.clear();
-//     localStorage.setItem("rap2", 1);
-//     location.reload();
-// }
+if (!localStorage.getItem("rap3")) {
+    localStorage.clear();
+    localStorage.setItem("rap3", 1);
+    location.reload();
+}
 
 const dateManager = new DateManager();
 
@@ -217,11 +217,14 @@ function setupFontSizes() {
             : output.classList.remove("--bigger-font-size");
     });
 
-    authorOutputsList.forEach((output) =>
+    authorOutputsList.forEach((output) => {
         output.textContent.length >= 18
             ? output.classList.add("--smaller-font-size")
-            : output.classList.remove("--smaller-font-size")
-    );
+            : output.classList.remove("--smaller-font-size");
+        output.textContent.length <= 12
+            ? output.classList.add("--bigger-font-size")
+            : output.classList.remove("--bigger-font-size");
+    });
 }
 
 function setupSavingButtonsEL() {
