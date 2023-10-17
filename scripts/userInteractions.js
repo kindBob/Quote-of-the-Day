@@ -32,8 +32,6 @@ screen.width < 768 ? (smallScreen = true) : (smallScreen = false);
 
 setFlipQuoteEL();
 
-alert(1);
-
 // Sharing
 export function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");

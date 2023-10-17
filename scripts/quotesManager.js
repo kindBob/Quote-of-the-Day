@@ -76,6 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initialLocaleAuthor = `author-${initialLocale}`;
     initialLocaleQuote = `quote-${initialLocale}`;
 
+    alert(1);
+    console.log(1);
+
     getQuotes();
 });
 
