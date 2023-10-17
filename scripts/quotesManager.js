@@ -73,13 +73,6 @@ document.addEventListener("keyup", (e) => {
 //Dev mode ---
 
 document.addEventListener("DOMContentLoaded", () => {
-    // if (!localStorage.getItem("globalClearing")) {
-    //     localStorage.clear();
-    //     localStorage.setItem("globalClearing", 1);
-
-    //     location.reload();
-    // }
-
     initialLocaleAuthor = `author-${initialLocale}`;
     initialLocaleQuote = `quote-${initialLocale}`;
 
@@ -90,8 +83,6 @@ function getQuotes() {
     if (localStorage.getItem("savedQuotes")) {
         savedQuotes = JSON.parse(localStorage.getItem("savedQuotes"));
     }
-
-    console.log(localStorage.getItem("currentQuote"));
 
     if (localStorage.getItem("currentQuote") !== null) {
         if (JSON.parse(localStorage.getItem("currentQuote")).id == dateManager.getCurrentFormattedDate()) setupQuotes();

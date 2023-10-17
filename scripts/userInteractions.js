@@ -158,9 +158,15 @@ export function setFlipQuoteEL(element) {
     }
 
     document.querySelectorAll(".quotes-element").forEach((element) => {
-        element.addEventListener("click", (event) => {
+        let listenerType = "mouseup";
+
+        if (smallScreen) listenerType = "touchend";
+
+        element.addEventListener(listenerType, (event) => {
             flipQuote(event);
         });
+
+        console.log(listenerType);
     });
 }
 
