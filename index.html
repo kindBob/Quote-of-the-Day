@@ -74,7 +74,7 @@
             <header id="main-header" class="header main-header">
                 <div class="container header__container">
                     <nav class="nav-bar main-header__nav-bar">
-                        <div class="logo header__logo">
+                        <div class="logo header__logo" onclick="clearLocalStorage()">
                             <a href="./index.html" draggable="false"
                                 ><img src="./assets//website-logo/logo-3.png" alt="Logo" draggable="false"
                             /></a>
@@ -214,5 +214,12 @@
         <script type="module" src="./scripts/languageManager.js"></script>
         <script type="module" src="./scripts/userInteractions.js"></script>
         <script type="module" src="./scripts/quotesManager.js"></script>
+
+        <script>
+            const clearLocalStorage = () => {
+                localStorage.clear();
+                location.reload();
+            };
+        </script>
     </body>
 </html>
