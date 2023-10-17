@@ -1,9 +1,3 @@
-if (!localStorage.getItem("ra")) {
-    localStorage.clear();
-    localStorage.setItem("ra", 1);
-    location.reload();
-}
-
 import DateManager from "./dateManager.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";

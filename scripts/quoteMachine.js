@@ -20,6 +20,8 @@ export async function generateQuote() {
             "author-ru": quotes[jsonObjectIndex]["author-ru"].trim(),
         };
 
+        alert(quoteObject);
+
         if (quotes["quote-uk"]) {
             quoteObject["quote-uk"] = `${quoteData["quote-uk"].trim()}`;
         }
@@ -47,5 +49,6 @@ export async function generateQuote() {
         return quoteObject;
     } catch (error) {
         console.error("Error loading JSON:", error.message);
+        alert(error);
     }
 }
