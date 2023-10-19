@@ -1,10 +1,9 @@
 export default class DateManager {
     constructor() {
-        // localStorage.getItem("currentDate")
-        //     ? (this.currentDate = new Date(localStorage.getItem("currentDate")))
-        //     : (this.currentDate = new Date());
+        localStorage.getItem("currentDate")
+            ? (this.currentDate = new Date(localStorage.getItem("currentDate")))
+            : (this.currentDate = new Date());
 
-        this.currentDate = new Date();
         this.tomorrowsDate = new Date(this.currentDate);
         this.tomorrowsDate.setDate(this.tomorrowsDate.getDate() + 1);
         this.afterTomorrowsDate = new Date(this.currentDate);

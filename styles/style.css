@@ -386,15 +386,18 @@ body {
   line-height: 0.9;
   text-wrap: balance;
   padding-right: 2%;
-  word-spacing: -0.1vw;
-  letter-spacing: -2px;
+  word-spacing: -0.05vw;
+  letter-spacing: -0.2vw;
 }
 .quotes-element__author.--bigger-font-size {
-  font-size: clamp(32px, 7vw, 120px);
+  font-size: clamp(32px, 7vw, 130px);
 }
 .quotes-element__author.--smaller-font-size {
   font-size: clamp(26px, 5.3vw, 90px);
   text-wrap: wrap;
+}
+.quotes-element__author.--cyrillic {
+  text-transform: capitalize;
 }
 .quotes-element__quote {
   width: 45%;
@@ -455,6 +458,9 @@ body {
 }
 .quotes-element.--sharing-card .quotes-element__author.--smaller-font-size {
   font-size: 20px;
+}
+.quotes-element.--sharing-card .quotes-element__author.--bigger-font-size {
+  font-size: 28px;
 }
 
 .quotes-element.--sharing-card .quotes-element__date {
@@ -686,11 +692,9 @@ body {
   .quotes-element__quote {
     padding-right: 0;
   }
-  .quotes-element__quote:not(.--bigger-font-size) {
-    padding-bottom: 17.5px;
-  }
   .quotes-element__quote.--smaller-font-size {
     font-size: clamp(15px, 2.2vw, 24px);
+    padding-bottom: 17.5px;
   }
 }
 @-webkit-keyframes quote-card-flip {

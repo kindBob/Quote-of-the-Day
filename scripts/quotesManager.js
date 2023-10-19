@@ -1,16 +1,13 @@
 import DateManager from "./dateManager.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
-import { setupSharingCard, setFlipQuoteEL, isSavedSectionOpened } from "./userInteractions.js";
+import { setupSharingCard, setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL } from "./userInteractions.js";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
 const currentDateOutput = document.querySelector("#current-date");
 
 const inactiveQuoteDates = document.querySelectorAll(".quotes-element__date.--inactive");
-
-const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
-const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
 
 const historyContainer = document.querySelector("#history-container");
 
@@ -107,7 +104,9 @@ async function setupQuotes() {
     quoteObjectQuote = quoteObject[initialLocaleQuote];
     quoteObjectAuthor = quoteObject[initialLocaleAuthor];
 
-    if (initialLocale == "uk") {
+    if (initialLocale == "uk" || initialLocale == "ru") {
+        document.querySelectorAll(".quotes-element__author").forEach((element) => element.classList.add("--cyrillic"));
+
         !quoteObject.hasOwnProperty("quote-uk") ? (quoteObjectQuote = quoteObject["quote-ru"]) : null;
 
         !quoteObject.hasOwnProperty("author-uk") ? (quoteObjectAuthor = quoteObject["author-ru"]) : null;
@@ -192,8 +191,6 @@ function setupFontSizes() {
     const authorOutputsList = document.querySelectorAll(".quotes-element__author");
 
     quoteOutputsList.forEach((output) => {
-        console.log(output.textContent.length, output);
-
         output.textContent.length >= 230
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
@@ -212,26 +209,16 @@ function setupFontSizes() {
     });
 }
 
-function setupSavingButtonsEL() {
-    document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)").forEach((button) => {
-        button.addEventListener("click", (event) => {
-            manageSavedQuotes(button, event.target.closest(".quotes-element"));
-        });
-    });
-}
-
 function updateSavedQuotes(act) {
     const isEmpty = savedQuotes.length == 0;
 
     if (!isEmpty) {
         savedSection.classList.remove("--is-empty");
 
-        if (act != "unsave") {
-            createSavedQuotesElements();
-            setupSavingButtonsText();
-            setupSavedQuotesElementsText();
-            setupFontSizes();
-        }
+        createSavedQuotesElements();
+        setupSavingButtonsText();
+        setupSavedQuotesElementsText();
+        setupFontSizes();
     } else {
         savedSection.classList.add("--is-empty");
     }
@@ -306,7 +293,7 @@ function setupSectionsContent() {
         : savedContainer.classList.remove("--content-centered", "--fixed-height");
 }
 
-async function manageSavedQuotes(button, quoteElement) {
+export async function manageSavedQuotes(button, quoteElement) {
     const localizationData = await getLocalizationData();
 
     if (button.innerHTML == localizationData["save-button"]) {

@@ -1,4 +1,5 @@
 import { getLocalizationData } from "./languageManager.js";
+import { manageSavedQuotes } from "./quotesManager.js";
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -28,7 +29,7 @@ let smallScreen = false;
 
 export let isSavedSectionOpened = false;
 
-screen.width < 768 ? (smallScreen = true) : (smallScreen = false);
+screen.width <= 768 ? (smallScreen = true) : (smallScreen = false);
 
 setFlipQuoteEL();
 
@@ -158,12 +159,20 @@ export function setFlipQuoteEL(element) {
     }
 
     document.querySelectorAll(".quotes-element").forEach((element) => {
-        let listenerType = "mouseup";
-
-        if (smallScreen) listenerType = "touchend";
-
-        element.addEventListener(listenerType, (event) => {
+        element.addEventListener("click", (event) => {
             flipQuote(event);
+        });
+    });
+}
+
+export function setupSavingButtonsEL() {
+    let listenerType = "mousedown";
+
+    if (smallScreen) listenerType = "touchstart";
+
+    document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)").forEach((button) => {
+        button.addEventListener("click", (event) => {
+            manageSavedQuotes(button, event.target.closest(".quotes-element"));
         });
     });
 }

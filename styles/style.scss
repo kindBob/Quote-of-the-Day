@@ -450,16 +450,20 @@ body {
     line-height: 0.9;
     text-wrap: balance;
     padding-right: 2%;
-    word-spacing: -0.1vw;
-    letter-spacing: -2px;
+    word-spacing: -0.05vw;
+    letter-spacing: -0.2vw;
 
     &.--bigger-font-size {
-      font-size: clamp(32px, 7vw, 120px);
+      font-size: clamp(32px, 7vw, 130px);
     }
 
     &.--smaller-font-size {
       font-size: clamp(26px, 5.3vw, 90px);
       text-wrap: wrap;
+    }
+
+    &.--cyrillic {
+      text-transform: capitalize;
     }
   }
 
@@ -525,6 +529,10 @@ body {
 
   &.--smaller-font-size {
     font-size: 20px;
+  }
+
+  &.--bigger-font-size {
+    font-size: 28px;
   }
 }
 
@@ -803,12 +811,9 @@ body {
     &__quote {
       padding-right: 0;
 
-      &:not(.--bigger-font-size) {
-        padding-bottom: 17.5px;
-      }
-
       &.--smaller-font-size {
         font-size: clamp(15px, 2.2vw, 24px);
+        padding-bottom: 17.5px;
       }
     }
   }
