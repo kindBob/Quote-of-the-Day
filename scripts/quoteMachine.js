@@ -44,8 +44,6 @@ export async function generateQuote() {
             }
         }
 
-        console.log(quoteObject["quote-en"]);
-
         return quoteObject;
     } catch (error) {
         console.error("Error loading JSON:", error.message);

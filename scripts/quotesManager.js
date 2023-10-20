@@ -1,7 +1,7 @@
 import DateManager from "./dateManager.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
-import { setupSharingCard, setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL } from "./userInteractions.js";
+import { setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL, setSharingButtonsEL } from "./userInteractions.js";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
@@ -77,16 +77,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function getQuotes() {
+    const currentQuote = localStorage.getItem("currentQuote");
+
     if (localStorage.getItem("savedQuotes")) {
         savedQuotes = JSON.parse(localStorage.getItem("savedQuotes"));
     }
 
-    if (localStorage.getItem("currentQuote") !== null) {
-        if (JSON.parse(localStorage.getItem("currentQuote")).id == dateManager.getCurrentFormattedDate()) setupQuotes();
-        else callQuoteGeneration();
-    } else {
-        callQuoteGeneration();
-    }
+    const parsedQuote = JSON.parse(currentQuote);
+    if (currentQuote && parsedQuote.id === dateManager.getCurrentFormattedDate()) return setupQuotes();
+
+    callQuoteGeneration();
 }
 
 async function callQuoteGeneration() {
@@ -97,12 +97,8 @@ async function callQuoteGeneration() {
 }
 
 async function setupQuotes() {
-    const quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
-    let quoteObjectQuote = null;
-    let quoteObjectAuthor = null;
-
-    quoteObjectQuote = quoteObject[initialLocaleQuote];
-    quoteObjectAuthor = quoteObject[initialLocaleAuthor];
+    const quoteObjectQuote = getCurrentQuoteObjFromLS().quote;
+    const quoteObjectAuthor = getCurrentQuoteObjFromLS().author;
 
     if (initialLocale == "uk" || initialLocale == "ru") {
         document.querySelectorAll(".quotes-element__author").forEach((element) => element.classList.add("--cyrillic"));
@@ -128,8 +124,8 @@ async function setupQuotes() {
     if (!previousQuotes[0]) {
         previousQuotes.unshift(quoteObject);
     } else {
-        if (previousQuotes[0].id != quoteObject.id) {
-            previousQuotes.unshift(quoteObject);
+        if (previousQuotes[0].id != getCurrentQuoteObjFromLS().id) {
+            previousQuotes.unshift(getCurrentQuoteObjFromLS().object);
         }
     }
 
@@ -137,9 +133,9 @@ async function setupQuotes() {
 
     setupPreviousQuotes();
     updateSavedQuotes();
-    setupSavingButtonsEL();
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
+    setupSavingButtonsEL();
     setupFontSizes();
 }
 
@@ -161,12 +157,19 @@ async function setMaxValues(quoteObjectQuote, quoteObjectAuthor) {
     currentAuthorOutput.textContent = quoteObjectAuthor;
 }
 
-function setSharingButtonsEL(elements) {
-    for (let i = 0; i < elements.length; i++) {
-        elements[i].addEventListener("click", (event) => {
-            setupSharingCard(event);
-        });
-    }
+function getCurrentQuoteObjFromLS() {
+    const quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
+
+    const quoteObjectQuote = quoteObject[initialLocaleQuote];
+    const quoteObjectAuthor = quoteObject[initialLocaleAuthor];
+    const quoteObjectId = quoteObject.id;
+
+    return {
+        quote: quoteObjectQuote,
+        author: quoteObjectAuthor,
+        id: quoteObjectId,
+        object: quoteObject,
+    };
 }
 
 function setupPreviousQuotes() {
@@ -187,23 +190,30 @@ function setupPreviousQuotes() {
 }
 
 function setupFontSizes() {
-    const quoteOutputsList = document.querySelectorAll(".quotes-element__quote");
-    const authorOutputsList = document.querySelectorAll(".quotes-element__author");
+    const quoteOutputs = document.querySelectorAll(".quotes-element__quote");
+    const authorOutputs = document.querySelectorAll(".quotes-element__author");
+    const quoteObjectQuote = getCurrentQuoteObjFromLS().quote;
+    const quoteObjectAuthor = getCurrentQuoteObjFromLS().author;
 
-    quoteOutputsList.forEach((output) => {
-        output.textContent.length >= 230
+    quoteOutputs.forEach((output) => {
+        quoteObjectQuote.length >= 230
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
-        output.textContent.length <= 50
+
+        quoteObjectQuote.length <= 55
             ? output.classList.add("--bigger-font-size")
             : output.classList.remove("--bigger-font-size");
+
+        quoteObjectQuote.length <= 75
+            ? output.classList.add("--medium-bigger-font-size")
+            : output.classList.remove("--medium-bigger-font-size");
     });
 
-    authorOutputsList.forEach((output) => {
-        output.textContent.length >= 18
+    authorOutputs.forEach((output) => {
+        quoteObjectAuthor.length >= 18
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
-        output.textContent.length <= 15
+        quoteObjectAuthor.length <= 15 && quoteObjectAuthor.split(" ").length > 1
             ? output.classList.add("--bigger-font-size")
             : output.classList.remove("--bigger-font-size");
     });

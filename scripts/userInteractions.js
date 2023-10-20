@@ -166,15 +166,19 @@ export function setFlipQuoteEL(element) {
 }
 
 export function setupSavingButtonsEL() {
-    let listenerType = "mousedown";
-
-    if (smallScreen) listenerType = "touchstart";
-
     document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)").forEach((button) => {
         button.addEventListener("click", (event) => {
             manageSavedQuotes(button, event.target.closest(".quotes-element"));
         });
     });
+}
+
+export function setSharingButtonsEL(elements) {
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].addEventListener("click", (event) => {
+            setupSharingCard(event);
+        });
+    }
 }
 
 function flipQuote(event) {
