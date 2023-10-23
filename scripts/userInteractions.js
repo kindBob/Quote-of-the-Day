@@ -65,54 +65,63 @@ export function setupSharingCard(event) {
     sharingCardQuoteOutput.innerHTML = quoteOutput.textContent;
     sharingCardDateOutput.innerHTML = dateOutput.textContent;
 
-    shareCard();
+    setupSharingProcess();
 }
 
-async function shareCard() {
+async function setupSharingProcess() {
     html2canvas(sharingCard, { dpi: 600 }).then(async (canvas) => {
         const imageDataUrl = canvas.toDataURL("image/png", 1);
-        const blobImage = dataURItoBlob(imageDataUrl);
-        const imageFile = new File([blobImage], "quote-card.png", {
-            type: "image/png",
-        });
-
         const localizationData = await getLocalizationData();
-        const navigatorShareTitle = localizationData["sharing-card-title"];
-        const navigatorShareText = localizationData["sharing-card-secondary-text"];
 
         if (navigator.share && isMobile) {
-            navigator
-                .share({
-                    title: navigatorShareTitle,
-                    text: `${navigatorShareText}: ` + MAIN_PAGE,
-                    files: [imageFile],
-                })
-                .catch((error) => console.log(`Problems occured: ${error}`));
+            shareCard_mobiles(imageDataUrl, localizationData);
         } else {
-            try {
-                loadingElement.style.display = "flex";
-
-                const res = await fetch(`${IMAGE_UPLOAD_API_URL}?fileName=quote-card`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ imageDataUrl }),
-                });
-                const data = await res.json();
-                const quoteLink = data.link;
-
-                loadingElement.style.display = "none";
-
-                await navigator.clipboard.writeText(quoteLink);
-
-                alert(localizationData["saved-to-clipboard"]);
-            } catch (error) {
-                alert("Some error occured while sharing");
-                console.log(`Some error occured while sharing: ${error.message}`);
-            }
+            await shareCard_notMobiles(imageDataUrl, localizationData);
         }
     });
+}
+
+async function shareCard_notMobiles(imageDataUrl, localizationData) {
+    try {
+        loadingElement.classList.add("--active");
+
+        const res = await fetch(`${IMAGE_UPLOAD_API_URL}?fileName=quote-card`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ imageDataUrl }),
+        });
+        const data = await res.json();
+        const quoteLink = data.link;
+
+        loadingElement.classList.remove("--active");
+
+        await navigator.clipboard.writeText(quoteLink);
+
+        alert(localizationData["saved-to-clipboard"]);
+    } catch (error) {
+        alert("Some error occured while sharing");
+        console.log(`Some error occured while sharing: ${error.message}`);
+    }
+}
+
+async function shareCard_mobiles(imageDataUrl, localizationData) {
+    const blobImage = dataURItoBlob(imageDataUrl);
+    const imageFile = new File([blobImage], "quote-card.png", {
+        type: "image/png",
+    });
+
+    const navigatorShareTitle = localizationData["sharing-card-title"];
+    const navigatorShareText = localizationData["sharing-card-text"];
+
+    navigator
+        .share({
+            title: navigatorShareTitle,
+            text: `${navigatorShareText}: ` + MAIN_PAGE,
+            files: [imageFile],
+        })
+        .catch((error) => console.log(`Problems occured: ${error}`));
 }
 
 function dataURItoBlob(dataURI) {

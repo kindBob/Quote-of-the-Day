@@ -199,24 +199,24 @@ function setupFontSizes() {
     const quoteObjectAuthor = getCurrentQuoteObjFromLS().author;
 
     quoteOutputs.forEach((output) => {
-        quoteObjectQuote.length >= 230
+        output.textContent.length >= 230
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
 
-        quoteObjectQuote.length <= 55
+        output.textContent.length <= 55
             ? output.classList.add("--bigger-font-size")
             : output.classList.remove("--bigger-font-size");
 
-        quoteObjectQuote.length <= 75
+        output.textContent.length <= 75
             ? output.classList.add("--medium-bigger-font-size")
             : output.classList.remove("--medium-bigger-font-size");
     });
 
     authorOutputs.forEach((output) => {
-        quoteObjectAuthor.length >= 18
+        output.textContent.length >= 20
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
-        quoteObjectAuthor.length <= 15 && quoteObjectAuthor.split(" ").length > 1
+        output.textContent.length <= 15 && quoteObjectAuthor.split(" ").length > 1
             ? output.classList.add("--bigger-font-size")
             : output.classList.remove("--bigger-font-size");
     });
