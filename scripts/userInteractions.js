@@ -89,7 +89,7 @@ async function shareCard() {
 
                 await navigator.clipboard.writeText(quoteLink);
 
-                alert("Your quote link copied to clipboard");
+                alert(localizationData["Saved-to-clipboard"]);
             } catch (error) {
                 alert("Some error occured while sharing");
                 console.log(`Some error occured while sharing: ${error.message}`);

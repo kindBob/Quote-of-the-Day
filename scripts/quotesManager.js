@@ -84,6 +84,7 @@ function getQuotes() {
     }
 
     const parsedQuote = JSON.parse(currentQuote);
+    console.log(parsedQuote);
     if (currentQuote && parsedQuote.id === dateManager.getCurrentFormattedDate()) return setupQuotes();
 
     callQuoteGeneration();
@@ -97,15 +98,19 @@ async function callQuoteGeneration() {
 }
 
 async function setupQuotes() {
-    const quoteObjectQuote = getCurrentQuoteObjFromLS().quote;
-    const quoteObjectAuthor = getCurrentQuoteObjFromLS().author;
+    let quoteObjectQuote = getCurrentQuoteObjFromLS().quote;
+    let quoteObjectAuthor = getCurrentQuoteObjFromLS().author;
 
     if (initialLocale == "uk" || initialLocale == "ru") {
         document.querySelectorAll(".quotes-element__author").forEach((element) => element.classList.add("--cyrillic"));
 
-        !quoteObject.hasOwnProperty("quote-uk") ? (quoteObjectQuote = quoteObject["quote-ru"]) : null;
+        !getCurrentQuoteObjFromLS().object.hasOwnProperty("quote-uk")
+            ? (quoteObjectQuote = getCurrentQuoteObjFromLS().object["quote-ru"])
+            : null;
 
-        !quoteObject.hasOwnProperty("author-uk") ? (quoteObjectAuthor = quoteObject["author-ru"]) : null;
+        !getCurrentQuoteObjFromLS().object.hasOwnProperty("author-uk")
+            ? (quoteObjectAuthor = getCurrentQuoteObjFromLS().object["author-ru"])
+            : null;
     }
 
     //await setMaxValues(quoteObjectQuote, quoteObjectAuthor);
@@ -122,7 +127,7 @@ async function setupQuotes() {
     }
 
     if (!previousQuotes[0]) {
-        previousQuotes.unshift(quoteObject);
+        previousQuotes.unshift(getCurrentQuoteObjFromLS().object);
     } else {
         if (previousQuotes[0].id != getCurrentQuoteObjFromLS().id) {
             previousQuotes.unshift(getCurrentQuoteObjFromLS().object);
