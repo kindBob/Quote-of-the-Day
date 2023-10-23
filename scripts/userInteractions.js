@@ -1,5 +1,5 @@
 import { getLocalizationData } from "./languageManager.js";
-import { manageSavedQuotes } from "./quotesManager.js";
+import { manageSavedQuotes, setupFontSizes } from "./quotesManager.js";
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -61,9 +61,11 @@ export function setupSharingCard(event) {
     const authorOutput = parent.querySelector(".quotes-element__author");
     const dateOutput = parent.querySelector(".quotes-element__date");
 
-    sharingCardAuthorOutput.innerHTML = authorOutput.textContent;
-    sharingCardQuoteOutput.innerHTML = quoteOutput.textContent;
-    sharingCardDateOutput.innerHTML = dateOutput.textContent;
+    sharingCardAuthorOutput.textContent = authorOutput.textContent;
+    sharingCardQuoteOutput.textContent = quoteOutput.textContent;
+    sharingCardDateOutput.textContent = dateOutput.textContent;
+
+    setupFontSizes();
 
     setupSharingProcess();
 }

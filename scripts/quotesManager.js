@@ -192,11 +192,9 @@ function setupPreviousQuotes() {
     }
 }
 
-function setupFontSizes() {
+export function setupFontSizes() {
     const quoteOutputs = document.querySelectorAll(".quotes-element__quote");
     const authorOutputs = document.querySelectorAll(".quotes-element__author");
-    const quoteObjectQuote = getCurrentQuoteObjFromLS().quote;
-    const quoteObjectAuthor = getCurrentQuoteObjFromLS().author;
 
     quoteOutputs.forEach((output) => {
         output.textContent.length >= 230
@@ -216,7 +214,7 @@ function setupFontSizes() {
         output.textContent.length >= 20
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
-        output.textContent.length <= 15 && quoteObjectAuthor.split(" ").length > 1
+        output.textContent.length <= 15 && output.textContent.split(" ").length > 1
             ? output.classList.add("--bigger-font-size")
             : output.classList.remove("--bigger-font-size");
     });
