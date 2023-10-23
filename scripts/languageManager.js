@@ -54,8 +54,12 @@ function browserLocales(languageCodeOnly = false) {
     return navigator.languages.map((locale) => (languageCodeOnly ? locale.split("-")[0] : locale));
 }
 
+let localizationData = null;
 export async function getLocalizationData() {
-    let response = await fetch(`../json/languages/${initialLocale}.json`);
-    let localizationContent = await response.json();
-    return localizationContent;
+    if (!localizationData) {
+        let response = await fetch(`../json/languages/${initialLocale}.json`);
+        localizationData = await response.json();
+    }
+
+    return localizationData;
 }

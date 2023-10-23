@@ -84,7 +84,6 @@ function getQuotes() {
     }
 
     const parsedQuote = JSON.parse(currentQuote);
-    console.log(parsedQuote);
     if (currentQuote && parsedQuote.id === dateManager.getCurrentFormattedDate()) return setupQuotes();
 
     callQuoteGeneration();
@@ -152,7 +151,6 @@ async function setMaxValues(quoteObjectQuote, quoteObjectAuthor) {
         if (quoteObjectQuote.length < data[i][initialLocaleQuote].length) {
             quoteObjectQuote = data[i][initialLocaleQuote];
         }
-        console.log(data[i][initialLocaleAuthor].length);
         if (quoteObjectAuthor.length < data[i][initialLocaleAuthor].length) {
             quoteObjectAuthor = data[i][initialLocaleAuthor];
         }
