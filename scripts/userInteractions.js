@@ -24,15 +24,22 @@ const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
 const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 
 const MAIN_PAGE = window.location.href;
+const IMAGE_UPLOAD_API_URL = "https://imgur.up.railway.app//file-upload";
 
-let smallScreen = false;
+const isMobile = detectMobile();
 
 export let isSavedSectionOpened = false;
 
-screen.width <= 768 ? (smallScreen = true) : (smallScreen = false);
+//screen.width <= 768 ? (isMobile = true) : (isMobile = false);
 
 setFlipQuoteEL();
 
+// Basic
+function detectMobile() {
+    const devices = [/Android/i, /webOS/i, /iPhone/i, /iPad/i, /iPod/i, /BlackBerry/i, /Windows Phone/i];
+    return devices.some((device) => device.test(navigator.userAgent));
+}
+// Basic ---
 // Sharing
 export function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");
@@ -49,25 +56,44 @@ export function setupSharingCard(event) {
 }
 
 async function shareCard() {
-    html2canvas(sharingCard, { dpi: 300 }).then(async (canvas) => {
-        const imageDataUrl = canvas.toDataURL("image/png", 1.0);
-        const localizationData = await getLocalizationData();
-        const secondaryText = localizationData["sharing-card-secondary-text"];
+    html2canvas(sharingCard, { dpi: 600 }).then(async (canvas) => {
+        const imageDataUrl = canvas.toDataURL("image/png", 1);
+        const blobImage = dataURItoBlob(imageDataUrl);
+        const imageFile = new File([blobImage], "quote-card.png", {
+            type: "image/png",
+        });
 
-        if (navigator.share) {
+        const localizationData = await getLocalizationData();
+        const navigatorShareTitle = localizationData["sharing-card-title"];
+        const navigatorShareText = localizationData["sharing-card-secondary-text"];
+
+        if (navigator.share && isMobile) {
             navigator
                 .share({
-                    title: "My quote of the Day",
-                    text: `${secondaryText}: ` + MAIN_PAGE,
-                    files: [
-                        new File([dataURItoBlob(imageDataUrl)], "quote-card.png", {
-                            type: "image/png",
-                        }),
-                    ],
+                    title: navigatorShareTitle,
+                    text: `${navigatorShareText}: ` + MAIN_PAGE,
+                    files: [imageFile],
                 })
                 .catch((error) => console.log(`Problems occured: ${error}`));
         } else {
-            alert("Your browser doesn't support sharing yet");
+            try {
+                const res = await fetch(`${IMAGE_UPLOAD_API_URL}?fileName=quote-card`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ imageDataUrl }),
+                });
+                const data = await res.json();
+                const quoteLink = data.link;
+
+                await navigator.clipboard.writeText(quoteLink);
+
+                alert("Your quote link copied to clipboard");
+            } catch (error) {
+                alert("Some error occured while sharing");
+                console.log(`Some error occured while sharing: ${error.message}`);
+            }
         }
     });
 }
@@ -102,7 +128,7 @@ document.addEventListener("click", (event) => {
 });
 
 historyOpenButton.addEventListener("click", () => {
-    smallScreen ? closeNavBarList(openHistorySection) : openHistorySection();
+    isMobile ? closeNavBarList(openHistorySection) : openHistorySection();
 });
 
 function openHistorySection() {
@@ -115,7 +141,7 @@ function openHistorySection() {
 }
 
 savedOpenButton.addEventListener("click", () => {
-    smallScreen ? closeNavBarList(openSavedSection) : openSavedSection();
+    isMobile ? closeNavBarList(openSavedSection) : openSavedSection();
 });
 
 function openSavedSection() {
@@ -148,7 +174,7 @@ function setDocumentOverflow() {
 // Header ---
 // Quotes
 export function setFlipQuoteEL(element) {
-    if (!smallScreen) return;
+    if (!isMobile) return;
 
     if (element) {
         element.addEventListener("click", (event) => {

@@ -1,18 +1,19 @@
 {
-  "saved_section-button": "Saved",
-  "history_section-button": "History",
-  "support_us-button": "Support Us",
+    "saved_section-button": "Saved",
+    "history_section-button": "History",
+    "support_us-button": "Support Us",
 
-  "history-title": "History",
-  "saved-title": "Saved",
-  "saved-placeholder": "It's empty here...",
-  "back-button": "Back",
+    "history-title": "History",
+    "saved-title": "Saved",
+    "saved-placeholder": "It's empty here...",
+    "back-button": "Back",
 
-  "share-button": "Share",
-  "save-button": "Save",
-  "unsave-button": "Remove",
+    "share-button": "Share",
+    "save-button": "Save",
+    "unsave-button": "Remove",
 
-  "footer-text": "Made with ❤ by Malfo",
+    "footer-text": "Made with ❤ by Malfo",
 
-  "sharing-card-secondary-text": "Check out my quote of the day. You can find yours here"
+    "sharing-card-secondary-text": "Check out my quote of the day. You can find yours here",
+    "sharing-card-title": "My quote of the Day"
 }

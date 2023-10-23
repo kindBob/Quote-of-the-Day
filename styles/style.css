@@ -531,7 +531,7 @@ body {
 
 @media (max-width: 1024px) {
   .quotes-element__inner-container {
-    padding: 15px 35px 0 30px;
+    padding: 25px 35px 0 30px;
   }
   .quotes-element__front-container {
     flex-direction: column;
