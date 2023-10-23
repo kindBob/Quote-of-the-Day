@@ -24,7 +24,7 @@ const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
 const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 
 const MAIN_PAGE = window.location.href;
-const IMAGE_UPLOAD_API_URL = "https://imgur.up.railway.app//file-upload";
+const IMAGE_UPLOAD_API_URL = "https://imgur.up.railway.app/file-upload";
 
 const isMobile = detectMobile();
 
