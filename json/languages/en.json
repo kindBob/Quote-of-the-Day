@@ -17,5 +17,6 @@
     "sharing-card-text": "Check out my quote of the day. You can find yours here",
     "sharing-card-title": "My quote of the Day",
 
-    "saved-to-clipboard": "Your quote link is saved to the clipboard"
+    "saved-to-clipboard": "Your quote link was saved to the clipboard",
+    "error-saving-to-clipboard": "An error occured while sharing quote"
 }

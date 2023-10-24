@@ -164,14 +164,15 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   text-align: center;
   font-size: 20px;
   z-index: 1000;
-  justify-content: flex-end;
-  align-items: flex-end;
-  background-color: rgba(255, 255, 255, 0.8);
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(147, 147, 147, 0.95);
+  color: #fff;
   pointer-events: none;
   transition: 0.6s;
 }
@@ -179,15 +180,32 @@ body {
   opacity: 1;
   pointer-events: all;
 }
+.loading__text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: 0.6s 0.6s;
+  font-size: clamp(20px, 4vw, 30px);
+}
+.loading__text.--active {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
 
 .spinner {
   border: 6px solid rgba(255, 255, 255, 0.3);
   border-top: 6px solid #ee5f5f;
   border-radius: 50%;
-  width: 45px;
   height: 45px;
-  margin: 1vw;
+  width: 45px;
+  opacity: 0;
+  transition: 0.3s;
   animation: spin 2s ease-in-out infinite;
+}
+.spinner.--active {
+  opacity: 1;
 }
 
 .--content-centered {
@@ -406,7 +424,7 @@ body {
   align-items: flex-end;
   width: 55%;
   height: calc(100% - 60px);
-  font-size: clamp(32px, 7vw, 90px);
+  font-size: clamp(32px, 7vw, 95px);
   text-transform: uppercase;
   line-height: 0.9;
   text-wrap: balance;
@@ -516,6 +534,7 @@ body {
   bottom: 25px;
   left: 10px;
   padding-right: 10px;
+  text-align: left !important;
 }
 .quotes-element.--sharing-card .quotes-element__quote.--smaller-font-size {
   font-size: 12.3px;

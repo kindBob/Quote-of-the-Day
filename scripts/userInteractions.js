@@ -24,6 +24,8 @@ const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
 const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 
 const loadingElement = document.querySelector("#loading");
+const loadingElementText = loadingElement.querySelector(".loading__text");
+const loadingElementSpinner = loadingElement.querySelector(".spinner");
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API_URL = "https://imgur.up.railway.app/file-upload";
@@ -32,7 +34,7 @@ let isMobile = detectMobile();
 
 export let isSavedSectionOpened = false;
 
-screen.width <= 768 ? (isMobile = true) : (isMobile = false);
+//screen.width <= 768 ? (isMobile = true) : (isMobile = false);
 
 setFlipQuoteEL();
 
@@ -86,6 +88,8 @@ async function setupSharingProcess() {
 async function shareCard_notMobiles(imageDataUrl, localizationData) {
     try {
         loadingElement.classList.add("--active");
+        loadingElementSpinner.classList.add("--active");
+        loadingElementText.style.width = "0px";
 
         const res = await fetch(`${IMAGE_UPLOAD_API_URL}?fileName=quote-card`, {
             method: "POST",
@@ -94,18 +98,27 @@ async function shareCard_notMobiles(imageDataUrl, localizationData) {
             },
             body: JSON.stringify({ imageDataUrl }),
         });
+
         const data = await res.json();
         const quoteLink = data.link;
 
-        loadingElement.classList.remove("--active");
-
         await navigator.clipboard.writeText(quoteLink);
 
-        alert(localizationData["saved-to-clipboard"]);
+        loadingElementText.textContent = localizationData["saved-to-clipboard"];
     } catch (error) {
-        alert("Some error occured while sharing");
+        loadingElementText.textContent = localizationData["error-saving-to-clipboard"];
         console.log(`Some error occured while sharing: ${error.message}`);
     }
+
+    loadingElementSpinner.classList.remove("--active");
+    loadingElementText.classList.add("--active");
+
+    loadingElementText.style.width = "fit-content";
+
+    setTimeout(() => {
+        loadingElement.classList.remove("--active");
+        loadingElementText.classList.remove("--active");
+    }, 3000);
 }
 
 async function shareCard_mobiles(imageDataUrl, localizationData) {
