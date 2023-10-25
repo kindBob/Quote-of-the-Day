@@ -24,17 +24,20 @@ const sharingCardAuthorOutput = document.querySelector("#sharing-card-author");
 const sharingCardDateOutput = document.querySelector("#sharing-card-date");
 
 const loadingElement = document.querySelector("#loading");
-const loadingElementText = loadingElement.querySelector(".loading__text");
+const loadingStatus = loadingElement.querySelector(".status");
+const loadingStatusText = loadingStatus.querySelector(".status__text");
 const loadingElementSpinner = loadingElement.querySelector(".spinner");
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API_URL = "https://imgur.up.railway.app/file-upload";
 
+let sharingInProcess = false;
 let isMobile = detectMobile();
 
 export let isSavedSectionOpened = false;
+export let savingButtonsWithEL = [];
 
-//screen.width <= 768 ? (isMobile = true) : (isMobile = false);
+screen.width <= 768 ? (isMobile = true) : (isMobile = false);
 
 setFlipQuoteEL();
 
@@ -86,10 +89,16 @@ async function setupSharingProcess() {
 }
 
 async function shareCard_notMobiles(imageDataUrl, localizationData) {
+    if (sharingInProcess) {
+        return;
+    }
+    sharingInProcess = true;
+
     try {
         loadingElement.classList.add("--active");
         loadingElementSpinner.classList.add("--active");
-        loadingElementText.style.width = "0px";
+
+        loadingElement.classList.remove("--success", "--error");
 
         const res = await fetch(`${IMAGE_UPLOAD_API_URL}?fileName=quote-card`, {
             method: "POST",
@@ -104,21 +113,25 @@ async function shareCard_notMobiles(imageDataUrl, localizationData) {
 
         await navigator.clipboard.writeText(quoteLink);
 
-        loadingElementText.textContent = localizationData["saved-to-clipboard"];
+        loadingStatusText.textContent = localizationData["saved-to-clipboard"];
+        loadingElement.classList.add("--success");
     } catch (error) {
-        loadingElementText.textContent = localizationData["error-saving-to-clipboard"];
+        loadingStatusText.textContent = localizationData["error-saving-to-clipboard"];
+        loadingElement.classList.add("--error");
+
         console.log(`Some error occured while sharing: ${error.message}`);
     }
 
     loadingElementSpinner.classList.remove("--active");
-    loadingElementText.classList.add("--active");
-
-    loadingElementText.style.width = "fit-content";
+    loadingElement.style.width = loadingStatus.offsetWidth + "px";
+    loadingStatus.classList.add("--active");
 
     setTimeout(() => {
         loadingElement.classList.remove("--active");
-        loadingElementText.classList.remove("--active");
+        loadingStatus.classList.remove("--active");
+        loadingElement.style.width = "90px";
     }, 3000);
+    sharingInProcess = false;
 }
 
 async function shareCard_mobiles(imageDataUrl, localizationData) {
@@ -236,6 +249,7 @@ export function setupSavingButtonsEL() {
     document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)").forEach((button) => {
         button.addEventListener("click", (event) => {
             manageSavedQuotes(button, event.target.closest(".quotes-element"));
+            button.classList.add("hasEL");
         });
     });
 }

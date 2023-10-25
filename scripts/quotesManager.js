@@ -1,7 +1,13 @@
 import DateManager from "./dateManager.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
-import { setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL, setSharingButtonsEL } from "./userInteractions.js";
+import {
+    setFlipQuoteEL,
+    isSavedSectionOpened,
+    setupSavingButtonsEL,
+    setSharingButtonsEL,
+    savingButtonsWithEL,
+} from "./userInteractions.js";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
@@ -136,10 +142,10 @@ async function setupQuotes() {
     localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
 
     setupPreviousQuotes();
-    updateSavedQuotes();
+    setupSavingButtonsEL();
+    setupSavedQuotes();
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
-    setupSavingButtonsEL();
     setupFontSizes();
 }
 
@@ -220,8 +226,8 @@ export function setupFontSizes() {
     });
 }
 
-function updateSavedQuotes(act) {
-    const isEmpty = savedQuotes.length == 0;
+function setupSavedQuotes() {
+    const isEmpty = savedQuotes.length === 0;
 
     if (!isEmpty) {
         savedSection.classList.remove("--is-empty");
@@ -243,9 +249,12 @@ function createSavedQuotesElements() {
             let clone = createClone(savedContainer, dummyElement);
             removeClassRecursively(clone, "--dummy");
             clone.classList.add("saved__quote-element");
-            clone.querySelector(".quotes-element__saving-button").addEventListener("click", () => {
-                manageSavedQuotes(clone.querySelector(".quotes-element__saving-button"), clone);
-            });
+            const savingButton = clone.querySelector(".quotes-element__saving-button");
+
+            if (!savingButton.classList.contains("hasEL"))
+                savingButton.addEventListener("click", () => {
+                    manageSavedQuotes(savingButton, clone);
+                });
 
             setSharingButtonsEL([clone.querySelector(".share-button")]);
             setFlipQuoteEL(clone);
@@ -307,7 +316,7 @@ function setupSectionsContent() {
 export async function manageSavedQuotes(button, quoteElement) {
     const localizationData = await getLocalizationData();
 
-    if (button.innerHTML == localizationData["save-button"]) {
+    if (button.textContent == localizationData["save-button"]) {
         for (let i = 0; i < previousQuotes.length; i++) {
             if (previousQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
                 savedQuotes.unshift(previousQuotes[i]);
@@ -315,29 +324,28 @@ export async function manageSavedQuotes(button, quoteElement) {
             }
         }
 
-        updateSavedQuotes();
+        setupSavedQuotes();
         setupSectionsContent();
     } else {
         let dates = document.querySelectorAll(".quotes-element__date:not(.--sharing-card, .--dummy)");
 
         for (let i = 0; i < savedQuotes.length; i++) {
             if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
-                let currentSavedQuote = savedQuotes[i];
+                const currentQuote = savedQuotes[i];
 
                 savedQuotes.splice(i, 1);
                 localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
 
                 for (let j = 0; j < dates.length; j++) {
-                    if (currentSavedQuote.id == dates[j].innerHTML) {
+                    if (currentQuote.id == dates[j].innerHTML) {
                         dates[j].closest(".quotes-element").querySelector(".quotes-element__saving-button").innerHTML =
                             localizationData["save-button"];
                         if (dates[j].closest(".saved__quote-element")) {
                             if (!isSavedSectionOpened) {
                                 finishElementRemoval(dates[j].closest(".saved__quote-element"));
-                                return;
+                            } else {
+                                callElementRemoval(dates[j].closest(".saved__quote-element"));
                             }
-
-                            callElementRemoval(dates[j].closest(".saved__quote-element"));
                         }
                     }
                 }
@@ -346,7 +354,7 @@ export async function manageSavedQuotes(button, quoteElement) {
     }
 }
 
-function callElementRemoval(element) {
+async function callElementRemoval(element) {
     element.classList.add("--hiding-animation");
     elementRemovalCheck(element);
 
@@ -356,7 +364,6 @@ function callElementRemoval(element) {
 function elementRemovalCheck(element) {
     if (element.offsetHeight <= 0) {
         finishElementRemoval(element);
-
         return;
     }
 
@@ -366,5 +373,5 @@ function elementRemovalCheck(element) {
 function finishElementRemoval(element) {
     element.remove();
     setupSectionsContent();
-    updateSavedQuotes("unsave");
+    setupSavedQuotes();
 }
