@@ -35,9 +35,8 @@ let sharingInProcess = false;
 let isMobile = detectMobile();
 
 export let isSavedSectionOpened = false;
-export let savingButtonsWithEL = [];
 
-screen.width <= 768 ? (isMobile = true) : (isMobile = false);
+//screen.width <= 768 ? (isMobile = true) : (isMobile = false);
 
 setFlipQuoteEL();
 

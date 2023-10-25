@@ -1,13 +1,7 @@
 import DateManager from "./dateManager.js";
 import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
-import {
-    setFlipQuoteEL,
-    isSavedSectionOpened,
-    setupSavingButtonsEL,
-    setSharingButtonsEL,
-    savingButtonsWithEL,
-} from "./userInteractions.js";
+import { setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL, setSharingButtonsEL } from "./userInteractions.js";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
