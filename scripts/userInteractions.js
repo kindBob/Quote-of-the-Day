@@ -244,12 +244,14 @@ export function setFlipQuoteEL(element) {
     });
 }
 
-export function setupSavingButtonsEL() {
-    document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)").forEach((button) => {
-        button.addEventListener("click", (event) => {
-            manageSavedQuotes(button, event.target.closest(".quotes-element"));
-            button.classList.add("hasEL");
-        });
+export function setupSavingButtonsEL(buttons = []) {
+    buttons.forEach((button) => {
+        if (!button.classList.contains("--hasEL")) {
+            button.addEventListener("click", (event) => {
+                manageSavedQuotes(button, event.target.closest(".quotes-element"));
+            });
+            button.classList.add("--hasEL");
+        }
     });
 }
 

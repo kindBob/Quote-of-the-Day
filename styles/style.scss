@@ -231,7 +231,7 @@ body {
 
 .spinner {
   position: absolute;
-  top: 25px;
+  top: 23.5px;
   left: 22px;
   border: 6px solid #6e6e6e;
   border-top: 6px solid #ee5f5f;
@@ -257,6 +257,7 @@ body {
   &.--successful .icon {
     width: 45px;
     height: 45px;
+    margin-top: -1px;
   }
 
   &.--unsuccessful .icon {

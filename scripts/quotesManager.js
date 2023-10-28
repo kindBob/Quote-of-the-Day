@@ -136,7 +136,7 @@ async function setupQuotes() {
     localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
 
     setupPreviousQuotes();
-    setupSavingButtonsEL();
+    setupSavingButtonsEL(document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)"));
     setupSavedQuotes();
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
@@ -245,10 +245,7 @@ function createSavedQuotesElements() {
             clone.classList.add("saved__quote-element");
             const savingButton = clone.querySelector(".quotes-element__saving-button");
 
-            if (!savingButton.classList.contains("hasEL"))
-                savingButton.addEventListener("click", () => {
-                    manageSavedQuotes(savingButton, clone);
-                });
+            setupSavingButtonsEL([savingButton]);
 
             setSharingButtonsEL([clone.querySelector(".share-button")]);
             setFlipQuoteEL(clone);
