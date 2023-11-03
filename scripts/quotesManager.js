@@ -271,9 +271,9 @@ function setupSavedQuotesElementsText() {
     for (let i = 0; i < savedQuotes.length; i++) {
         const element = document.querySelectorAll(".saved__quote-element")[i];
 
-        element.querySelector(".saved__quotes-element-date").innerHTML = savedQuotes[i].id;
-        element.querySelector(".saved__quotes-element-author").innerHTML = savedQuotes[i][initialLocaleAuthor];
-        element.querySelector(".saved__quotes-element-quote").innerHTML = savedQuotes[i][initialLocaleQuote];
+        element.querySelector(".saved__quotes-element-date").textContent = savedQuotes[i].id;
+        element.querySelector(".saved__quotes-element-author").textContent = savedQuotes[i][initialLocaleAuthor];
+        element.querySelector(".saved__quotes-element-quote").textContent = savedQuotes[i][initialLocaleQuote];
     }
 }
 
@@ -321,16 +321,22 @@ export async function manageSavedQuotes(button, quoteElement) {
         let dates = document.querySelectorAll(".quotes-element__date:not(.--sharing-card, .--dummy)");
 
         for (let i = 0; i < savedQuotes.length; i++) {
-            if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
+            if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").textContent) {
                 const currentQuote = savedQuotes[i];
 
                 savedQuotes.splice(i, 1);
                 localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
 
                 for (let j = 0; j < dates.length; j++) {
-                    if (currentQuote.id == dates[j].innerHTML) {
-                        dates[j].closest(".quotes-element").querySelector(".quotes-element__saving-button").innerHTML =
-                            localizationData["save-button"];
+                    if (currentQuote.id == dates[j].textContent) {
+                        const element = dates[j].closest(".quotes-element:not(.saved__quote-element)");
+                        if (element) {
+                            const savingButton = element.querySelector(".quotes-element__saving-button");
+                            if (savingButton) {
+                                savingButton.textContent = localizationData["save-button"];
+                            }
+                        }
+
                         if (dates[j].closest(".saved__quote-element")) {
                             if (!isSavedSectionOpened) {
                                 finishElementRemoval(dates[j].closest(".saved__quote-element"));
@@ -361,7 +367,7 @@ function elementRemovalCheck(element) {
     window.requestAnimationFrame(() => elementRemovalCheck(element));
 }
 
-function finishElementRemoval(element) {
+async function finishElementRemoval(element) {
     element.remove();
     setupSectionsContent();
     setupSavedQuotes();

@@ -1,15 +1,15 @@
 {
-    "saved_section-button": "Saved",
+    "saved_section-button": "Archive",
     "history_section-button": "History",
     "support_us-button": "Support Us",
 
     "history-title": "History",
-    "saved-title": "Saved",
+    "saved-title": "Archive",
     "saved-placeholder": "It's empty here...",
     "back-button": "Back",
 
     "share-button": "Share",
-    "save-button": "Save",
+    "save-button": "Add",
     "unsave-button": "Remove",
 
     "footer-text": "Made with ❤ by Malfo",
