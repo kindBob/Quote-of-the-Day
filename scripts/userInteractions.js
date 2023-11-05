@@ -169,7 +169,7 @@ burgerMenu.addEventListener("click", () => {
     mainNavBar.classList.toggle("--active");
     burgerMenu.classList.toggle("--active");
 
-    setDocumentOverflow();
+    lockScrolling();
 });
 
 document.addEventListener("click", (event) => {
@@ -215,11 +215,11 @@ function closeNavBarList(cb) {
     mainNavBarList.addEventListener("transitionend", cb);
     setTimeout(() => {
         mainNavBarList.removeEventListener("transitionend", cb);
-        setDocumentOverflow();
+        lockScrolling();
     }, 500);
 }
 
-function setDocumentOverflow() {
+function lockScrolling() {
     mainNavBar.classList.contains("--active")
         ? (document.body.style.overflowY = "hidden")
         : (document.body.style.overflowY = "auto");

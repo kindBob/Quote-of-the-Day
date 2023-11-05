@@ -366,7 +366,6 @@ body {
     align-items: center;
     padding-top: 55px;
     padding-bottom: 55px;
-    transition: $transition-length;
   }
 }
 
@@ -377,7 +376,6 @@ body {
 
   &.--inactive {
     left: 200%;
-    height: 0;
     width: 0;
     overflow-y: hidden;
   }
@@ -389,14 +387,12 @@ body {
 
 .history__section,
 .saved__section {
-  height: 0;
   width: 0;
   overflow-y: hidden;
 }
 
 .history__section.--active,
 .saved__section.--active {
-  height: 100%;
   width: 100%;
   overflow-y: auto;
 }
@@ -780,13 +776,15 @@ body {
       width: 100vw;
       height: 100vh;
       z-index: 4;
-      background-color: rgba(240, 240, 240, 0);
-      transition: $transition-length;
+      background-color: rgba(255, 255, 255, 0.4);
+      opacity: 0;
+      backdrop-filter: blur(3px);
+      transition: 0.4s;
     }
 
     &.--active::before {
-      background-color: rgba(203, 203, 203, 0.8);
       pointer-events: all;
+      opacity: 1;
     }
 
     &__list {
@@ -794,13 +792,17 @@ body {
       justify-content: center;
       position: fixed;
       top: 0;
-      right: -100vw;
+      right: 0;
       height: 100vh;
       flex-direction: column;
       background-color: #ffffff;
+      pointer-events: none;
+      transform: translateX(100vw);
     }
 
     &.--active &__list {
+      pointer-events: all;
+      transform: translateX(0);
       right: 0;
     }
 
