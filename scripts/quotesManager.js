@@ -16,6 +16,11 @@ const savedContainer = document.querySelector("#saved-container");
 
 const dateManager = new DateManager();
 
+// const QUOTES_API = "http://localhost:3000/getQuote";
+const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/getQuote";
+
+let currentQuote = null;
+
 let previousQuotes = [];
 let savedQuotes = [];
 
@@ -73,42 +78,40 @@ document.addEventListener("DOMContentLoaded", () => {
     initialLocaleAuthor = `author-${initialLocale}`;
     initialLocaleQuote = `quote-${initialLocale}`;
 
-    getQuotes();
+    getQuote();
 });
 
-function getQuotes() {
-    const currentQuote = localStorage.getItem("currentQuote");
+async function getQuote() {
+    const response = await fetch(QUOTES_API);
+    const quote = await response.json();
 
-    if (localStorage.getItem("savedQuotes")) {
-        savedQuotes = JSON.parse(localStorage.getItem("savedQuotes"));
-    }
+    localStorage.setItem("currentQuote", JSON.stringify(quote));
 
-    const parsedQuote = JSON.parse(currentQuote);
-    if (currentQuote && parsedQuote.id === dateManager.getCurrentFormattedDate()) return setupQuotes();
-
-    callQuoteGeneration();
-}
-
-async function callQuoteGeneration() {
-    const quoteObject = await generateQuote();
-    localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
+    currentQuote = quote;
 
     setupQuotes();
 }
 
+// async function callQuoteGeneration() {
+//     const quoteObject = await generateQuote();
+//     localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
+
+//     setupQuotes();
+// }
+
 async function setupQuotes() {
-    let quoteObjectQuote = getCurrentQuoteObjFromLS().quote;
-    let quoteObjectAuthor = getCurrentQuoteObjFromLS().author;
+    let quoteObjectQuote = getCurrentQuote().quote;
+    let quoteObjectAuthor = getCurrentQuote().author;
 
     if (initialLocale == "uk" || initialLocale == "ru") {
         document.querySelectorAll(".quotes-element__author").forEach((element) => element.classList.add("--cyrillic"));
 
-        !getCurrentQuoteObjFromLS().object.hasOwnProperty("quote-uk")
-            ? (quoteObjectQuote = getCurrentQuoteObjFromLS().object["quote-ru"])
+        !getCurrentQuote().object.hasOwnProperty("quote-uk")
+            ? (quoteObjectQuote = getCurrentQuote().object["quote-ru"])
             : null;
 
-        !getCurrentQuoteObjFromLS().object.hasOwnProperty("author-uk")
-            ? (quoteObjectAuthor = getCurrentQuoteObjFromLS().object["author-ru"])
+        !getCurrentQuote().object.hasOwnProperty("author-uk")
+            ? (quoteObjectAuthor = getCurrentQuote().object["author-ru"])
             : null;
     }
 
@@ -126,10 +129,10 @@ async function setupQuotes() {
     }
 
     if (!previousQuotes[0]) {
-        previousQuotes.unshift(getCurrentQuoteObjFromLS().object);
+        previousQuotes.unshift(getCurrentQuote().object);
     } else {
-        if (previousQuotes[0].id != getCurrentQuoteObjFromLS().id) {
-            previousQuotes.unshift(getCurrentQuoteObjFromLS().object);
+        if (previousQuotes[0].id != getCurrentQuote().id) {
+            previousQuotes.unshift(getCurrentQuote().object);
         }
     }
 
@@ -160,8 +163,8 @@ async function setMaxValues(quoteObjectQuote, quoteObjectAuthor) {
     currentAuthorOutput.textContent = quoteObjectAuthor;
 }
 
-function getCurrentQuoteObjFromLS() {
-    const quoteObject = JSON.parse(localStorage.getItem("currentQuote"));
+function getCurrentQuote() {
+    const quoteObject = currentQuote;
 
     const quoteObjectQuote = quoteObject[initialLocaleQuote];
     const quoteObjectAuthor = quoteObject[initialLocaleAuthor];

@@ -29,22 +29,18 @@ const loadingStatusText = loadingStatus.querySelector(".status__text");
 const loadingElementSpinner = loadingElement.querySelector(".spinner");
 
 const MAIN_PAGE = window.location.href;
-const IMAGE_UPLOAD_API_URL = "https://imgur.up.railway.app/file-upload";
+const IMAGE_UPLOAD_API_URL = "https://quote-of-the-day-api.up.railway.app/shareQuote";
+// const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
 
 let sharingInProcess = false;
 let isMobile = detectMobile();
 
 export let isSavedSectionOpened = false;
 
-//screen.width <= 768 ? (isMobile = true) : (isMobile = false);
-
 setFlipQuoteEL();
 
 // Basic
 function detectMobile() {
-    // const devices = [/Android/i, /webOS/i, /iPhone/i, /iPad/i, /iPod/i, /BlackBerry/i, /Windows Phone/i];
-    // return devices.some((device) => device.test(navigator.userAgent));
-
     const devicesRegex =
         /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i;
     const devicesModelsRegex =
@@ -169,7 +165,7 @@ burgerMenu.addEventListener("click", () => {
     mainNavBar.classList.toggle("--active");
     burgerMenu.classList.toggle("--active");
 
-    lockScrolling();
+    lockScrolling(document.body);
 });
 
 document.addEventListener("click", (event) => {
@@ -184,29 +180,9 @@ historyOpenButton.addEventListener("click", () => {
     isMobile ? closeNavBarList(openHistorySection) : openHistorySection();
 });
 
-function openHistorySection() {
-    historyHeader.classList.add("--active");
-    historySection.classList.add("--active");
-
-    mainSection.classList.add("--inactive");
-
-    mainHeader.classList.add("--inactive");
-}
-
 savedOpenButton.addEventListener("click", () => {
     isMobile ? closeNavBarList(openSavedSection) : openSavedSection();
 });
-
-function openSavedSection() {
-    isSavedSectionOpened = true;
-
-    savedHeader.classList.add("--active");
-    savedSection.classList.add("--active");
-
-    mainSection.classList.add("--inactive", "--left-side");
-
-    mainHeader.classList.add("--inactive");
-}
 
 function closeNavBarList(cb) {
     mainNavBar.classList.remove("--active");
@@ -215,14 +191,16 @@ function closeNavBarList(cb) {
     mainNavBarList.addEventListener("transitionend", cb);
     setTimeout(() => {
         mainNavBarList.removeEventListener("transitionend", cb);
-        lockScrolling();
+        unlockScrolling(document.body);
     }, 500);
 }
 
-function lockScrolling() {
-    mainNavBar.classList.contains("--active")
-        ? (document.body.style.overflowY = "hidden")
-        : (document.body.style.overflowY = "auto");
+function lockScrolling(element) {
+    element.style.overflowY = "hidden";
+}
+
+function unlockScrolling(element) {
+    element.style.overflowY = "auto";
 }
 // Header ---
 // Quotes
@@ -286,25 +264,33 @@ document.addEventListener("click", (event) => {
 // Sections
 historyBackButtons.forEach((button) => button.addEventListener("click", closeHistory));
 
-function closeHistory() {
-    historyHeader.classList.remove("--active");
-    historySection.classList.remove("--active");
+savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved));
 
+function closeHistory() {
     mainSection.classList.remove("--inactive");
 
-    mainHeader.classList.remove("--inactive");
+    historySection.classList.remove("--active");
 }
-
-savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved));
 
 function closeSaved() {
     isSavedSectionOpened = false;
 
-    savedHeader.classList.remove("--active");
     savedSection.classList.remove("--active");
 
     mainSection.classList.remove("--inactive", "--left-side");
-
-    mainHeader.classList.remove("--inactive");
 }
-// Setions ---
+
+function openHistorySection() {
+    historySection.classList.add("--active");
+
+    mainSection.classList.add("--inactive");
+}
+
+function openSavedSection() {
+    isSavedSectionOpened = true;
+
+    savedSection.classList.add("--active");
+
+    mainSection.classList.add("--inactive", "--left-side");
+}
+// Sections ---

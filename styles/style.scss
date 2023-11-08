@@ -263,7 +263,6 @@ body {
   &.--unsuccessful .icon {
     width: 30px;
     height: 30px;
-    margin-bottom: -2px;
   }
 
   &.--successful {
@@ -353,10 +352,13 @@ body {
 // Middle
 .quotes-section {
   min-height: 100vh;
-  max-width: 100vw;
+  max-height: fit-content;
+  width: 100%;
   position: absolute;
+  left: 0;
+  top: 0;
   z-index: 3;
-  transition: 1s;
+  transition: 0.8s;
   background-color: #dddddd;
   overflow-x: hidden;
 
@@ -370,39 +372,44 @@ body {
 }
 
 .main-section {
-  left: 0;
-  width: 100%;
+  // left: 0;
+  transform: translateX(0);
+  // width: 100%;
   overflow-y: auto;
 
   &.--inactive {
-    left: 200%;
-    width: 0;
+    // left: 200%;
+    transform: translateX(100%);
+    // width: 0;
     overflow-y: hidden;
   }
 
   &.--inactive.--left-side {
-    left: -100%;
+    // left: -100%;
+    transform: translateX(-100%);
   }
 }
 
 .history__section,
 .saved__section {
-  width: 0;
+  // width: 0;
   overflow-y: hidden;
 }
 
 .history__section.--active,
 .saved__section.--active {
-  width: 100%;
+  // width: 100%;
   overflow-y: auto;
 }
 
 .history {
   &__section {
-    left: -100%;
+    // left: -100%;
+    transform: translateX(-100%);
 
     &.--active {
-      left: 0;
+      // left: 0;
+      transform: translateX(0);
     }
   }
 
@@ -413,10 +420,12 @@ body {
 
 .saved {
   &__section {
-    right: -100%;
+    // right: -100%;
+    transform: translateX(100%);
 
     &.--active {
-      right: 0;
+      // right: 0;
+      transform: translateX(0);
     }
   }
 
@@ -554,6 +563,7 @@ body {
 
     &.--cyrillic {
       text-transform: capitalize;
+      letter-spacing: 0;
     }
   }
 

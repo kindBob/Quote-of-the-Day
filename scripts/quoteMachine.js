@@ -1,7 +1,6 @@
 import DateManager from "./dateManager.js";
 
 const dateManager = new DateManager();
-let withQuotes = false;
 
 export async function generateQuote() {
     try {
@@ -26,12 +25,6 @@ export async function generateQuote() {
 
         if (quotes["author-uk"]) {
             quoteObject["author-uk"] = quoteData["author-uk"].trim();
-        }
-
-        if (withQuotes) {
-            quoteObject["quote-en"] = `"${quoteObject["quote-en"]}"`;
-            quoteObject["quote-ru"] = `"${quoteObject["quote-ru"]}"`;
-            quoteObject["quote-uk"] = `"${quoteObject["quote-uk"]}"`;
         }
 
         const previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
