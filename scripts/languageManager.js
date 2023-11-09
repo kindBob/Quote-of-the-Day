@@ -1,35 +1,38 @@
 const defaultLocale = "en";
 const supportedLocales = ["en", "ru", "uk"];
 
-let locale = null;
+// const TRANSLATION_API = "http://localhost:3000/translations";
+const TRANSLATION_API = "https://quote-of-the-day-api.up.railway.app/translations";
+
 let translations = {};
 export let initialLocale = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-    initialLocale = supportedOrDefault(browserLocales(true));
-
-    setLocale(initialLocale);
+    setupInitialLocale();
 });
 
-async function setLocale(newLocale) {
-    if (newLocale === locale) return;
-    const newTranslations = await fetchTranslationsFor(newLocale);
-    locale = newLocale;
-    translations = newTranslations;
+async function setupInitialLocale() {
+    const userLocales = navigator.languages.map((locale) => locale.split("-")[0]);
+
+    initialLocale = userLocales.find((locale) => isLocaleSupported(locale)) || defaultLocale;
+
+    translations = await fetchTranslations(initialLocale);
 
     document.querySelector("html").setAttribute("lang", initialLocale);
 
     translatePage();
 }
 
-async function fetchTranslationsFor(newLocale) {
-    let response = null;
+function isLocaleSupported(locale) {
+    return supportedLocales.includes(locale);
+}
 
-    initialLocale != "uk"
-        ? (response = await fetch(`../json/languages/${newLocale}.json`))
-        : (response = await fetch(`../json/languages/ru.json`));
+async function fetchTranslations() {
+    const res = await fetch(TRANSLATION_API);
+    if (!res.ok) return console.log("Something went wrong");
 
-    return await response.json();
+    const data = await res.json();
+    return data.translations;
 }
 
 function translatePage() {
@@ -38,20 +41,8 @@ function translatePage() {
 
 function translateElement(element) {
     const key = element.getAttribute("data-i18n-key");
-    const translation = translations[key];
-    element.textContent = translation;
-}
-
-function isSupported(locale) {
-    return supportedLocales.indexOf(locale) > -1;
-}
-
-function supportedOrDefault(locales) {
-    return locales.find(isSupported) || defaultLocale;
-}
-
-function browserLocales(languageCodeOnly = false) {
-    return navigator.languages.map((locale) => (languageCodeOnly ? locale.split("-")[0] : locale));
+    const translation = translations.find((translation) => translation.keyWord === key);
+    element.textContent = translation[`${initialLocale}Translation`];
 }
 
 let localizationData = null;

@@ -1,5 +1,4 @@
 import DateManager from "./dateManager.js";
-import { generateQuote } from "./quoteMachine.js";
 import { initialLocale, getLocalizationData } from "./languageManager.js";
 import { setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL, setSharingButtonsEL } from "./userInteractions.js";
 
@@ -16,8 +15,8 @@ const savedContainer = document.querySelector("#saved-container");
 
 const dateManager = new DateManager();
 
-// const QUOTES_API = "http://localhost:3000/getQuote";
-const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/getQuote";
+// const QUOTES_API = "http://localhost:3000/quote";
+const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quote";
 
 let currentQuote = null;
 
@@ -83,21 +82,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function getQuote() {
     const response = await fetch(QUOTES_API);
+    if (!response.ok) return;
+
     const quote = await response.json();
-
-    localStorage.setItem("currentQuote", JSON.stringify(quote));
-
     currentQuote = quote;
 
     setupQuotes();
 }
-
-// async function callQuoteGeneration() {
-//     const quoteObject = await generateQuote();
-//     localStorage.setItem("currentQuote", JSON.stringify(quoteObject));
-
-//     setupQuotes();
-// }
 
 async function setupQuotes() {
     let quoteObjectQuote = getCurrentQuote().quote;
@@ -114,8 +105,6 @@ async function setupQuotes() {
             ? (quoteObjectAuthor = getCurrentQuote().object["author-ru"])
             : null;
     }
-
-    //await setMaxValues(quoteObjectQuote, quoteObjectAuthor);
 
     currentQuoteOutput.innerHTML = quoteObjectQuote;
     currentAuthorOutput.innerHTML = quoteObjectAuthor;
@@ -144,23 +133,6 @@ async function setupQuotes() {
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupFontSizes();
-}
-
-async function setMaxValues(quoteObjectQuote, quoteObjectAuthor) {
-    const res = await fetch("../json/quotes.json");
-    const data = await res.json();
-
-    for (let i = 0; i < data.length; i++) {
-        if (quoteObjectQuote.length < data[i][initialLocaleQuote].length) {
-            quoteObjectQuote = data[i][initialLocaleQuote];
-        }
-        if (quoteObjectAuthor.length < data[i][initialLocaleAuthor].length) {
-            quoteObjectAuthor = data[i][initialLocaleAuthor];
-        }
-    }
-
-    currentQuoteOutput.textContent = quoteObjectQuote;
-    currentAuthorOutput.textContent = quoteObjectAuthor;
 }
 
 function getCurrentQuote() {
