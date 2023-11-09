@@ -330,7 +330,7 @@ body {
   overflow-y: hidden;
 }
 .main-section.--inactive.--left-side {
-  transform: translateX(-100%);
+  transform: translateX(-100%) scaleX(0);
 }
 
 .history__section,

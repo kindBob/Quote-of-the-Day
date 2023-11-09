@@ -386,7 +386,7 @@ body {
 
   &.--inactive.--left-side {
     // left: -100%;
-    transform: translateX(-100%);
+    transform: translateX(-100%) scaleX(0);
   }
 }
 
