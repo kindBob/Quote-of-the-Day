@@ -376,6 +376,7 @@ body {
   transform: translateX(0) scaleX(1);
   width: 100%;
   overflow-y: auto;
+  z-index: 4;
 
   &.--inactive {
     // left: 200%;
