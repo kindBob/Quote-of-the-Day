@@ -4,7 +4,7 @@ const supportedLocales = ["en", "ru", "uk"];
 // const TRANSLATION_API = "http://localhost:3000/translations";
 const TRANSLATION_API = "https://quote-of-the-day-api.up.railway.app/translations";
 
-let translations = {};
+export let translations = {};
 export let initialLocale = null;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,12 +45,7 @@ function translateElement(element) {
     element.textContent = translation[`${initialLocale}Translation`];
 }
 
-let localizationData = null;
-export async function getLocalizationData() {
-    if (!localizationData) {
-        let response = await fetch(`../json/languages/${initialLocale}.json`);
-        localizationData = await response.json();
-    }
-
-    return localizationData;
+export function findTranslation(keyWord) {
+    const translation = translations.find((translation) => translation.keyWord === keyWord);
+    return translation[`${initialLocale}Translation`];
 }

@@ -1,4 +1,4 @@
-import { getLocalizationData } from "./languageManager.js";
+import { findTranslation } from "./languageManager.js";
 import { manageSavedQuotes, setupFontSizes } from "./quotesManager.js";
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
@@ -7,12 +7,10 @@ const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
 
 const historyOpenButton = document.querySelector("#history-open-button");
-const historyHeader = document.querySelector("#history-header");
 const historySection = document.querySelector("#history-section");
 const historyBackButtons = historySection.querySelectorAll(".back-button");
 
 const savedOpenButton = document.querySelector("#saved-open-button");
-const savedHeader = document.querySelector("#saved-header");
 const savedSection = document.querySelector("#saved-section");
 const savedBackButtons = savedSection.querySelectorAll(".back-button");
 
@@ -73,17 +71,16 @@ export function setupSharingCard(event) {
 async function setupSharingProcess() {
     html2canvas(sharingCard, { dpi: 600 }).then(async (canvas) => {
         const imageDataUrl = canvas.toDataURL("image/png", 1);
-        const localizationData = await getLocalizationData();
 
         if (navigator.share && isMobile) {
-            shareCard_mobiles(imageDataUrl, localizationData);
+            shareCard_mobiles(imageDataUrl);
         } else {
-            await shareCard_notMobiles(imageDataUrl, localizationData);
+            await shareCard_notMobiles(imageDataUrl);
         }
     });
 }
 
-async function shareCard_notMobiles(imageDataUrl, localizationData) {
+async function shareCard_notMobiles(imageDataUrl) {
     if (sharingInProcess) {
         return;
     }
@@ -108,10 +105,10 @@ async function shareCard_notMobiles(imageDataUrl, localizationData) {
 
         await navigator.clipboard.writeText(quoteLink);
 
-        loadingStatusText.textContent = localizationData["saved-to-clipboard"];
+        loadingStatusText.textContent = findTranslation("saved-to-clipboard");
         loadingElement.classList.add("--success");
     } catch (error) {
-        loadingStatusText.textContent = localizationData["error-saving-to-clipboard"];
+        loadingStatusText.textContent = findTranslation("error-saving-to-clipboard");
         loadingElement.classList.add("--error");
 
         console.log(`Some error occured while sharing: ${error.message}`);
@@ -129,14 +126,14 @@ async function shareCard_notMobiles(imageDataUrl, localizationData) {
     sharingInProcess = false;
 }
 
-async function shareCard_mobiles(imageDataUrl, localizationData) {
+async function shareCard_mobiles(imageDataUrl) {
     const blobImage = dataURItoBlob(imageDataUrl);
     const imageFile = new File([blobImage], "quote-card.png", {
         type: "image/png",
     });
 
-    const navigatorShareTitle = localizationData["sharing-card-title"];
-    const navigatorShareText = localizationData["sharing-card-text"];
+    const navigatorShareTitle = findTranslation("sharing-card-title");
+    const navigatorShareText = findTranslation("sharing-card-text");
 
     navigator
         .share({

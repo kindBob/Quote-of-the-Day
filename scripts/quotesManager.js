@@ -1,5 +1,5 @@
 import DateManager from "./dateManager.js";
-import { initialLocale, getLocalizationData } from "./languageManager.js";
+import { initialLocale, findTranslation } from "./languageManager.js";
 import { setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL, setSharingButtonsEL } from "./userInteractions.js";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
@@ -229,14 +229,13 @@ function createSavedQuotesElements() {
 }
 
 async function setupSavingButtonsText() {
-    const data = await getLocalizationData();
     for (let i = 0; i < savedQuotes.length; i++) {
         document.querySelectorAll(".quotes-element__saving-button").forEach((buttonText) => {
             if (
                 savedQuotes[i].id ==
                 buttonText.closest(".quotes-element").querySelector(".quotes-element__date").textContent
             ) {
-                buttonText.textContent = data["unsave-button"];
+                buttonText.textContent = findTranslation("unsave-button");
             }
         });
     }
@@ -280,9 +279,7 @@ function setupSectionsContent() {
 }
 
 export async function manageSavedQuotes(button, quoteElement) {
-    const localizationData = await getLocalizationData();
-
-    if (button.textContent == localizationData["save-button"]) {
+    if (button.textContent == findTranslation("save-button")) {
         for (let i = 0; i < previousQuotes.length; i++) {
             if (previousQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
                 savedQuotes.unshift(previousQuotes[i]);
@@ -308,7 +305,7 @@ export async function manageSavedQuotes(button, quoteElement) {
                         if (element) {
                             const savingButton = element.querySelector(".quotes-element__saving-button");
                             if (savingButton) {
-                                savingButton.textContent = localizationData["save-button"];
+                                savingButton.textContent = findTranslation("save-button");
                             }
                         }
 
