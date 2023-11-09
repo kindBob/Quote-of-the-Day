@@ -373,13 +373,13 @@ body {
 
 .main-section {
   // left: 0;
-  transform: translateX(0);
-  // width: 100%;
+  transform: translateX(0) scaleX(1);
+  width: 100%;
   overflow-y: auto;
 
   &.--inactive {
     // left: 200%;
-    transform: translateX(100%);
+    transform: translateX(100%) scaleX(0);
     // width: 0;
     overflow-y: hidden;
   }
@@ -394,6 +394,7 @@ body {
 .saved__section {
   // width: 0;
   overflow-y: hidden;
+  z-index: 5;
 }
 
 .history__section.--active,
@@ -405,11 +406,11 @@ body {
 .history {
   &__section {
     // left: -100%;
-    transform: translateX(-100%);
+    transform: translateX(-100%) scaleX(0);
 
     &.--active {
       // left: 0;
-      transform: translateX(0);
+      transform: translateX(0) scaleX(1);
     }
   }
 
@@ -421,11 +422,11 @@ body {
 .saved {
   &__section {
     // right: -100%;
-    transform: translateX(100%);
+    transform: translateX(100%) scaleX(0);
 
     &.--active {
       // right: 0;
-      transform: translateX(0);
+      transform: translateX(0) scaleX(1);
     }
   }
 
@@ -788,6 +789,7 @@ body {
       z-index: 4;
       background-color: rgba(255, 255, 255, 0.4);
       opacity: 0;
+      -webkit-backdrop-filter: blur(3px);
       backdrop-filter: blur(3px);
       transition: 0.4s;
     }

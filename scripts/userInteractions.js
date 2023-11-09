@@ -162,7 +162,7 @@ burgerMenu.addEventListener("click", () => {
     mainNavBar.classList.toggle("--active");
     burgerMenu.classList.toggle("--active");
 
-    lockScrolling(document.body);
+    lockScrolling();
 });
 
 document.addEventListener("click", (event) => {
@@ -188,15 +188,15 @@ function closeNavBarList(cb) {
     mainNavBarList.addEventListener("transitionend", cb);
     setTimeout(() => {
         mainNavBarList.removeEventListener("transitionend", cb);
-        unlockScrolling(document.body);
+        unlockScrolling();
     }, 500);
 }
 
-function lockScrolling(element) {
+function lockScrolling(element = document.body) {
     element.style.overflowY = "hidden";
 }
 
-function unlockScrolling(element) {
+function unlockScrolling(element = document.body) {
     element.style.overflowY = "auto";
 }
 // Header ---
@@ -281,6 +281,9 @@ function openHistorySection() {
     historySection.classList.add("--active");
 
     mainSection.classList.add("--inactive");
+
+    lockScrolling();
+    setTimeout(() => unlockScrolling(), 800);
 }
 
 function openSavedSection() {
@@ -289,5 +292,8 @@ function openSavedSection() {
     savedSection.classList.add("--active");
 
     mainSection.classList.add("--inactive", "--left-side");
+
+    lockScrolling();
+    setTimeout(() => unlockScrolling(), 800);
 }
 // Sections ---
