@@ -35,8 +35,8 @@ const quotesSectionsTransitionTime = 800;
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
-// const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
-const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
+const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
+// const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
 // const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
 
 let sharingInProcess = false;

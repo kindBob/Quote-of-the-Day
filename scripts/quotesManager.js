@@ -15,8 +15,8 @@ const savedContainer = document.querySelector("#saved-container");
 
 const dateManager = new DateManager();
 
-const QUOTES_API = "http://localhost:3000/quote";
-// const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quote";
+// const QUOTES_API = "http://localhost:3000/quote";
+const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quote";
 
 let currentQuote = null;
 
