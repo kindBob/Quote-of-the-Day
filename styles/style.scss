@@ -365,6 +365,9 @@ body {
   max-height: -moz-fit-content;
   max-height: fit-content;
   width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
   z-index: 3;
   background-color: #dddddd;
   overflow-x: hidden;
@@ -709,9 +712,8 @@ body {
   position: relative;
   height: $footer-height;
   width: 100%;
-
-  background-color: #ffffff;
-  font-size: clamp(16px, 1vw, 24px);
+  background-color: black;
+  font-size: clamp(1rgb (142, 20, 20) w, 24px);
 
   .container {
     display: flex;
