@@ -14,6 +14,7 @@ const savedOpenButton = document.querySelector("#saved-open-button");
 const savedSection = document.querySelector("#saved-section");
 const savedBackButtons = savedSection.querySelectorAll(".back-button");
 
+const quotesSections = document.querySelectorAll(".quotes-section");
 const mainSection = document.querySelector("#main-section");
 
 const sharingCard = document.querySelector("#sharing-card");
@@ -26,8 +27,16 @@ const loadingStatus = loadingElement.querySelector(".status");
 const loadingStatusText = loadingStatus.querySelector(".status__text");
 const loadingElementSpinner = loadingElement.querySelector(".spinner");
 
+const emailSubForm = document.querySelector("#email-sub-form");
+const emailSubEmailInput = emailSubForm.email;
+const emailSubBtn = emailSubForm.subscribe;
+
+const quotesSectionsTransitionTime = 800;
+
 const MAIN_PAGE = window.location.href;
-const IMAGE_UPLOAD_API_URL = "https://quote-of-the-day-api.up.railway.app/shareQuote";
+const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
+// const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
+const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
 // const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
 
 let sharingInProcess = false;
@@ -35,7 +44,16 @@ let isMobile = detectMobile();
 
 export let isSavedSectionOpened = false;
 
-setFlipQuoteEL();
+document.addEventListener("DOMContentLoaded", () => {
+    setFlipQuoteEL();
+    setQuotesSectionsTransitionTime();
+});
+
+emailSubForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    subscribe();
+});
 
 // Basic
 function detectMobile() {
@@ -50,7 +68,45 @@ function detectMobile() {
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
 }
+
+function setQuotesSectionsTransitionTime() {
+    quotesSections.forEach((section) => (section.style.transition = `${quotesSectionsTransitionTime}ms`));
+}
 // Basic ---
+
+// Email sub
+async function subscribe() {
+    const inputValue = emailSubEmailInput.value;
+
+    if (!validateEmail(inputValue)) {
+        console.log("Invalid email");
+        // displayResult("Invalid email");
+    } else {
+        const response = await fetch(EMAIL_SUBSCRIPTION_API, {
+            method: "POST",
+            body: JSON.stringify({
+                email: inputValue,
+            }),
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+
+        const data = await response.text();
+
+        // displayResult(data);
+        console.log(data);
+
+        if (response.ok) emailSubEmailInput.value = "";
+    }
+}
+
+function validateEmail(email) {
+    const regex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regex.test(email);
+}
+// Email sub ---
 // Sharing
 export function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");
@@ -92,7 +148,7 @@ async function shareCard_notMobiles(imageDataUrl) {
 
         loadingElement.classList.remove("--success", "--error");
 
-        const res = await fetch(`${IMAGE_UPLOAD_API_URL}?fileName=quote-card`, {
+        const res = await fetch(`${IMAGE_UPLOAD_API}?fileName=quote-card`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -283,7 +339,7 @@ function openHistorySection() {
     mainSection.classList.add("--inactive");
 
     lockScrolling();
-    setTimeout(() => unlockScrolling(), 800);
+    setTimeout(() => unlockScrolling(), quotesSectionsTransitionTime + 100);
 }
 
 function openSavedSection() {
@@ -294,6 +350,6 @@ function openSavedSection() {
     mainSection.classList.add("--inactive", "--left-side");
 
     lockScrolling();
-    setTimeout(() => unlockScrolling(), 800);
+    setTimeout(() => unlockScrolling(), quotesSectionsTransitionTime + 100);
 }
 // Sections ---

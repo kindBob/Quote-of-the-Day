@@ -15,8 +15,8 @@ const savedContainer = document.querySelector("#saved-container");
 
 const dateManager = new DateManager();
 
-// const QUOTES_API = "http://localhost:3000/quote";
-const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quote";
+const QUOTES_API = "http://localhost:3000/quote";
+// const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quote";
 
 let currentQuote = null;
 
@@ -106,12 +106,12 @@ async function setupQuotes() {
             : null;
     }
 
-    currentQuoteOutput.innerHTML = quoteObjectQuote;
-    currentAuthorOutput.innerHTML = quoteObjectAuthor;
-    currentDateOutput.innerHTML = dateManager.getCurrentFormattedDate();
+    currentQuoteOutput.textContent = quoteObjectQuote;
+    currentAuthorOutput.textContent = quoteObjectAuthor;
+    currentDateOutput.textContent = dateManager.getCurrentFormattedDate();
 
-    inactiveQuoteDates[0].innerHTML = dateManager.getTomorrowsFormattedDate();
-    inactiveQuoteDates[1].innerHTML = dateManager.getAfterTomorrowsFormattedDate();
+    inactiveQuoteDates[0].textContent = dateManager.getTomorrowsFormattedDate();
+    inactiveQuoteDates[1].textContent = dateManager.getAfterTomorrowsFormattedDate();
 
     if (localStorage.getItem("previousQuotes")) {
         previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
