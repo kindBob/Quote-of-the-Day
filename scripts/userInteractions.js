@@ -29,15 +29,14 @@ const loadingElementSpinner = loadingElement.querySelector(".spinner");
 
 const emailSubForm = document.querySelector("#email-sub-form");
 const emailSubEmailInput = emailSubForm.email;
-const emailSubBtn = emailSubForm.subscribe;
 const emailSubResult = emailSubForm.querySelector(".email-sub-form__result");
 
 const quotesSectionsTransitionTime = 800;
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
-const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
-// const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
+// const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
+const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
 // const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
 
 let sharingInProcess = false;
@@ -77,11 +76,16 @@ function setQuotesSectionsTransitionTime() {
 
 // Email sub
 async function subscribe() {
+    // loadingElement.classList.add("--active");
+    // loadingElementSpinner.classList.add("--active");
+
     const inputValue = emailSubEmailInput.value;
 
     if (!validateEmail(inputValue)) {
         displaySubResult(false, "Invalid email");
     } else {
+        displaySubResult(null, "Loading...");
+
         const response = await fetch(EMAIL_SUBSCRIPTION_API, {
             method: "POST",
             body: JSON.stringify({
@@ -93,7 +97,7 @@ async function subscribe() {
         });
 
         if (response.ok) {
-            displaySubResult(true);
+            displaySubResult(true, "Success");
             emailSubEmailInput.value = "";
             emailSubEmailInput.blur();
 
@@ -106,19 +110,24 @@ async function subscribe() {
     }
 }
 
-function displaySubResult(success, errors) {
+let timeoutId = null;
+function displaySubResult(success, message) {
     emailSubResult.classList.remove("--active", "--failure", "--success");
 
-    if (!success) {
-        emailSubResult.textContent = errors || "Failure";
-        emailSubResult.classList.add("--failure");
-    } else {
-        emailSubResult.textContent = "Success";
-        emailSubResult.classList.add("--success");
+    if (success !== null) {
+        if (success === false) {
+            emailSubResult.classList.add("--failure");
+        } else {
+            emailSubResult.classList.add("--success");
+        }
     }
+    emailSubResult.textContent = message;
 
     emailSubResult.classList.add("--active");
-    setTimeout(() => {
+
+    if (timeoutId) clearTimeout(timeoutId);
+
+    timeoutId = setTimeout(() => {
         emailSubResult.classList.remove("--active", "--failure", "--success");
     }, 4000);
 }
