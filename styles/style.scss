@@ -709,7 +709,7 @@ body {
 // Bottom
 .footer {
   position: relative;
-  height: $footer-height;
+  min-height: fit-content;
   width: 100%;
   background-color: $headerNFooter-bg;
 
@@ -718,23 +718,18 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    gap: 2em 0;
+    padding-top: 3em;
+    padding-bottom: 3em;
   }
 
   &__element {
     align-self: stretch;
-    padding-top: ($footer-height * 0.16);
+    // padding-top: ($footer-height * 0.16);
   }
 
-  &__element:not(&__element:last-child, &__element:first-child) {
-    width: 18%;
-  }
-
-  &__element:first-child {
-    width: 27%;
-  }
-
-  &__element:last-child {
-    flex: 1;
+  &__element {
+    width: 17%;
   }
 
   &__title {
@@ -747,12 +742,12 @@ body {
 
   &__text {
     margin-bottom: 12px;
-    font-size: clamp(16px, 3vw, 19px);
+    font-size: clamp(17.5px, 3vw, 19px);
     color: #4b4b4b;
   }
 
   &__list-item {
-    width: fit-content;
+    width: 100%;
     color: rgba($color: #000, $alpha: 0.5);
     transition: 0.2s;
     cursor: pointer;
@@ -768,13 +763,13 @@ body {
 }
 
 .action-btn-container {
-  // font-size: 50px;
-  margin-right: 2em;
+  width: 31%;
+  align-self: stretch;
   font-size: clamp(25px, 3vw, 30px);
 }
 
 .action-btn {
-  width: 100%;
+  width: 12em;
   position: relative;
   padding: 0.5em 1em 0.5em 1.5em;
   border: 2px solid #ef3a32;
@@ -806,6 +801,12 @@ body {
   }
 }
 
+.email-sub-container {
+  flex: 1;
+  min-width: 400px;
+  max-width: 650px;
+}
+
 .email-sub-form {
   display: flex;
   flex-wrap: wrap;
@@ -821,6 +822,7 @@ body {
   &__input {
     padding-left: 0.75em;
     flex: 1;
+    border-radius: 0;
     border-right: none;
     transition: $transition-length;
     background-color: transparent;
@@ -843,11 +845,8 @@ body {
     width: 35%;
     background-color: transparent;
     transition: 0.2s;
+    color: #000;
     cursor: pointer;
-  }
-
-  &__btn:hover {
-    width: 40%;
   }
 
   &__result {
@@ -872,6 +871,23 @@ body {
 }
 // Bottom ---
 // Adaptive
+@media (max-width: 1280px) {
+  .footer {
+    .container {
+      flex-wrap: wrap;
+    }
+
+    &__element:not(&__element:last-child) {
+      width: 30%;
+      padding-left: 4em;
+    }
+  }
+
+  .action-btn-container {
+    width: 40%;
+  }
+}
+
 @media (max-width: 1024px) {
   .quotes-element {
     &__inner-container {
@@ -906,6 +922,23 @@ body {
 }
 
 @media (max-width: 768px) {
+  .footer {
+    .container {
+      gap: 3em 0;
+    }
+
+    &__element:not(&__element:last-child) {
+      width: 50%;
+      padding-left: 1em;
+    }
+  }
+
+  .action-btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
   .logo {
     width: 135px;
   }
@@ -1068,7 +1101,34 @@ body {
   }
 }
 
+@media (max-width: 425px) {
+  .footer {
+    &__element:not(&__element:last-child) {
+      width: 100%;
+    }
+  }
+
+  .email-sub-container {
+    min-width: auto;
+  }
+
+  .email-sub-form {
+    &__input {
+      border-right: 2px solid #000;
+      border-bottom: none;
+    }
+
+    &__btn {
+      width: 100%;
+    }
+  }
+}
+
 @media (max-width: 364px) {
+  .action-btn-container {
+    font-size: clamp(22px, 3vw, 30px);
+  }
+
   .logo {
     width: 125px;
   }
