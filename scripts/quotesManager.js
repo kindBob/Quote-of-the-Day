@@ -279,9 +279,10 @@ function setupSectionsContent() {
 }
 
 export async function manageSavedQuotes(button, quoteElement) {
+    // Saved quote addition
     if (button.textContent == findTranslation("save-button")) {
         for (let i = 0; i < previousQuotes.length; i++) {
-            if (previousQuotes[i].id == quoteElement.querySelector(".quotes-element__date").innerHTML) {
+            if (previousQuotes[i].id == quoteElement.querySelector(".quotes-element__date").textContent) {
                 savedQuotes.unshift(previousQuotes[i]);
                 localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
             }
@@ -289,33 +290,34 @@ export async function manageSavedQuotes(button, quoteElement) {
 
         setupSavedQuotes();
         setupSectionsContent();
-    } else {
-        let dates = document.querySelectorAll(".quotes-element__date:not(.--sharing-card, .--dummy)");
 
-        for (let i = 0; i < savedQuotes.length; i++) {
-            if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").textContent) {
-                const currentQuote = savedQuotes[i];
+        return;
+    }
+    // Saved quote removal
+    let dates = document.querySelectorAll(".quotes-element__date:not(.--sharing-card, .--dummy)");
 
-                savedQuotes.splice(i, 1);
-                localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
+    for (let i = 0; i < savedQuotes.length; i++) {
+        if (savedQuotes[i].id == quoteElement.querySelector(".quotes-element__date").textContent) {
+            const currentQuote = savedQuotes[i];
 
-                for (let j = 0; j < dates.length; j++) {
-                    if (currentQuote.id == dates[j].textContent) {
-                        const element = dates[j].closest(".quotes-element:not(.saved__quote-element)");
-                        if (element) {
-                            const savingButton = element.querySelector(".quotes-element__saving-button");
-                            if (savingButton) {
-                                savingButton.textContent = findTranslation("save-button");
-                            }
+            savedQuotes.splice(i, 1);
+            localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
+
+            for (let j = 0; j < dates.length; j++) {
+                if (currentQuote.id == dates[j].textContent) {
+                    const element = dates[j].closest(".quotes-element:not(.saved__quote-element)");
+                    if (element) {
+                        const savingButton = element.querySelector(".quotes-element__saving-button");
+                        if (savingButton) {
+                            savingButton.textContent = findTranslation("save-button");
                         }
+                    }
 
-                        if (dates[j].closest(".saved__quote-element")) {
-                            if (!isSavedSectionOpened) {
-                                finishElementRemoval(dates[j].closest(".saved__quote-element"));
-                            } else {
-                                callElementRemoval(dates[j].closest(".saved__quote-element"));
-                            }
-                        }
+                    if (dates[j].closest(".saved__quote-element")) {
+                        if (!isSavedSectionOpened)
+                            return finishElementRemoval(dates[j].closest(".saved__quote-element"));
+
+                        callElementRemoval(dates[j].closest(".saved__quote-element"));
                     }
                 }
             }

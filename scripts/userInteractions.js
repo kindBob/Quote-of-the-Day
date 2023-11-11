@@ -30,6 +30,7 @@ const loadingElementSpinner = loadingElement.querySelector(".spinner");
 const emailSubForm = document.querySelector("#email-sub-form");
 const emailSubEmailInput = emailSubForm.email;
 const emailSubBtn = emailSubForm.subscribe;
+const emailSubResult = emailSubForm.querySelector(".email-sub-form__result");
 
 const quotesSectionsTransitionTime = 800;
 
@@ -79,8 +80,7 @@ async function subscribe() {
     const inputValue = emailSubEmailInput.value;
 
     if (!validateEmail(inputValue)) {
-        console.log("Invalid email");
-        // displayResult("Invalid email");
+        displaySubResult(false, "Invalid email");
     } else {
         const response = await fetch(EMAIL_SUBSCRIPTION_API, {
             method: "POST",
@@ -92,13 +92,35 @@ async function subscribe() {
             },
         });
 
-        const data = await response.text();
+        if (response.ok) {
+            displaySubResult(true);
+            emailSubEmailInput.value = "";
+            emailSubEmailInput.blur();
 
-        // displayResult(data);
-        console.log(data);
+            return;
+        }
 
-        if (response.ok) emailSubEmailInput.value = "";
+        const data = await response.json();
+
+        displaySubResult(false, data.errors);
     }
+}
+
+function displaySubResult(success, errors) {
+    emailSubResult.classList.remove("--active", "--failure", "--success");
+
+    if (!success) {
+        emailSubResult.textContent = errors || "Failure";
+        emailSubResult.classList.add("--failure");
+    } else {
+        emailSubResult.textContent = "Success";
+        emailSubResult.classList.add("--success");
+    }
+
+    emailSubResult.classList.add("--active");
+    setTimeout(() => {
+        emailSubResult.classList.remove("--active", "--failure", "--success");
+    }, 4000);
 }
 
 function validateEmail(email) {

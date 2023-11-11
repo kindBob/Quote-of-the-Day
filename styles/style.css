@@ -150,7 +150,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 225px;
+  height: 260px;
 }
 .malfo-logo__image {
   height: 70px;
@@ -163,7 +163,7 @@ body {
 .loading {
   display: block;
   position: fixed;
-  bottom: 1vh;
+  bottom: 25px;
   right: -90px;
   width: 90px;
   height: 90px;
@@ -332,7 +332,6 @@ body {
 
 .main-section {
   transform: translateX(0) scaleX(1);
-  width: 100%;
   overflow-y: auto;
   z-index: 4;
 }
@@ -347,7 +346,6 @@ body {
 .history__section,
 .saved__section {
   overflow-y: hidden;
-  z-index: 5;
 }
 
 .history__section.--active,
@@ -362,7 +360,7 @@ body {
   transform: translateX(0) scaleX(1);
 }
 .history__container {
-  min-height: calc(100vh - 130px - 225px);
+  min-height: calc(100vh - 130px - 260px);
 }
 
 .saved__section {
@@ -372,7 +370,7 @@ body {
   transform: translateX(0) scaleX(1);
 }
 .saved__container.--fixed-height {
-  min-height: calc(100vh - 225px - 130px);
+  min-height: calc(100vh - 260px - 130px);
 }
 .saved__quote-element.--hiding-animation {
   transition: all 0.6s ease;
@@ -610,21 +608,140 @@ body {
 
 .footer {
   position: relative;
-  height: 225px;
+  height: 260px;
   width: 100%;
-  background-color: #000;
-  background-color: #ffffff;
-  font-size: clamp(16px, 1vw, 24px);
+  background-color: #fff;
 }
 .footer .container {
+  height: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  text-align: center;
+}
+.footer__element {
+  align-self: stretch;
+  padding-top: 41.6px;
+}
+.footer__element:not(.footer__element:last-child, .footer__element:first-child) {
+  width: 18%;
+}
+.footer__element:first-child {
+  width: 27%;
+}
+.footer__element:last-child {
+  flex: 1;
+}
+.footer__title {
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  font-size: clamp(20px, 3vw, 24px);
+  color: #ef3a32;
+  font-weight: 600;
+}
+.footer__text {
+  margin-bottom: 12px;
+  font-size: clamp(16px, 3vw, 19px);
+  color: #4b4b4b;
+}
+.footer__list-item {
+  width: fit-content;
+  color: rgba(0, 0, 0, 0.5);
+  transition: 0.2s;
+  cursor: pointer;
+}
+.footer__list-item:hover {
+  color: black;
+}
+.footer__list-item:not(.footer__list-item:last-child) {
+  margin-bottom: 0.5em;
 }
 
-.email-sub-container {
-  width: 30%;
+.action-btn-container {
+  margin-right: 2em;
+  font-size: clamp(25px, 3vw, 30px);
+}
+
+.action-btn {
+  width: 100%;
+  position: relative;
+  padding: 0.5em 1em 0.5em 1.5em;
+  border: 2px solid #ef3a32;
+  border-radius: 120px;
+  color: #ef3a32;
+  line-height: 1.3em;
+  text-transform: uppercase;
+  overflow: hidden;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.action-btn:hover {
+  padding-left: 1.2em;
+  background-color: #ef3a32;
+  color: #fff;
+}
+.action-btn__icon {
+  position: absolute;
+  right: -1.4em;
+  top: 50%;
+  transform: translate(0, -50%);
+  width: 2.2em;
+  transition: 0.2s;
+}
+.action-btn:hover .action-btn__icon {
+  right: 1em;
+}
+
+.email-sub-form {
+  display: flex;
+  flex-wrap: wrap;
+}
+.email-sub-form__input, .email-sub-form__btn {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  font-size: clamp(16px, 3vw, 19px);
+  border: 2px solid #000;
+}
+.email-sub-form__input {
+  padding-left: 0.75em;
+  flex: 1;
+  border-right: none;
+  transition: 0.6s;
+  background-color: transparent;
+}
+.email-sub-form__input:focus {
+  outline: none;
+}
+.email-sub-form__input::placeholder {
+  color: #b1b1b1;
+  transition: 0.2s;
+}
+.email-sub-form__input:focus::placeholder {
+  opacity: 0;
+}
+.email-sub-form__btn {
+  width: 35%;
+  background-color: transparent;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.email-sub-form__btn:hover {
+  width: 40%;
+}
+.email-sub-form__result {
+  width: 100%;
+  height: 0;
+  transform: scale(0);
+  transition: 0.2s;
+}
+.email-sub-form__result.--active {
+  transform: scale(1);
+  height: 25px;
+}
+.email-sub-form__result.--success {
+  color: #79d379;
+}
+.email-sub-form__result.--failure {
+  color: rgb(226, 108, 90);
 }
 
 @media (max-width: 1024px) {
