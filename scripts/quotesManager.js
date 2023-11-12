@@ -6,8 +6,6 @@ const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
 const currentDateOutput = document.querySelector("#current-date");
 
-const inactiveQuoteDates = document.querySelectorAll(".quotes-element__date.--inactive");
-
 const historyContainer = document.querySelector("#history-container");
 
 const savedSection = document.querySelector("#saved-section");
@@ -109,9 +107,6 @@ async function setupQuotes() {
     currentQuoteOutput.textContent = quoteObjectQuote;
     currentAuthorOutput.textContent = quoteObjectAuthor;
     currentDateOutput.textContent = dateManager.getCurrentFormattedDate();
-
-    inactiveQuoteDates[0].textContent = dateManager.getTomorrowsFormattedDate();
-    inactiveQuoteDates[1].textContent = dateManager.getAfterTomorrowsFormattedDate();
 
     if (localStorage.getItem("previousQuotes")) {
         previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
@@ -269,10 +264,6 @@ function createClone(parent, element) {
 }
 
 function setupSectionsContent() {
-    previousQuotes.length == 1
-        ? historyContainer.classList.add("--content-centered")
-        : historyContainer.classList.remove("--content-centered");
-
     savedQuotes.length <= 1
         ? savedContainer.classList.add("--content-centered", "--fixed-height")
         : savedContainer.classList.remove("--content-centered", "--fixed-height");

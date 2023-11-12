@@ -39,8 +39,10 @@ ol[class] {
   list-style: none;
 }
 
-a:not([class]) {
+a {
   text-decoration-skip-ink: auto;
+  text-decoration: none;
+  color: inherit;
 }
 
 img {

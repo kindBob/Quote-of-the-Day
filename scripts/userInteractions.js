@@ -6,10 +6,6 @@ const mainHeader = document.querySelector("#main-header");
 const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
 
-const historyOpenButton = document.querySelector("#history-open-button");
-const historySection = document.querySelector("#history-section");
-const historyBackButtons = historySection.querySelectorAll(".back-button");
-
 const savedOpenButton = document.querySelector("#saved-open-button");
 const savedSection = document.querySelector("#saved-section");
 const savedBackButtons = savedSection.querySelectorAll(".back-button");
@@ -286,10 +282,6 @@ document.addEventListener("click", (event) => {
         : null;
 });
 
-historyOpenButton.addEventListener("click", () => {
-    isMobile ? closeNavBarList(openHistorySection) : openHistorySection();
-});
-
 savedOpenButton.addEventListener("click", () => {
     isMobile ? closeNavBarList(openSavedSection) : openSavedSection();
 });
@@ -372,15 +364,7 @@ document.addEventListener("click", (event) => {
 });
 // Quotes ---
 // Sections
-historyBackButtons.forEach((button) => button.addEventListener("click", closeHistory));
-
 savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved));
-
-function closeHistory() {
-    mainSection.classList.remove("--inactive");
-
-    historySection.classList.remove("--active");
-}
 
 function closeSaved() {
     isSavedSectionOpened = false;
@@ -388,15 +372,6 @@ function closeSaved() {
     savedSection.classList.remove("--active");
 
     mainSection.classList.remove("--inactive", "--left-side");
-}
-
-function openHistorySection() {
-    historySection.classList.add("--active");
-
-    mainSection.classList.add("--inactive");
-
-    lockScrolling();
-    setTimeout(() => unlockScrolling(), quotesSectionsTransitionTime + 100);
 }
 
 function openSavedSection() {

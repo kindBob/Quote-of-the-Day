@@ -18,53 +18,6 @@
         <title>Quote of the Day</title>
     </head>
     <body>
-        <section id="history-section" class="section quotes-section history__section">
-            <header id="history-header" class="header history-header">
-                <div class="container header__container">
-                    <nav class="nav-bar --always-show">
-                        <h2 data-i18n-key="history-title" class="section-title header__title">History</h2>
-                        <ul class="button-list nav-bar__list">
-                            <li data-i18n-key="back-button" class="back-button button nav-bar__element">Back</li>
-                            <li class="back-button nav-bar__element --cross"></li>
-                        </ul>
-                    </nav>
-                </div>
-            </header>
-
-            <div id="history-container" class="container quotes-section__container history__container">
-                <div class="quotes-element history__quote-element --clickable">
-                    <div class="quotes-element__inner-container">
-                        <div class="quotes-element__front-container">
-                            <div class="quotes-element__date history__quotes-element-date"></div>
-                            <div class="quotes-element__author history__quotes-element-author"></div>
-                            <div class="quotes-element__quote history__quotes-element-quote"></div>
-                        </div>
-                        <div class="quotes-element__back-container">
-                            <div class="quotes-element__buttons-container">
-                                <ul class="button-list quotes-element__buttons-list">
-                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
-                                        Share
-                                    </li>
-                                    <li
-                                        data-i18n-key="save-button"
-                                        class="button quotes-element__button quotes-element__saving-button">
-                                        Save
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <footer class="footer">
-                <!-- <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p> -->
-                <div class="malfo-logo">
-                    <img class="malfo-logo__image" src="/assets/malfo-logo--no-bg.png" alt="malfo logo" />
-                </div>
-            </footer>
-        </section>
-
         <section id="main-section" class="section quotes-section main-section">
             <header id="main-header" class="header main-header">
                 <div class="container header__container">
@@ -76,13 +29,7 @@
                         </div>
 
                         <ul class="button-list nav-bar__list main-header__nav-bar__list">
-                            <li
-                                data-i18n-key="history-title"
-                                id="history-open-button"
-                                class="button nav-bar__element main-header__nav-bar__element">
-                                History
-                            </li>
-                            <li class="button nav-bar__element main-header__nav-bar__element">
+                            <li class="button nav-bar__element main-header__nav-bar__element --bigger">
                                 <a
                                     data-i18n-key="support_us-button"
                                     href="https://donate.stripe.com/test_eVa3evg5Q7JhgesdQQ"
@@ -130,17 +77,40 @@
                         </div>
                     </div>
                 </div>
-                <div class="quotes-element --inactive">
-                    <div class="quotes-element__date --inactive">22.10</div>
-                </div>
-                <div class="quotes-element --inactive">
-                    <div class="quotes-element__date --inactive">22.10</div>
+
+                <div class="separator"></div>
+                <div class="history-title">Previous Quotes</div>
+
+                <div id="history-container">
+                    <div class="quotes-element history__quote-element --clickable">
+                        <div class="quotes-element__inner-container">
+                            <div class="quotes-element__front-container">
+                                <div class="quotes-element__date history__quotes-element-date"></div>
+                                <div class="quotes-element__author history__quotes-element-author"></div>
+                                <div class="quotes-element__quote history__quotes-element-quote"></div>
+                            </div>
+                            <div class="quotes-element__back-container">
+                                <div class="quotes-element__buttons-container">
+                                    <ul class="button-list quotes-element__buttons-list">
+                                        <li
+                                            data-i18n-key="share-button"
+                                            class="share-button button quotes-element__button">
+                                            Share
+                                        </li>
+                                        <li
+                                            data-i18n-key="save-button"
+                                            class="button quotes-element__button quotes-element__saving-button">
+                                            Save
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <footer class="footer">
-                <!-- <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p> -->
-
                 <div class="container">
                     <div class="action-btn-container">
                         <div class="action-btn">
@@ -170,10 +140,12 @@
                     <div class="footer__element legal">
                         <div data-i18n-key="legal__title" class="footer__title">Legal</div>
                         <ul class="footer__list">
-                            <li data-i18n-key="legal__terms" class="footer__list-item footer__text">
-                                Terms of service
+                            <li class="footer__list-item footer__text">
+                                <a data-i18n-key="legal__terms" href="./terms-of-service.html" target="_blank"></a>
                             </li>
-                            <li data-i18n-key="legal__policy" class="footer__list-item footer__text">Privacy policy</li>
+                            <li class="footer__list-item footer__text">
+                                <a data-i18n-key="legal__policy" href="./privacy-policy.html" target="_blank"></a>
+                            </li>
                         </ul>
                     </div>
 
