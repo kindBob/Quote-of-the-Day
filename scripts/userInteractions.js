@@ -31,6 +31,7 @@ const emailSubForm = document.querySelector("#email-sub-form");
 const emailSubEmailInput = emailSubForm.email;
 const emailSubResult = emailSubForm.querySelector(".email-sub-form__result");
 
+const transitionTime = 600;
 const quotesSectionsTransitionTime = 800;
 
 const MAIN_PAGE = window.location.href;
@@ -45,7 +46,7 @@ let isMobile = detectMobile();
 export let isSavedSectionOpened = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-    setFlipQuoteEL();
+    setFlipQuoteEL(document.querySelectorAll(".quotes-element:not(.--inactive)"));
     setQuotesSectionsTransitionTime();
 });
 
@@ -130,6 +131,8 @@ function handleSubErrors(errCode) {
 
 let timeoutId = null;
 function displaySubResult(success, message) {
+    let timeoutLength = 0;
+
     emailSubResult.classList.remove("--active", "--failure", "--success");
 
     if (success !== null) {
@@ -138,7 +141,12 @@ function displaySubResult(success, message) {
         } else {
             emailSubResult.classList.add("--success");
         }
+
+        timeoutLength = 4000;
+    } else {
+        timeoutLength = 999999;
     }
+
     emailSubResult.textContent = message;
 
     emailSubResult.classList.add("--active");
@@ -147,7 +155,7 @@ function displaySubResult(success, message) {
 
     timeoutId = setTimeout(() => {
         emailSubResult.classList.remove("--active", "--failure", "--success");
-    }, 4000);
+    }, timeoutLength);
 }
 
 function validateEmail(email) {
@@ -306,19 +314,13 @@ function unlockScrolling(element = document.body) {
 }
 // Header ---
 // Quotes
-export function setFlipQuoteEL(element) {
+export function setFlipQuoteEL(elements) {
     if (!isMobile) return;
 
-    if (element) {
+    elements.forEach((element) => {
         element.addEventListener("click", (event) => {
-            flipQuote(event);
-        });
+            element.querySelector(".quotes-element__inner-container").style.transition = `${transitionTime}ms`;
 
-        return;
-    }
-
-    document.querySelectorAll(".quotes-element").forEach((element) => {
-        element.addEventListener("click", (event) => {
             flipQuote(event);
         });
     });
@@ -343,9 +345,12 @@ export function setSharingButtonsEL(elements) {
     }
 }
 
+let isAbleToFlip = true;
 function flipQuote(event) {
     const target = event.target;
     const element = event.target.closest(".quotes-element");
+
+    if (!isAbleToFlip) return;
 
     if (
         !target.classList.contains("quotes-element__buttons-container") &&
@@ -353,6 +358,9 @@ function flipQuote(event) {
     ) {
         element.classList.toggle("--flipped");
     }
+
+    isAbleToFlip = false;
+    setTimeout(() => (isAbleToFlip = true), transitionTime);
 }
 
 document.addEventListener("click", (event) => {

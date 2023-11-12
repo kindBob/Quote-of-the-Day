@@ -497,7 +497,6 @@ body {
     background-color: #ffffff;
     border-radius: 25px;
     padding: 35px 40px 35px;
-    transition: $transition-length;
   }
 
   &__front-container {
@@ -794,15 +793,18 @@ body {
 
   &__icon {
     position: absolute;
-    right: -1.4em;
+    width: 2.2em;
+    right: -1.1em;
     top: 50%;
     transform: translate(0, -50%);
-    width: 2.2em;
+    opacity: 0;
     transition: 0.2s;
   }
 
-  &:hover &__icon {
+  &:hover &__icon,
+  &:active &__icon {
     right: 1em;
+    opacity: 1;
   }
 }
 
@@ -1053,10 +1055,6 @@ body {
     z-index: 1;
     perspective: 1500px;
 
-    &.--flipped &__inner-container {
-      transform: rotateY(180deg);
-    }
-
     &__back-container {
       position: absolute;
       width: 100%;
@@ -1098,6 +1096,10 @@ body {
       padding: 20px 35px 0 27.5px;
       // -webkit-animation: 2s flip 1s ease-in-out;
       //animation: 2s flip 1s ease-in-out;
+    }
+
+    &.--flipped &__inner-container {
+      transform: rotateY(180deg);
     }
 
     &__date {

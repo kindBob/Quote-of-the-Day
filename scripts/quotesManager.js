@@ -154,7 +154,7 @@ function setupPreviousQuotes() {
     if (previousQuotes.length > 1) {
         for (let i = 0; i < previousQuotes.length - 1; i++) {
             const clone = createClone(historyContainer, document.querySelector(".history__quote-element"));
-            setFlipQuoteEL(clone);
+            setFlipQuoteEL([clone]);
         }
     }
 
@@ -223,7 +223,7 @@ function createSavedQuotesElements() {
             setupSavingButtonsEL([savingButton]);
 
             setSharingButtonsEL([clone.querySelector(".share-button")]);
-            setFlipQuoteEL(clone);
+            setFlipQuoteEL([clone]);
         }
     }
 }

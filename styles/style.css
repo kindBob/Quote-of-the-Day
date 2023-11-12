@@ -418,7 +418,6 @@ body {
   background-color: #ffffff;
   border-radius: 25px;
   padding: 35px 40px 35px;
-  transition: 0.6s;
 }
 .quotes-element__front-container {
   width: 100%;
@@ -684,14 +683,16 @@ body {
 }
 .action-btn__icon {
   position: absolute;
-  right: -1.4em;
+  width: 2.2em;
+  right: -1.1em;
   top: 50%;
   transform: translate(0, -50%);
-  width: 2.2em;
+  opacity: 0;
   transition: 0.2s;
 }
-.action-btn:hover .action-btn__icon {
+.action-btn:hover .action-btn__icon, .action-btn:active .action-btn__icon {
   right: 1em;
+  opacity: 1;
 }
 
 .email-sub-container {
@@ -891,9 +892,6 @@ body {
     z-index: 1;
     perspective: 1500px;
   }
-  .quotes-element.--flipped .quotes-element__inner-container {
-    transform: rotateY(180deg);
-  }
   .quotes-element__back-container {
     position: absolute;
     width: 100%;
@@ -928,6 +926,9 @@ body {
   .quotes-element__inner-container {
     transform-style: preserve-3d;
     padding: 20px 35px 0 27.5px;
+  }
+  .quotes-element.--flipped .quotes-element__inner-container {
+    transform: rotateY(180deg);
   }
   .quotes-element__date {
     width: 100%;
