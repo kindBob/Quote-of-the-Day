@@ -2,7 +2,7 @@
 $transition-length: 0.6s;
 
 $header-height: 130px;
-$footer-height: 260px;
+$footer-height: 90px;
 $quote-date-height: 60px;
 
 $headerNFooter-bg: #fff;
@@ -709,7 +709,6 @@ body {
 // Bottom
 .footer {
   position: relative;
-  min-height: fit-content;
   width: 100%;
   background-color: $headerNFooter-bg;
 
@@ -725,7 +724,6 @@ body {
 
   &__element {
     align-self: stretch;
-    // padding-top: ($footer-height * 0.16);
   }
 
   &__element {
@@ -760,6 +758,13 @@ body {
   &__list-item:not(&__list-item:last-child) {
     margin-bottom: 0.5em;
   }
+}
+
+.saved__footer {
+  height: $footer-height;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .action-btn-container {
@@ -871,6 +876,16 @@ body {
 }
 // Bottom ---
 // Adaptive
+@media (min-width: 1280px) {
+  body.ru .footer__element:nth-child(3) {
+    width: 20%;
+  }
+
+  body.ru .footer__element:nth-child(2) {
+    width: 14%;
+  }
+}
+
 @media (max-width: 1280px) {
   .footer {
     .container {
@@ -881,6 +896,14 @@ body {
       width: 30%;
       padding-left: 4em;
     }
+  }
+
+  body.ru .footer__element:nth-child(2) {
+    padding-left: 3em;
+  }
+
+  body.ru .footer__element:nth-child(3) {
+    padding-left: 1.5em;
   }
 
   .action-btn-container {
@@ -931,6 +954,10 @@ body {
       width: 50%;
       padding-left: 1em;
     }
+  }
+
+  body.ru .footer__element {
+    padding: 0 !important;
   }
 
   .action-btn-container {
@@ -1101,8 +1128,12 @@ body {
   }
 }
 
-@media (max-width: 425px) {
+@media (max-width: 476px) {
   .footer {
+    &__element {
+      padding: 0 !important;
+    }
+
     &__element:not(&__element:last-child) {
       width: 100%;
     }

@@ -13,12 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function setupInitialLocale() {
     const userLocales = navigator.languages.map((locale) => locale.split("-")[0]);
-
     initialLocale = userLocales.find((locale) => isLocaleSupported(locale)) || defaultLocale;
 
     translations = await fetchTranslations(initialLocale);
 
     document.querySelector("html").setAttribute("lang", initialLocale);
+    document.body.classList.add(initialLocale);
 
     translatePage();
 }
@@ -42,7 +42,8 @@ function translatePage() {
 function translateElement(element) {
     const key = element.getAttribute("data-i18n-key");
     const translation = translations.find((translation) => translation.keyWord === key);
-    element.textContent = translation[`${initialLocale}Translation`];
+
+    element.innerHTML = translation[`${initialLocale}Translation`].replace("<n>", "<br />");
 }
 
 export function findTranslation(keyWord) {

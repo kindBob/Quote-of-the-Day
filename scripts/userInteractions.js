@@ -35,8 +35,8 @@ const quotesSectionsTransitionTime = 800;
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
-const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
-// const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
+// const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
+const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
 // const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
 
 let sharingInProcess = false;
@@ -76,15 +76,12 @@ function setQuotesSectionsTransitionTime() {
 
 // Email sub
 async function subscribe() {
-    // loadingElement.classList.add("--active");
-    // loadingElementSpinner.classList.add("--active");
-
     const inputValue = emailSubEmailInput.value;
 
     if (!validateEmail(inputValue)) {
-        displaySubResult(false, "Invalid email");
+        handleSubErrors(2);
     } else {
-        displaySubResult(null, "Loading...");
+        displaySubResult(null, findTranslation("sub-loading"));
 
         const response = await fetch(EMAIL_SUBSCRIPTION_API, {
             method: "POST",
@@ -97,7 +94,7 @@ async function subscribe() {
         });
 
         if (response.ok) {
-            displaySubResult(true, "Success");
+            displaySubResult(true, findTranslation("sub-success"));
             emailSubEmailInput.value = "";
             emailSubEmailInput.blur();
 
@@ -106,8 +103,29 @@ async function subscribe() {
 
         const data = await response.json();
 
-        displaySubResult(false, data.errors);
+        handleSubErrors(data.errCode);
     }
+}
+
+function handleSubErrors(errCode) {
+    //1 - duplicate, 2- invalid, 3 - anything else
+    let errMessage = null;
+
+    switch (errCode) {
+        case 1:
+            errMessage = findTranslation("sub-error_1");
+            break;
+
+        case 2:
+            errMessage = findTranslation("sub-error_2");
+            break;
+
+        default:
+            errMessage = findTranslation("sub-error_3");
+            break;
+    }
+
+    displaySubResult(false, errMessage);
 }
 
 let timeoutId = null;
@@ -249,7 +267,7 @@ burgerMenu.addEventListener("click", () => {
     mainNavBar.classList.toggle("--active");
     burgerMenu.classList.toggle("--active");
 
-    lockScrolling();
+    mainNavBar.classList.contains("--active") ? lockScrolling() : unlockScrolling();
 });
 
 document.addEventListener("click", (event) => {

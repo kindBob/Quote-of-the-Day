@@ -150,7 +150,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 260px;
+  height: 90px;
 }
 .malfo-logo__image {
   height: 70px;
@@ -360,7 +360,7 @@ body {
   transform: translateX(0) scaleX(1);
 }
 .history__container {
-  min-height: calc(100vh - 130px - 260px);
+  min-height: calc(100vh - 130px - 90px);
 }
 
 .saved__section {
@@ -370,7 +370,7 @@ body {
   transform: translateX(0) scaleX(1);
 }
 .saved__container.--fixed-height {
-  min-height: calc(100vh - 260px - 130px);
+  min-height: calc(100vh - 90px - 130px);
 }
 .saved__quote-element.--hiding-animation {
   transition: all 0.6s ease;
@@ -608,7 +608,6 @@ body {
 
 .footer {
   position: relative;
-  min-height: fit-content;
   width: 100%;
   background-color: #fff;
 }
@@ -650,6 +649,13 @@ body {
 }
 .footer__list-item:not(.footer__list-item:last-child) {
   margin-bottom: 0.5em;
+}
+
+.saved__footer {
+  height: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .action-btn-container {
@@ -746,6 +752,14 @@ body {
   color: rgb(226, 108, 90);
 }
 
+@media (min-width: 1280px) {
+  body.ru .footer__element:nth-child(3) {
+    width: 20%;
+  }
+  body.ru .footer__element:nth-child(2) {
+    width: 14%;
+  }
+}
 @media (max-width: 1280px) {
   .footer .container {
     flex-wrap: wrap;
@@ -753,6 +767,12 @@ body {
   .footer__element:not(.footer__element:last-child) {
     width: 30%;
     padding-left: 4em;
+  }
+  body.ru .footer__element:nth-child(2) {
+    padding-left: 3em;
+  }
+  body.ru .footer__element:nth-child(3) {
+    padding-left: 1.5em;
   }
   .action-btn-container {
     width: 40%;
@@ -791,6 +811,9 @@ body {
   .footer__element:not(.footer__element:last-child) {
     width: 50%;
     padding-left: 1em;
+  }
+  body.ru .footer__element {
+    padding: 0 !important;
   }
   .action-btn-container {
     width: 100%;
@@ -928,7 +951,10 @@ body {
     font-size: clamp(19px, 3vw, 30px);
   }
 }
-@media (max-width: 425px) {
+@media (max-width: 476px) {
+  .footer__element {
+    padding: 0 !important;
+  }
   .footer__element:not(.footer__element:last-child) {
     width: 100%;
   }

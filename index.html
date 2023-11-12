@@ -144,7 +144,7 @@
                 <div class="container">
                     <div class="action-btn-container">
                         <div class="action-btn">
-                            join the community
+                            <span data-i18n-key="action-btn">Join the community</span>
                             <svg
                                 class="action-btn__icon"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -159,7 +159,7 @@
                     </div>
 
                     <div class="footer__element contact">
-                        <div class="footer__title">Contact</div>
+                        <div data-i18n-key="contact__title" class="footer__title">Contact</div>
                         <ul class="footer__list">
                             <li class="footer__list-item footer__text">Telegram</li>
                             <li class="footer__list-item footer__text">Email</li>
@@ -168,16 +168,18 @@
                     </div>
 
                     <div class="footer__element legal">
-                        <div class="footer__title">Legal</div>
+                        <div data-i18n-key="legal__title" class="footer__title">Legal</div>
                         <ul class="footer__list">
-                            <li class="footer__list-item footer__text">Terms of service</li>
-                            <li class="footer__list-item footer__text">Privacy policy</li>
+                            <li data-i18n-key="legal__terms" class="footer__list-item footer__text">
+                                Terms of service
+                            </li>
+                            <li data-i18n-key="legal__policy" class="footer__list-item footer__text">Privacy policy</li>
                         </ul>
                     </div>
 
                     <div class="footer__element email-sub-container">
-                        <div class="footer__title">subscription</div>
-                        <div class="footer__text">
+                        <div data-i18n-key="email-sub__title" class="footer__title">subscription</div>
+                        <div data-i18n-key="email-sub__desc" class="footer__text">
                             If you don't want to miss out on daily quotes, then sign up for our email newsletter.
                         </div>
                         <form id="email-sub-form" class="email-sub-form">
@@ -186,10 +188,16 @@
                                 class="email-sub-form__input"
                                 type="email"
                                 name="email"
-                                placeholder="Your email"
+                                placeholder="email@example.com"
                                 autocomplete="off"
                                 required />
-                            <button class="email-sub-form__btn" type="submit" name="subscribe">Subscribe</button>
+                            <button
+                                data-i18n-key="email-sub__btn"
+                                class="email-sub-form__btn"
+                                type="submit"
+                                name="subscribe">
+                                Subscribe
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -239,11 +247,8 @@
                 <p data-i18n-key="saved-placeholder" class="saved__placeholder">It's empty here...</p>
             </div>
 
-            <footer class="footer">
-                <!-- <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p> -->
-                <div class="malfo-logo">
-                    <img class="malfo-logo__image" src="/assets/malfo-logo--no-bg.png" alt="malfo logo" />
-                </div>
+            <footer class="footer saved__footer">
+                <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p>
             </footer>
         </section>
 
