@@ -383,21 +383,16 @@ body {
 }
 
 .main-section {
-  // left: 0;
   transform: translateX(0) scaleX(1);
-  // width: 100%;
   overflow-y: auto;
   z-index: 4;
 
   &.--inactive {
-    // left: 200%;
     transform: translateX(100%) scaleX(0);
-    // width: 0;
     overflow-y: hidden;
   }
 
   &.--inactive.--left-side {
-    // left: -100%;
     transform: translateX(-100%) scaleX(0);
   }
 }
@@ -449,11 +444,9 @@ body {
 
 .saved {
   &__section {
-    // right: -100%;
     transform: translateX(100%) scaleX(0);
 
     &.--active {
-      // right: 0;
       transform: translateX(0) scaleX(1);
     }
   }
@@ -878,7 +871,10 @@ body {
     width: 100%;
     height: 0;
     transform: scale(0);
-    transition: 0.2s;
+    color: #4b4b4b;
+    transition:
+      transform 0.2s,
+      height 0.2s;
 
     &.--active {
       transform: scale(1);
@@ -1213,6 +1209,12 @@ body {
 // Adaptive ---
 
 // Animations
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 @-webkit-keyframes quote-card-flip {
   0% {
     transform: rotateY(0deg);

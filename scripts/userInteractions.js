@@ -26,6 +26,7 @@ const loadingElementSpinner = loadingElement.querySelector(".spinner");
 const emailSubForm = document.querySelector("#email-sub-form");
 const emailSubEmailInput = emailSubForm.email;
 const emailSubResult = emailSubForm.querySelector(".email-sub-form__result");
+const emailSubResultText = emailSubForm.querySelector(".email-sub-form__result-text");
 
 const transitionTime = 600;
 const quotesSectionsTransitionTime = 800;
@@ -129,7 +130,7 @@ let timeoutId = null;
 function displaySubResult(success, message) {
     let timeoutLength = 0;
 
-    emailSubResult.classList.remove("--active", "--failure", "--success");
+    emailSubResult.classList.remove("--active", "--failure", "--success", "--loading");
 
     if (success !== null) {
         if (success === false) {
@@ -140,17 +141,18 @@ function displaySubResult(success, message) {
 
         timeoutLength = 4000;
     } else {
+        message = message + "...";
         timeoutLength = 999999;
     }
 
-    emailSubResult.textContent = message;
+    emailSubResultText.textContent = message;
 
     emailSubResult.classList.add("--active");
 
     if (timeoutId) clearTimeout(timeoutId);
 
     timeoutId = setTimeout(() => {
-        emailSubResult.classList.remove("--active", "--failure", "--success");
+        emailSubResult.classList.remove("--active");
     }, timeoutLength);
 }
 
