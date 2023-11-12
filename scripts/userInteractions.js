@@ -28,8 +28,7 @@ const emailSubEmailInput = emailSubForm.email;
 const emailSubResult = emailSubForm.querySelector(".email-sub-form__result");
 const emailSubResultText = emailSubForm.querySelector(".email-sub-form__result-text");
 
-const transitionTime = 600;
-const quotesSectionsTransitionTime = 800;
+const overlay = document.querySelector("#overlay");
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
@@ -40,11 +39,17 @@ const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subs
 let sharingInProcess = false;
 let isMobile = detectMobile();
 
+const quotesSectionsTransitionTime = isMobile ? 600 : 800;
+const transitionTime = 600;
+
 export let isSavedSectionOpened = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     setFlipQuoteEL(document.querySelectorAll(".quotes-element:not(.--inactive)"));
-    setQuotesSectionsTransitionTime();
+
+    quotesSections.forEach((section) => (section.style.transition = `transform ${quotesSectionsTransitionTime}ms`));
+
+    savedSection.style.width = "0";
 });
 
 emailSubForm.addEventListener("submit", (e) => {
@@ -65,10 +70,6 @@ function detectMobile() {
         if (devicesRegex.test(a) || devicesModelsRegex.test(a.substr(0, 4))) check = true;
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
-}
-
-function setQuotesSectionsTransitionTime() {
-    quotesSections.forEach((section) => (section.style.transition = `${quotesSectionsTransitionTime}ms`));
 }
 // Basic ---
 
@@ -371,19 +372,42 @@ savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved
 function closeSaved() {
     isSavedSectionOpened = false;
 
-    savedSection.classList.remove("--active");
+    mainSection.style.width = "100%";
 
+    savedSection.classList.remove("--active");
     mainSection.classList.remove("--inactive", "--left-side");
+
+    lockScrolling();
+    overlay.classList.add("--active");
+
+    setTimeout(() => {
+        savedSection.style.width = "0";
+    }, quotesSectionsTransitionTime);
+
+    setTimeout(() => {
+        unlockScrolling();
+        overlay.classList.remove("--active");
+    }, quotesSectionsTransitionTime + 100);
 }
 
 function openSavedSection() {
     isSavedSectionOpened = true;
 
-    savedSection.classList.add("--active");
+    savedSection.style.width = "100%";
 
-    mainSection.classList.add("--inactive", "--left-side");
+    savedSection.classList.add("--active");
+    mainSection.classList.add("--inactive");
 
     lockScrolling();
-    setTimeout(() => unlockScrolling(), quotesSectionsTransitionTime + 100);
+    overlay.classList.add("--active");
+
+    setTimeout(() => {
+        mainSection.style.width = "0";
+    }, quotesSectionsTransitionTime);
+
+    setTimeout(() => {
+        unlockScrolling();
+        overlay.classList.remove("--active");
+    }, quotesSectionsTransitionTime + 100);
 }
 // Sections ---

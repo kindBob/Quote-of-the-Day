@@ -30,6 +30,17 @@ body {
   margin: 0 auto;
 }
 
+.overlay {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+.overlay.--active {
+  display: block;
+}
+
 .logo {
   width: 150px;
   display: flex;
@@ -169,7 +180,7 @@ body {
   height: 90px;
   padding: 15px 30px 15px 15px;
   font-size: 20px;
-  z-index: 1000;
+  z-index: 100;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
   border-radius: 10px;
@@ -332,16 +343,13 @@ body {
 }
 
 .main-section {
-  transform: translateX(0) scaleX(1);
+  transform: translateX(0);
   overflow-y: auto;
   z-index: 4;
 }
 .main-section.--inactive {
-  transform: translateX(100%) scaleX(0);
+  transform: translateX(-100%);
   overflow-y: hidden;
-}
-.main-section.--inactive.--left-side {
-  transform: translateX(-100%) scaleX(0);
 }
 
 .separator {
@@ -387,10 +395,10 @@ body {
 }
 
 .saved__section {
-  transform: translateX(100%) scaleX(0);
+  transform: translateX(100%);
 }
 .saved__section.--active {
-  transform: translateX(0) scaleX(1);
+  transform: translateX(0);
 }
 .saved__container.--fixed-height {
   min-height: calc(100vh - 90px - 130px);
