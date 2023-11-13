@@ -5,6 +5,9 @@ $header-height: 130px;
 $footer-height: 90px;
 $quote-date-height: 60px;
 
+$quoteElementHeight: 380px;
+$quoteElementMarginTop: 50px;
+
 $headerNFooter-bg: #fff;
 
 $buttons-margin: 15px;
@@ -20,11 +23,11 @@ $buttons-margin: 15px;
 }
 
 ::-webkit-scrollbar {
-  width: 0px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #4d4d4d;
+  background-color: #ef3a32;
   cursor: pointer;
 }
 
@@ -178,25 +181,6 @@ body {
   &:active::after,
   &:active:before {
     background: #fff;
-  }
-}
-
-.malfo-logo {
-  width: -webkit-fit-content;
-  width: -moz-fit-content;
-  width: 20;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: $footer-height;
-
-  &__image {
-    height: 70px;
-  }
-
-  path,
-  polygon {
-    fill: #000;
   }
 }
 
@@ -443,6 +427,11 @@ body {
   text-transform: capitalize;
 }
 
+.history-container {
+  overflow: hidden;
+  transition: $transition-length;
+}
+
 .saved__section {
   overflow-y: hidden;
 }
@@ -494,10 +483,10 @@ body {
 }
 
 .quotes-element {
-  height: 380px;
+  height: $quoteElementHeight;
   width: 100%;
   background-color: transparent;
-  margin-top: 35px;
+  margin-top: $quoteElementMarginTop;
   transition: $transition-length;
 
   &.--dummy {

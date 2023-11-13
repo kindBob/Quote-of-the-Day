@@ -1,5 +1,5 @@
 import { findTranslation } from "./languageManager.js";
-import { manageSavedQuotes, setupFontSizes } from "./quotesManager.js";
+import { manageSavedQuotes, setupFontSizes, previousQuotes } from "./quotesManager.js";
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -12,6 +12,8 @@ const savedBackButtons = savedSection.querySelectorAll(".back-button");
 
 const quotesSections = document.querySelectorAll(".quotes-section");
 const mainSection = document.querySelector("#main-section");
+
+const historyContainer = document.querySelector("#history-container");
 
 const sharingCard = document.querySelector("#sharing-card");
 const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
@@ -29,6 +31,8 @@ const emailSubResult = emailSubForm.querySelector(".email-sub-form__result");
 const emailSubResultText = emailSubForm.querySelector(".email-sub-form__result-text");
 
 const overlay = document.querySelector("#overlay");
+
+const showMoreBtn = document.querySelector("#show-more");
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
@@ -50,6 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
     quotesSections.forEach((section) => (section.style.transition = `transform ${quotesSectionsTransitionTime}ms`));
 
     savedSection.style.width = "0";
+
+    historyContainer.style.maxHeight = `${(380 + 50) * 5}px`;
+
+    // if (previousQuotes.length <= 5) showMoreBtn.style.display = "none";
 });
 
 emailSubForm.addEventListener("submit", (e) => {
@@ -59,6 +67,20 @@ emailSubForm.addEventListener("submit", (e) => {
 });
 
 // Basic
+document.addEventListener("click", (event) => {
+    mainNavBar.classList.contains("--active") &&
+    !burgerMenu.contains(event.target) &&
+    !mainNavBarList.contains(event.target)
+        ? closeNavBarList()
+        : null;
+
+    document.querySelectorAll(".quotes-element").forEach((element) => {
+        if (!element.contains(event.target)) {
+            element.classList.remove("--flipped");
+        }
+    });
+});
+
 function detectMobile() {
     const devicesRegex =
         /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i;
@@ -277,14 +299,6 @@ burgerMenu.addEventListener("click", () => {
     mainNavBar.classList.contains("--active") ? lockScrolling() : unlockScrolling();
 });
 
-document.addEventListener("click", (event) => {
-    mainNavBar.classList.contains("--active") &&
-    !burgerMenu.contains(event.target) &&
-    !mainNavBarList.contains(event.target)
-        ? closeNavBarList()
-        : null;
-});
-
 savedOpenButton.addEventListener("click", () => {
     isMobile ? closeNavBarList(openSavedSection) : openSavedSection();
 });
@@ -309,6 +323,32 @@ function unlockScrolling(element = document.body) {
 }
 // Header ---
 // Quotes
+showMoreBtn.addEventListener("click", () => {
+    if (showMoreBtn.textContent.includes("Show more")) {
+        showMorePreviousQuotes();
+        return;
+    }
+
+    showLessPreviousQuotes();
+});
+
+function showMorePreviousQuotes() {
+    historyContainer.style.maxHeight = `${(380 + 50) * previousQuotes.length}px`;
+
+    showMoreBtn.textContent = "Show less";
+}
+
+function showLessPreviousQuotes() {
+    // window.scrollTo({
+    //     top: 400,
+    //     behavior: "smooth",
+    // });
+
+    historyContainer.style.maxHeight = `${(380 + 50) * 5}px`;
+
+    showMoreBtn.textContent = "Show more";
+}
+
 export function setFlipQuoteEL(elements) {
     if (!isMobile) return;
 
@@ -357,14 +397,6 @@ function flipQuote(event) {
     isAbleToFlip = false;
     setTimeout(() => (isAbleToFlip = true), transitionTime);
 }
-
-document.addEventListener("click", (event) => {
-    document.querySelectorAll(".quotes-element").forEach((element) => {
-        if (!element.contains(event.target)) {
-            element.classList.remove("--flipped");
-        }
-    });
-});
 // Quotes ---
 // Sections
 savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved));

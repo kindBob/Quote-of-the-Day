@@ -18,7 +18,7 @@ const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quote";
 
 let currentQuote = null;
 
-let previousQuotes = [];
+export let previousQuotes = [];
 let savedQuotes = [];
 
 let initialLocaleAuthor = null;
@@ -52,8 +52,7 @@ document.addEventListener("keydown", (e) => {
 
         case "a":
             if (developerMode) {
-                dateManager.changeCurrentDate(dateManager.currentDate.getDate() + 1);
-                location.reload();
+                createDummyHistory();
 
                 break;
             }
@@ -78,6 +77,26 @@ document.addEventListener("DOMContentLoaded", () => {
     getQuote();
 });
 
+function createDummyHistory() {
+    previousQuotes = [];
+
+    const dummy = {
+        id: Math.floor(Math.random() * 1000),
+        "quote-en": "Some quote",
+        "quote-ru": "Some quote",
+        "author-en": "Some author",
+        "author-ru": "Some author",
+    };
+
+    for (let i = 10; i >= 1; i--) {
+        previousQuotes.unshift(dummy);
+    }
+
+    localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
+
+    location.reload();
+}
+
 async function getQuote() {
     const response = await fetch(QUOTES_API);
     if (!response.ok) return;
@@ -89,19 +108,15 @@ async function getQuote() {
 }
 
 async function setupQuotes() {
-    let quoteObjectQuote = getCurrentQuote().quote;
-    let quoteObjectAuthor = getCurrentQuote().author;
+    let quoteObjectQuote = currentQuote[initialLocaleQuote];
+    let quoteObjectAuthor = currentQuote[initialLocaleAuthor];
 
     if (initialLocale == "uk" || initialLocale == "ru") {
         document.querySelectorAll(".quotes-element__author").forEach((element) => element.classList.add("--cyrillic"));
 
-        !getCurrentQuote().object.hasOwnProperty("quote-uk")
-            ? (quoteObjectQuote = getCurrentQuote().object["quote-ru"])
-            : null;
+        !currentQuote.hasOwnProperty("quote-uk") ? (quoteObjectQuote = currentQuote["quote-ru"]) : null;
 
-        !getCurrentQuote().object.hasOwnProperty("author-uk")
-            ? (quoteObjectAuthor = getCurrentQuote().object["author-ru"])
-            : null;
+        !currentQuote.hasOwnProperty("author-uk") ? (quoteObjectAuthor = currentQuote["author-ru"]) : null;
     }
 
     currentQuoteOutput.textContent = quoteObjectQuote;
@@ -113,12 +128,14 @@ async function setupQuotes() {
     }
 
     if (!previousQuotes[0]) {
-        previousQuotes.unshift(getCurrentQuote().object);
+        previousQuotes.unshift(currentQuote);
     } else {
-        if (previousQuotes[0].id != getCurrentQuote().id) {
-            previousQuotes.unshift(getCurrentQuote().object);
+        if (previousQuotes[0].id != currentQuote.id) {
+            previousQuotes.unshift(currentQuote);
         }
     }
+
+    if (previousQuotes.length > 10) previousQuotes.pop();
 
     localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
 
@@ -130,21 +147,6 @@ async function setupQuotes() {
     setupFontSizes();
 }
 
-function getCurrentQuote() {
-    const quoteObject = currentQuote;
-
-    const quoteObjectQuote = quoteObject[initialLocaleQuote];
-    const quoteObjectAuthor = quoteObject[initialLocaleAuthor];
-    const quoteObjectId = quoteObject.id;
-
-    return {
-        quote: quoteObjectQuote,
-        author: quoteObjectAuthor,
-        id: quoteObjectId,
-        object: quoteObject,
-    };
-}
-
 function setupPreviousQuotes() {
     if (previousQuotes.length > 1) {
         for (let i = 0; i < previousQuotes.length - 1; i++) {
@@ -154,10 +156,10 @@ function setupPreviousQuotes() {
     }
 
     for (let i = 0; i < previousQuotes.length; i++) {
-        document.querySelectorAll(".history__quotes-element-date")[i].innerHTML = previousQuotes[i].id;
-        document.querySelectorAll(".history__quotes-element-author")[i].innerHTML =
+        document.querySelectorAll(".history__quotes-element-date")[i].textContent = previousQuotes[i].id;
+        document.querySelectorAll(".history__quotes-element-author")[i].textContent =
             previousQuotes[i][initialLocaleAuthor];
-        document.querySelectorAll(".history__quotes-element-quote")[i].innerHTML =
+        document.querySelectorAll(".history__quotes-element-quote")[i].textContent =
             previousQuotes[i][initialLocaleQuote];
     }
 }
