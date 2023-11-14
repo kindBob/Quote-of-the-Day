@@ -29,6 +29,9 @@ body {
   padding-right: 25px;
   margin: 0 auto;
 }
+.container.--no-paddings {
+  padding: 0;
+}
 
 .overlay {
   display: none;
@@ -319,7 +322,6 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 55px;
-  padding-bottom: 55px;
 }
 
 .main-section {
@@ -358,7 +360,6 @@ body {
 
 .history-title {
   width: 100%;
-  margin-bottom: 20px;
   color: #4b4b4b;
   font-size: clamp(30px, 5vw, 40px);
   text-align: center;
@@ -367,7 +368,7 @@ body {
 }
 
 .history-container {
-  padding: 20px 0;
+  padding: 30px 25px;
   overflow: hidden;
   transition: 0.6s;
 }
@@ -408,6 +409,8 @@ body {
 }
 
 .show-more-btn-container {
+  width: fit-content;
+  margin: 25px auto 70px;
   background-color: #fff;
   border-radius: 20px;
   transition: 0.2s;
@@ -418,7 +421,6 @@ body {
   width: 100%;
   background-color: transparent;
   margin-top: 50px;
-  transition: 0.6s;
 }
 .quotes-element:first-child {
   margin-top: 0;
@@ -890,7 +892,7 @@ body {
   }
   .quotes-element {
     z-index: 1;
-    perspective: 2000px;
+    perspective: 2500px;
   }
   .quotes-element__back-container {
     position: absolute;

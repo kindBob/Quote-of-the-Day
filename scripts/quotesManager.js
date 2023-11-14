@@ -11,7 +11,7 @@ const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
 const currentDateOutput = document.querySelector("#current-date");
 
-const historyContainer = document.querySelector("#history-container");
+const historyContainer = document.querySelector("#history-container").querySelector(".container");
 
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");

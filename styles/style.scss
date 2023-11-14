@@ -44,6 +44,10 @@ body {
   padding-left: 25px;
   padding-right: 25px;
   margin: 0 auto;
+
+  &.--no-paddings {
+    padding: 0;
+  }
 }
 
 .overlay {
@@ -372,7 +376,6 @@ body {
     flex-direction: column;
     align-items: center;
     padding-top: 55px;
-    padding-bottom: 55px;
   }
 }
 
@@ -417,7 +420,7 @@ body {
 
 .history-title {
   width: 100%;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
   color: #4b4b4b;
   font-size: clamp(30px, 5vw, 40px);
   text-align: center;
@@ -426,7 +429,7 @@ body {
 }
 
 .history-container {
-  padding: 20px 0;
+  padding: 30px 25px;
   overflow: hidden;
   transition: $transition-length;
 }
@@ -476,6 +479,8 @@ body {
 }
 
 .show-more-btn-container {
+  width: fit-content;
+  margin: 25px auto 70px;
   background-color: #fff;
   border-radius: 20px;
   transition: 0.2s;
@@ -486,7 +491,7 @@ body {
   width: 100%;
   background-color: transparent;
   margin-top: $quoteElementMarginTop;
-  transition: $transition-length;
+  //transition set in userInteractions.js
 
   &:first-child {
     margin-top: 0;
@@ -1046,7 +1051,7 @@ body {
 
   .quotes-element {
     z-index: 1;
-    perspective: 2000px;
+    perspective: 2500px;
 
     &__back-container {
       position: absolute;
