@@ -144,7 +144,7 @@ async function setupQuotes() {
         }
     }
 
-    if (previousQuotes.length > 10) previousQuotes.pop();
+    if (previousQuotes.length > 11) previousQuotes.pop();
 
     localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
 
@@ -155,6 +155,8 @@ async function setupQuotes() {
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupFontSizes();
     setupQuotesIds();
+
+    console.log(previousQuotes);
 }
 
 function setupPreviousQuotes() {
@@ -164,7 +166,7 @@ function setupPreviousQuotes() {
         }
     }
 
-    for (let i = 0; i < previousQuotes.length; i++) {
+    for (let i = 0; i < previousQuotes.length - 1; i++) {
         document.querySelectorAll(".history__quotes-element-date")[i].textContent = previousQuotes[i + 1].id;
         document.querySelectorAll(".history__quotes-element-author")[i].textContent =
             previousQuotes[i + 1][initialLocaleAuthor];
