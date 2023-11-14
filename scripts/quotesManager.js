@@ -154,6 +154,7 @@ async function setupQuotes() {
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupFontSizes();
+    setupQuotesIds();
 }
 
 function setupPreviousQuotes() {
@@ -169,6 +170,14 @@ function setupPreviousQuotes() {
             previousQuotes[i][initialLocaleAuthor];
         document.querySelectorAll(".history__quotes-element-quote")[i].textContent =
             previousQuotes[i][initialLocaleQuote];
+    }
+}
+
+function setupQuotesIds() {
+    const allClickableQuotes = document.querySelectorAll(".--clickable");
+
+    for (let i = 0; i < allClickableQuotes.length; i++) {
+        if (!allClickableQuotes[i].hasAttribute("id")) allClickableQuotes[i].id = i;
     }
 }
 
