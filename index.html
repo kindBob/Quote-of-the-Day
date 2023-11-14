@@ -54,7 +54,7 @@
             </header>
 
             <div class="container quotes-section__container">
-                <div id="current-quote-element" class="quotes-element --clickable">
+                <div class="quotes-element main-page-quote --clickable">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
                             <div id="current-date" class="quotes-element__date"></div>
@@ -79,10 +79,10 @@
                 </div>
 
                 <div class="separator"></div>
-                <div class="history-title">Previous Quotes</div>
+                <div data-i18n-key="previous-quotes-title" class="history-title">Previous Quotes</div>
 
                 <div id="history-container" class="history-container">
-                    <div class="quotes-element history__quote-element --clickable">
+                    <div class="quotes-element history-quote-element main-page-quote --clickable">
                         <div class="quotes-element__inner-container">
                             <div class="quotes-element__front-container">
                                 <div class="quotes-element__date history__quotes-element-date"></div>
@@ -109,7 +109,9 @@
                     </div>
                 </div>
 
-                <button id="show-more">Show more</button>
+                <div class="show-more-btn-container">
+                    <button data-i18n-key="show-more-btn__show-more" id="show-more" class="button">Show more</button>
+                </div>
             </div>
 
             <footer class="footer">

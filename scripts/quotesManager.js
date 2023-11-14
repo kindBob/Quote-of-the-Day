@@ -1,6 +1,11 @@
 import DateManager from "./dateManager.js";
 import { initialLocale, findTranslation } from "./languageManager.js";
-import { setFlipQuoteEL, isSavedSectionOpened, setupSavingButtonsEL, setSharingButtonsEL } from "./userInteractions.js";
+import {
+    isSavedSectionOpened,
+    setupSavingButtonsEL,
+    setSharingButtonsEL,
+    hideShowMoreBtn,
+} from "./userInteractions.js";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
@@ -127,6 +132,10 @@ async function setupQuotes() {
         previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
     }
 
+    if (previousQuotes.length <= 3) hideShowMoreBtn();
+
+    if (previousQuotes.length < 10) createDummyHistory();
+
     if (!previousQuotes[0]) {
         previousQuotes.unshift(currentQuote);
     } else {
@@ -150,8 +159,7 @@ async function setupQuotes() {
 function setupPreviousQuotes() {
     if (previousQuotes.length > 1) {
         for (let i = 0; i < previousQuotes.length - 1; i++) {
-            const clone = createClone(historyContainer, document.querySelector(".history__quote-element"));
-            setFlipQuoteEL([clone]);
+            createClone(historyContainer, document.querySelector(".history-quote-element"));
         }
     }
 
@@ -220,7 +228,6 @@ function createSavedQuotesElements() {
             setupSavingButtonsEL([savingButton]);
 
             setSharingButtonsEL([clone.querySelector(".share-button")]);
-            setFlipQuoteEL([clone]);
         }
     }
 }

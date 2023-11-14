@@ -27,7 +27,7 @@ $buttons-margin: 15px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ef3a32;
+  background-color: rgba($color: #ef3a32, $alpha: 0.7);
   cursor: pointer;
 }
 
@@ -313,7 +313,6 @@ body {
   }
 }
 
-.history-header .nav-bar,
 .saved-header .nav-bar {
   &__list {
     justify-content: flex-end;
@@ -325,7 +324,6 @@ body {
   }
 }
 
-.history-header .nav-bar > *,
 .saved-header .nav-bar > * {
   max-width: 50%;
 }
@@ -428,24 +426,19 @@ body {
 }
 
 .history-container {
+  padding: 20px 0;
   overflow: hidden;
   transition: $transition-length;
-}
-
-.saved__section {
-  overflow-y: hidden;
-}
-
-.saved__section.--active {
-  overflow-y: auto;
 }
 
 .saved {
   &__section {
     transform: translateX(100%);
+    overflow-y: hidden;
 
     &.--active {
       transform: translateX(0);
+      overflow-y: auto;
     }
   }
 
@@ -482,6 +475,12 @@ body {
   }
 }
 
+.show-more-btn-container {
+  background-color: #fff;
+  border-radius: 20px;
+  transition: 0.2s;
+}
+
 .quotes-element {
   height: $quoteElementHeight;
   width: 100%;
@@ -489,12 +488,12 @@ body {
   margin-top: $quoteElementMarginTop;
   transition: $transition-length;
 
-  &.--dummy {
-    display: none;
-  }
-
   &:first-child {
     margin-top: 0;
+  }
+
+  &.--dummy {
+    display: none;
   }
 
   &__inner-container {
@@ -553,7 +552,7 @@ body {
     max-height: $quote-date-height;
     align-items: center;
     width: 100%;
-    font-size: clamp(32px, 5.5vw, 55px);
+    font-size: clamp(32px, 6.5vw, 55px);
     color: #ef3a32;
     font-weight: 300;
   }
@@ -694,24 +693,6 @@ body {
   &.--bigger-font-size {
     font-size: 15px;
   }
-}
-
-.quotes-element.--inactive {
-  width: 100%;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  background-color: #4d4d4d;
-  border-radius: 25px;
-}
-
-.quotes-element.--inactive .quotes-element__date {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #ffffff;
-  font-size: clamp(28px, 5.5vw, 50px);
 }
 // Middle ---
 // Bottom
@@ -1065,7 +1046,7 @@ body {
 
   .quotes-element {
     z-index: 1;
-    perspective: 1500px;
+    perspective: 2000px;
 
     &__back-container {
       position: absolute;
