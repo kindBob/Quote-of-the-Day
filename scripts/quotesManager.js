@@ -155,8 +155,6 @@ async function setupQuotes() {
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupFontSizes();
     setupQuotesIds();
-
-    console.log(previousQuotes);
 }
 
 function setupPreviousQuotes() {

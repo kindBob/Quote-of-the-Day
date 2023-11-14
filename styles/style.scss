@@ -445,6 +445,12 @@ body {
     }
   }
 
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   &__container.--fixed-height {
     min-height: calc(100vh - $footer-height - $header-height);
   }
