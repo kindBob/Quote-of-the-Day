@@ -159,17 +159,17 @@ async function setupQuotes() {
 
 function setupPreviousQuotes() {
     if (previousQuotes.length > 1) {
-        for (let i = 0; i < previousQuotes.length - 1; i++) {
+        for (let i = 0; i < previousQuotes.length - 2; i++) {
             createClone(historyContainer, document.querySelector(".history-quote-element"));
         }
     }
 
     for (let i = 0; i < previousQuotes.length; i++) {
-        document.querySelectorAll(".history__quotes-element-date")[i].textContent = previousQuotes[i].id;
+        document.querySelectorAll(".history__quotes-element-date")[i].textContent = previousQuotes[i + 1].id;
         document.querySelectorAll(".history__quotes-element-author")[i].textContent =
-            previousQuotes[i][initialLocaleAuthor];
+            previousQuotes[i + 1][initialLocaleAuthor];
         document.querySelectorAll(".history__quotes-element-quote")[i].textContent =
-            previousQuotes[i][initialLocaleQuote];
+            previousQuotes[i + 1][initialLocaleQuote];
     }
 }
 
