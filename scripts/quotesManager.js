@@ -134,7 +134,7 @@ async function setupQuotes() {
 
     if (previousQuotes.length <= 3) hideShowMoreBtn();
 
-    if (previousQuotes.length < 10) createDummyHistory();
+    // if (previousQuotes.length < 10) createDummyHistory();
 
     if (!previousQuotes[0]) {
         previousQuotes.unshift(currentQuote);
