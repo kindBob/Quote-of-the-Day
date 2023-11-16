@@ -387,6 +387,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 .saved__container.--fixed-height {
   min-height: calc(100vh - 90px - 130px);
