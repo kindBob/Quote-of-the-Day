@@ -18,8 +18,8 @@ const savedContainer = document.querySelector("#saved-container");
 
 const dateManager = new DateManager();
 
-// const QUOTES_API = "http://localhost:3000/quote";
-const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quote";
+// const QUOTES_API = "http://localhost:3000/quotes";
+const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
 
 let currentQuote = null;
 
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initialLocaleAuthor = `author-${initialLocale}`;
     initialLocaleQuote = `quote-${initialLocale}`;
 
-    getQuote();
+    fetchQuotes();
 });
 
 function createDummyHistory() {
@@ -102,12 +102,14 @@ function createDummyHistory() {
     location.reload();
 }
 
-async function getQuote() {
+async function fetchQuotes() {
     const response = await fetch(QUOTES_API);
     if (!response.ok) return;
 
-    const quote = await response.json();
-    currentQuote = quote;
+    const data = await response.json();
+    const quotes = data.quotes;
+    currentQuote = quotes[quotes.length - 1];
+    previousQuotes = quotes.slice(0, quotes.length - 1);
 
     setupQuotes();
 }
@@ -128,25 +130,7 @@ async function setupQuotes() {
     currentAuthorOutput.textContent = quoteObjectAuthor;
     currentDateOutput.textContent = dateManager.getCurrentFormattedDate();
 
-    if (localStorage.getItem("previousQuotes")) {
-        previousQuotes = JSON.parse(localStorage.getItem("previousQuotes"));
-    }
-
     if (previousQuotes.length <= 3) hideShowMoreBtn();
-
-    // if (previousQuotes.length < 10) createDummyHistory();
-
-    if (!previousQuotes[0]) {
-        previousQuotes.unshift(currentQuote);
-    } else {
-        if (previousQuotes[0].id != currentQuote.id) {
-            previousQuotes.unshift(currentQuote);
-        }
-    }
-
-    if (previousQuotes.length > 11) previousQuotes.pop();
-
-    localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
 
     setupPreviousQuotes();
     setupSavingButtonsEL(document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)"));
