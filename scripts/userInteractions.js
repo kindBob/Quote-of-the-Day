@@ -296,7 +296,7 @@ burgerMenu.addEventListener("click", () => {
 });
 
 savedOpenButton.addEventListener("click", () => {
-    isScreenSmall ? closeNavBarList(openSavedSection) : openSavedSection();
+    isScreenSmall ? closeNavBarList(toggleSaved(1)) : toggleSaved(1);
 });
 
 function closeNavBarList(cb) {
@@ -421,42 +421,37 @@ export function hideShowMoreBtn() {
 }
 // Quotes ---
 // Sections
-savedBackButtons.forEach((button) => button.addEventListener("click", closeSaved));
+savedBackButtons.forEach((button) => button.addEventListener("click", () => toggleSaved(2)));
 
-function closeSaved() {
-    isSavedSectionOpened = false;
+function toggleSaved(act) {
+    //act = 1 - open, act = 2 - close
 
-    mainSection.style.width = "100%";
+    window.scrollTo({
+        behavior: "smooth",
+        top: 0,
+        left: 0,
+    });
 
-    savedSection.classList.remove("--active");
-    mainSection.classList.remove("--inactive", "--left-side");
+    if (act == 1) {
+        isSavedSectionOpened = true;
+        savedSection.style.width = "100%";
 
-    lockScrolling();
-    overlay.classList.add("--active");
+        savedSection.classList.add("--active");
+        mainSection.classList.add("--inactive");
+    } else {
+        isSavedSectionOpened = false;
 
-    setTimeout(() => {
-        savedSection.style.width = "0";
-    }, quotesSectionsTransitionTime);
+        mainSection.style.width = "100%";
 
-    setTimeout(() => {
-        unlockScrolling();
-        overlay.classList.remove("--active");
-    }, quotesSectionsTransitionTime + 100);
-}
-
-function openSavedSection() {
-    isSavedSectionOpened = true;
-
-    savedSection.style.width = "100%";
-
-    savedSection.classList.add("--active");
-    mainSection.classList.add("--inactive");
+        savedSection.classList.remove("--active");
+        mainSection.classList.remove("--inactive", "--left-side");
+    }
 
     lockScrolling();
     overlay.classList.add("--active");
 
     setTimeout(() => {
-        mainSection.style.width = "0";
+        act == 1 ? (mainSection.style.width = "0") : (savedSection.style.width = "0");
     }, quotesSectionsTransitionTime);
 
     setTimeout(() => {
