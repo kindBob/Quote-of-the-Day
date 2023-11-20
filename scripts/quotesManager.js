@@ -170,7 +170,7 @@ export function setupFontSizes() {
     const authorOutputs = document.querySelectorAll(".quotes-element__author");
 
     quoteOutputs.forEach((output) => {
-        output.textContent.length >= 230
+        output.textContent.length >= 200
             ? output.classList.add("--smaller-font-size")
             : output.classList.remove("--smaller-font-size");
 

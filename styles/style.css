@@ -512,7 +512,7 @@ body {
   font-size: clamp(32px, 9vw, 115px);
 }
 .quotes-element__author.--smaller-font-size {
-  font-size: clamp(26px, 6vw, 90px);
+  font-size: clamp(28px, 6vw, 90px);
   text-wrap: wrap;
 }
 .quotes-element__author.--cyrillic {
@@ -535,7 +535,7 @@ body {
   text-align: left;
 }
 .quotes-element__quote.--smaller-font-size {
-  font-size: clamp(15px, 2.2vw, 24px);
+  font-size: clamp(16px, 2.1vw, 24px);
 }
 .quotes-element__quote.--bigger-font-size, .quotes-element__quote.--medium-bigger-font-size {
   text-align: right;
@@ -653,7 +653,7 @@ body {
   color: #4b4b4b;
 }
 .footer__list-item {
-  width: 100%;
+  width: fit-content;
   color: rgba(0, 0, 0, 0.5);
   transition: 0.2s;
   cursor: pointer;

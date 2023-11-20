@@ -595,7 +595,7 @@ body {
     }
 
     &.--smaller-font-size {
-      font-size: clamp(26px, 6vw, 90px);
+      font-size: clamp(28px, 6vw, 90px);
       text-wrap: wrap;
     }
 
@@ -621,7 +621,7 @@ body {
     text-align: left;
 
     &.--smaller-font-size {
-      font-size: clamp(15px, 2.2vw, 24px);
+      font-size: clamp(16px, 2.1vw, 24px);
     }
 
     &.--bigger-font-size,
@@ -754,7 +754,7 @@ body {
   }
 
   &__list-item {
-    width: 100%;
+    width: fit-content;
     color: rgba($color: #000, $alpha: 0.5);
     transition: 0.2s;
     cursor: pointer;
