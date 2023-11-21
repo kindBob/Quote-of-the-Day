@@ -18,8 +18,8 @@ const savedContainer = document.querySelector("#saved-container");
 
 const dateManager = new DateManager();
 
-// const QUOTES_API = "http://localhost:3000/quotes";
-const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
+const QUOTES_API = "http://localhost:3000/quotes";
+// const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
 
 let currentQuote = null;
 
@@ -109,7 +109,7 @@ async function fetchQuotes() {
     const data = await response.json();
     const quotes = data.quotes;
     currentQuote = quotes[quotes.length - 1];
-    previousQuotes = quotes.slice(0, quotes.length - 1);
+    previousQuotes = quotes.slice(0, quotes.length).reverse();
 
     setupQuotes();
 }
@@ -128,7 +128,7 @@ async function setupQuotes() {
 
     currentQuoteOutput.textContent = quoteObjectQuote;
     currentAuthorOutput.textContent = quoteObjectAuthor;
-    currentDateOutput.textContent = dateManager.getCurrentFormattedDate();
+    currentDateOutput.textContent = currentQuote.id;
 
     if (previousQuotes.length <= 3) hideShowMoreBtn();
 
