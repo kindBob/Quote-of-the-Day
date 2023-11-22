@@ -1321,6 +1321,16 @@ body {
 }
 
 @media (max-width: 476px) {
+	.quotes-element {
+		&__quote {
+			padding-right: 0;
+
+			&.--smaller-font-size {
+				font-size: clamp(16px, 2vw, 24px);
+			}
+		}
+	}
+
 	.footer {
 		&__element {
 			padding: 0 !important;
