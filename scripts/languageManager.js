@@ -43,7 +43,9 @@ function translateElement(element) {
     const key = element.getAttribute("data-i18n-key");
     const translation = translations.find((translation) => translation.keyWord === key);
 
-    element.innerHTML = translation[`${initialLocale}Translation`].replace("<n>", "<br />");
+    if (key.includes("<placeholder>")) {
+        element.setAttribute("placeholder", translation[`${initialLocale}Translation`]);
+    } else element.innerHTML = translation[`${initialLocale}Translation`].replace("<n>", "<br />");
 }
 
 export function findTranslation(keyWord) {

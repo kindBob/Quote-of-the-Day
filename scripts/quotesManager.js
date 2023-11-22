@@ -1,4 +1,3 @@
-import DateManager from "./dateManager.js";
 import { initialLocale, findTranslation } from "./languageManager.js";
 import {
     isSavedSectionOpened,

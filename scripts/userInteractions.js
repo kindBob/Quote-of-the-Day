@@ -28,17 +28,29 @@ const loadingElementSpinner = loadingElement.querySelector(".spinner");
 const emailSubForm = document.querySelector("#email-sub-form");
 const emailSubEmailInput = emailSubForm.email;
 const emailSubResult = emailSubForm.querySelector(".email-sub-form__result");
-const emailSubResultText = emailSubForm.querySelector(".email-sub-form__result-text");
 
-const overlay = document.querySelector("#overlay");
+const submissionElement = document.querySelector("#submission");
+const submissionForm = submissionElement.querySelector("form");
+const submissionEmail = submissionForm.email;
+const submissionAuthor = submissionForm.author;
+const submissionQuote = submissionForm.quote;
+const submissionCloseBtn = submissionElement.querySelector(".close-btn");
+const submisssionResult = submissionElement.querySelector("#submission__result");
+const actionBtn = document.querySelector("#action-btn");
 
 const showMoreBtn = document.querySelector("#show-more");
+
+const overlay = document.querySelector("#overlay");
+const mainSectionBgBlur = document.querySelector(".bg-blur.section");
+const bodyBgBlur = document.querySelector(".bg-blur.body");
 
 let isQuoteAbleToFlip = true;
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
+const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission";
+// const SUBMISSIONS_API = "http://localhost:3000/submission";
 // const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
 // const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
 
@@ -50,6 +62,7 @@ const quoteFlippingLength = 600;
 
 export let isSavedSectionOpened = false;
 
+// Basic
 document.addEventListener("DOMContentLoaded", () => {
     quotesSections.forEach((section) => (section.style.transition = `transform ${quotesSectionsTransitionTime}ms`));
 
@@ -58,21 +71,15 @@ document.addEventListener("DOMContentLoaded", () => {
     historyContainer.style.maxHeight = `${(380 + 50) * 3}px`;
 });
 
-emailSubForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    subscribe();
-});
-
-// Basic
 document.addEventListener("click", (event) => {
     if (!isScreenSmall) return;
 
-    mainNavBar.classList.contains("--active") &&
-    !burgerMenu.contains(event.target) &&
-    !mainNavBarList.contains(event.target)
-        ? closeNavBarList()
-        : null;
+    if (
+        mainNavBar.classList.contains("--active") &&
+        !burgerMenu.contains(event.target) &&
+        !mainNavBarList.contains(event.target)
+    )
+        closeNavBarList();
 
     setupQuotesFlipping(event);
 });
@@ -89,42 +96,30 @@ function detectSmallScreen() {
     // })(navigator.userAgent || navigator.vendor || window.opera);
     return window.screen.width <= 768;
 }
-// Basic ---
 
-// Email sub
-async function subscribe() {
-    const inputValue = emailSubEmailInput.value;
-
-    if (!validateEmail(inputValue)) {
-        handleSubErrors(2);
-    } else {
-        displaySubResult(null, findTranslation("sub-loading"));
-
-        const response = await fetch(EMAIL_SUBSCRIPTION_API, {
-            method: "POST",
-            body: JSON.stringify({
-                email: inputValue,
-            }),
-            headers: {
-                "content-type": "application/json",
-            },
-        });
-
-        if (response.ok) {
-            displaySubResult(true, findTranslation("sub-success"));
-            emailSubEmailInput.value = "";
-            emailSubEmailInput.blur();
-
-            return;
-        }
-
-        const data = await response.json();
-
-        handleSubErrors(data.errCode);
-    }
+function validateEmail(email) {
+    const regex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return regex.test(email);
 }
 
-function handleSubErrors(errCode) {
+function lockScrolling(element = document.body) {
+    element.style.overflowY = "hidden";
+}
+
+function unlockScrolling(element = document.body) {
+    element.style.overflowY = "auto";
+}
+
+function resetInputsFocus(inputs) {
+    inputs.forEach((input) => {
+        input.blur();
+        input.value = "";
+    });
+}
+// Basic ---
+// Genereal
+function handleRequestErrors(errCode) {
     //1 - duplicate, 2- invalid, 3 - anything else
     let errMessage = null;
 
@@ -142,20 +137,22 @@ function handleSubErrors(errCode) {
             break;
     }
 
-    displaySubResult(false, errMessage);
+    return errMessage;
 }
 
 let timeoutId = null;
-function displaySubResult(success, message) {
+function displayRequestResult(options) {
+    let { success, message, displayElement } = options;
+
     let timeoutLength = 0;
 
-    emailSubResult.classList.remove("--active", "--failure", "--success", "--loading");
+    displayElement.classList.remove("--active", "--failure", "--success", "--loading");
 
     if (success !== null) {
         if (success === false) {
-            emailSubResult.classList.add("--failure");
+            displayElement.classList.add("--failure");
         } else {
-            emailSubResult.classList.add("--success");
+            displayElement.classList.add("--success");
         }
 
         timeoutLength = 4000;
@@ -164,21 +161,153 @@ function displaySubResult(success, message) {
         timeoutLength = 999999;
     }
 
-    emailSubResultText.textContent = message;
+    displayElement.children[0].textContent = message;
 
-    emailSubResult.classList.add("--active");
+    displayElement.classList.add("--active");
 
     if (timeoutId) clearTimeout(timeoutId);
 
     timeoutId = setTimeout(() => {
-        emailSubResult.classList.remove("--active");
+        displayElement.classList.remove("--active");
     }, timeoutLength);
 }
+// General ---
+// Submission
+submissionForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-function validateEmail(email) {
-    const regex =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return regex.test(email);
+    checkSubmission();
+});
+
+actionBtn.addEventListener("click", () => {
+    openSubmissions();
+});
+
+bodyBgBlur.addEventListener("click", () => {
+    if (submissionElement.classList.contains("--active")) closeSubmissions();
+});
+
+submissionCloseBtn.addEventListener("click", () => {
+    closeSubmissions();
+});
+
+function openSubmissions() {
+    submissionElement.classList.add("--active");
+
+    bodyBgBlur.classList.add("--active");
+
+    lockScrolling();
+}
+
+function closeSubmissions() {
+    submissionElement.classList.remove("--active");
+
+    bodyBgBlur.classList.remove("--active");
+
+    unlockScrolling();
+}
+
+function checkSubmission() {
+    const isEmailValid = validateEmail(submissionEmail.value);
+
+    if (!isEmailValid) {
+        displayRequestResult({ success: false, message: handleRequestErrors(2), displayElement: submisssionResult });
+    }
+
+    sendSubmission();
+}
+
+async function sendSubmission() {
+    const headers = new Headers();
+    headers.append("content-type", "application/json");
+
+    const body = JSON.stringify({
+        email: submissionEmail.value,
+        author: submissionAuthor.value,
+        quote: submissionQuote.value,
+    });
+
+    displayRequestResult({ success: null, message: findTranslation("sub-loading"), displayElement: submisssionResult });
+
+    const response = await fetch(SUBMISSIONS_API, {
+        method: "POST",
+        headers,
+        body,
+    });
+
+    if (response.ok) {
+        displayRequestResult({
+            success: true,
+            message: findTranslation("submission-success"),
+            displayElement: submisssionResult,
+        });
+
+        resetInputsFocus(submissionForm.querySelectorAll(".submission-input"));
+
+        return;
+    }
+
+    const data = await response.json();
+
+    displayRequestResult({
+        success: false,
+        message: handleRequestErrors(data.errCode),
+        displayElement: submisssionResult,
+    });
+}
+// Submission ---
+// Email sub
+emailSubForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    subscribe();
+});
+
+async function subscribe() {
+    const inputValue = emailSubEmailInput.value;
+
+    if (!validateEmail(inputValue)) {
+        displayRequestResult({
+            success: false,
+            message: handleRequestErrors(2),
+            displayElement: emailSubResult,
+        });
+    } else {
+        displayRequestResult({
+            success: null,
+            message: findTranslation("sub-loading"),
+            displayElement: emailSubResult,
+        });
+
+        const response = await fetch(EMAIL_SUBSCRIPTION_API, {
+            method: "POST",
+            body: JSON.stringify({
+                email: inputValue,
+            }),
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+
+        if (response.ok) {
+            displayRequestResult({
+                success: true,
+                message: findTranslation("sub-success"),
+                displayElement: emailSubResult,
+            });
+            resetInputsFocus([emailSubEmailInput]);
+
+            return;
+        }
+
+        const data = await response.json();
+
+        displayRequestResult({
+            success: false,
+            message: handleRequestErrors(data.errCode),
+            displayElement: emailSubResult,
+        });
+    }
 }
 // Email sub ---
 // Sharing
@@ -292,30 +421,25 @@ burgerMenu.addEventListener("click", () => {
     mainNavBar.classList.toggle("--active");
     burgerMenu.classList.toggle("--active");
 
+    mainSectionBgBlur.classList.toggle("--active");
+
     mainNavBar.classList.contains("--active") ? lockScrolling() : unlockScrolling();
 });
 
 savedOpenButton.addEventListener("click", () => {
-    isScreenSmall ? closeNavBarList(toggleSaved(1)) : toggleSaved(1);
+    isScreenSmall ? closeNavBarList(() => toggleSaved(1)) : toggleSaved(1);
 });
 
 function closeNavBarList(cb) {
     mainNavBar.classList.remove("--active");
     burgerMenu.classList.remove("--active");
+    mainSectionBgBlur.classList.remove("--active");
 
     mainNavBarList.addEventListener("transitionend", cb);
     setTimeout(() => {
         mainNavBarList.removeEventListener("transitionend", cb);
         unlockScrolling();
     }, 500);
-}
-
-function lockScrolling(element = document.body) {
-    element.style.overflowY = "hidden";
-}
-
-function unlockScrolling(element = document.body) {
-    element.style.overflowY = "auto";
 }
 // Header ---
 // Quotes
