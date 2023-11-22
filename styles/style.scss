@@ -1212,13 +1212,14 @@ body {
 	.main-header__nav-bar {
 		&__list {
 			width: 320px;
-			height: 100vh;
+			min-height: 100vh;
+			max-height: 100vh;
 			justify-content: center;
 			flex-direction: column;
 			position: fixed;
 			top: 0;
 			right: 0;
-			padding-bottom: 10vh !important;
+			// padding-bottom: 10vh !important;
 			background-color: #ffffff;
 			pointer-events: none;
 			transform: translateX(100vw);
@@ -1239,7 +1240,7 @@ body {
 	}
 
 	.quotes-element {
-		// height: fit-content;
+		min-height: $quoteElementHeight;
 		z-index: 1;
 		perspective: 2500px;
 
@@ -1280,8 +1281,7 @@ body {
 		}
 
 		&__inner-container {
-			// // height: $quoteElementHeight;
-			// min-height: $quoteElementHeight;
+			min-height: 100%;
 			transform-style: preserve-3d;
 			padding: 20px 35px 0 27.5px;
 			// -webkit-animation: 2s flip 1s ease-in-out;
@@ -1304,11 +1304,11 @@ body {
 		}
 
 		&__quote {
-			flex: 1;
-			height: -webkit-fit-content;
-			height: -moz-fit-content;
-			height: fit-content;
+			flex-grow: 1;
+			// height: fit-content;
 
+			// height: -webkit-fit-content;
+			// height: -moz-fit-content;
 			&.--smaller-font-size {
 				font-size: clamp(18px, 3.2vw, 18px);
 			}
@@ -1326,7 +1326,7 @@ body {
 			padding-right: 0;
 
 			&.--smaller-font-size {
-				font-size: clamp(16px, 2vw, 24px);
+				font-size: clamp(17px, 2vw, 24px);
 			}
 		}
 	}
@@ -1390,7 +1390,7 @@ body {
 			padding-right: 0;
 
 			&.--smaller-font-size {
-				font-size: clamp(15px, 2.2vw, 24px);
+				font-size: clamp(16px, 2.2vw, 24px);
 				padding-bottom: 17.5px;
 			}
 		}
