@@ -143,10 +143,18 @@
                         <div data-i18n-key="legal__title" class="footer__title">Legal</div>
                         <ul class="footer__list">
                             <li class="footer__list-item footer__text">
-                                <a data-i18n-key="legal__terms" href="./terms-of-service.html" target="_blank"></a>
+                                <a
+                                    data-i18n-key="legal__terms"
+                                    id="legal-terms"
+                                    href="./terms-of-service.html"
+                                    target="_blank"></a>
                             </li>
                             <li class="footer__list-item footer__text">
-                                <a data-i18n-key="legal__policy" href="./privacy-policy.html" target="_blank"></a>
+                                <a
+                                    data-i18n-key="legal__policy"
+                                    id="legal-policy"
+                                    href="./privacy-policy.html"
+                                    target="_blank"></a>
                             </li>
                         </ul>
                     </div>
@@ -254,7 +262,9 @@
                     name="author"
                     type="text"
                     placeholder="Aristotle"
-                    autocomplete="off" />
+                    autocomplete="off"
+                    minlength="4"
+                    required />
 
                 <label for="submission-form__quote" data-i18n-key="quote">Quote</label>
                 <textarea
@@ -265,6 +275,8 @@
                     type="text"
                     placeholder="It is during our darkest moments that we must focus to see the light."
                     autocomplete="off"
+                    minlength="8"
+                    required
                     cols="8"
                     rows="3"></textarea>
 
