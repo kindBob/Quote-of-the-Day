@@ -189,8 +189,7 @@ submissionQuote.addEventListener("keydown", (e) => {
 });
 
 actionBtn.addEventListener("click", () => {
-    // openSubmission();
-    window.open("https://google.com", "_blank");
+    openSubmission();
 });
 
 bodyBgBlur.addEventListener("click", () => {
@@ -299,6 +298,7 @@ async function subscribe() {
             method: "POST",
             body: JSON.stringify({
                 email: inputValue,
+                lang: initialLocale,
             }),
             headers: {
                 "content-type": "application/json",
