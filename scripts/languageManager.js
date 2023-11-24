@@ -44,11 +44,11 @@ function translateElement(element) {
     const translation = translations.find((translation) => translation.keyWord === key);
 
     if (key.includes("<placeholder>")) {
-        element.setAttribute("placeholder", translation[`${initialLocale}Translation`]);
-    } else element.innerHTML = translation[`${initialLocale}Translation`].replace("<n>", "<br />");
+        element.setAttribute("placeholder", translation[initialLocale]);
+    } else element.innerHTML = translation[initialLocale].replace("<n>", "<br />");
 }
 
 export function findTranslation(keyWord) {
     const translation = translations.find((translation) => translation.keyWord === keyWord);
-    return translation[`${initialLocale}Translation`];
+    return translation[initialLocale];
 }

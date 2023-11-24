@@ -47,7 +47,7 @@ const bodyBgBlur = document.querySelector(".bg-blur.body");
 const legalPolicyLink = document.querySelector("#legal-policy");
 const legalTermsLink = document.querySelector("#legal-terms");
 
-let isQuoteAbleToFlip = true;
+let quoteAbleToFlip = true;
 
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
@@ -538,7 +538,7 @@ function flipQuote(event) {
         element = target;
     }
 
-    if (!isQuoteAbleToFlip) return console.log("returned");
+    if (!quoteAbleToFlip) return console.log("returned");
 
     if (
         !target.classList.contains("quotes-element__buttons-container") &&
@@ -547,12 +547,12 @@ function flipQuote(event) {
         element.classList.toggle("--flipped");
     }
 
-    isQuoteAbleToFlip = false;
-    setTimeout(() => (isQuoteAbleToFlip = true), quoteFlippingLength);
+    quoteAbleToFlip = false;
+    setTimeout(() => (quoteAbleToFlip = true), quoteFlippingLength);
 }
 
 function flipQuoteBack(elements) {
-    if (!isQuoteAbleToFlip) return;
+    if (!quoteAbleToFlip) return;
     elements.forEach((element) => element.classList.remove("--flipped"));
 }
 

@@ -784,12 +784,11 @@ body {
     &__author {
         display: flex;
         align-items: flex-end;
-        width: 55%;
+        width: 58%;
         height: calc(100% - $quote-date-height);
         font-size: clamp(32px, 7vw, 95px);
         text-transform: uppercase;
         line-height: 0.9;
-        text-wrap: balance;
         padding-right: 2%;
         word-spacing: -0.05vw;
         letter-spacing: -0.2vw;
