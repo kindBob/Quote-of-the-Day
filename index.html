@@ -78,8 +78,10 @@
                     </div>
                 </div>
 
-                <div class="separator"></div>
-                <div data-i18n-key="previous-quotes-title" class="history-title">Previous Quotes</div>
+                <div class="separator">
+                    <div data-i18n-key="previous-quotes-title" class="separator__title">Previous Quotes</div>
+                </div>
+                
             </div>
 
             <div id="history-container" class="history-container">
@@ -194,7 +196,7 @@
         <section id="saved-section" class="section quotes-section saved__section">
             <header id="saved-header" class="header saved-header">
                 <div class="container header__container">
-                    <nav class="nav-bar --always-show">
+                    <nav class="nav-bar">
                         <h2 data-i18n-key="saved-title" class="section-title header__title">Saved Quotes</h2>
                         <ul class="button-list nav-bar__list">
                             <li data-i18n-key="back-button" class="back-button button nav-bar__element">Back</li>
@@ -369,9 +371,9 @@
 
         <div id="overlay"></div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
-        <script type="module" src="./scripts/languageManager.js"></script>
-        <script type="module" src="./scripts/userInteractions.js"></script>
-        <script type="module" src="./scripts/quotesManager.js"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+        <script async type="module" src="./scripts/languageManager.js"></script>
+        <script async type="module" src="./scripts/quotesManager.js"></script>
+        <script defer type="module" src="./scripts/userInteractions.js"></script>  
     </body>
 </html>

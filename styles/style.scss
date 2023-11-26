@@ -3,7 +3,6 @@ $transition-length: 0.6s;
 
 $header-height: 130px;
 $footer-height: 90px;
-$quote-date-height: 60px;
 
 $quoteElementHeight: 380px;
 $quoteElementMarginTop: 50px;
@@ -607,15 +606,17 @@ body {
 .separator {
     position: relative;
     width: calc(100% - 22px);
-    height: 1px;
+    // width: 100%;
+    height: 2px;
     background-color: #4b4b4b;
-    margin-top: 80px;
+    margin: 2.5em 0 2em;
+    font-size: clamp(24px, 1rem + 2vw, 40px);
 
     &::before,
     &::after {
         content: "";
         position: absolute;
-        top: 50%;
+        top: calc(50% + 1px);
         width: 10px;
         height: 10px;
         background-color: inherit;
@@ -623,23 +624,21 @@ body {
 
     &::before {
         left: 0;
-        transform: translate(-50%, -50%) rotate(45deg);
+        transform: translate(-50%, calc(-50% - 1px)) rotate(45deg);
     }
 
     &::after {
         right: 0;
-        transform: translate(50%, -50%) rotate(45deg);
+        transform: translate(50%, calc(-50% - 1px)) rotate(45deg);
     }
-}
 
-.history-title {
-    width: 100%;
-    // margin-bottom: 20px;
-    color: #4b4b4b;
-    font-size: clamp(30px, 5vw, 40px);
-    text-align: center;
-    font-weight: 300;
-    text-transform: capitalize;
+    &__title {
+        width: 100%;
+        color: #4b4b4b;
+        text-align: center;
+        font-weight: 300;
+        text-transform: capitalize;
+    }
 }
 
 .history-container {
@@ -713,7 +712,7 @@ body {
 }
 
 .quotes-element {
-    height: $quoteElementHeight;
+    height: fit-content;
     width: 100%;
     background-color: transparent;
     margin-top: $quoteElementMarginTop;
@@ -732,15 +731,18 @@ body {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
-        height: 100%;
+        min-height: $quoteElementHeight;
         background-color: #ffffff;
         border-radius: 25px;
-        padding: 35px 40px 35px;
+        padding-top: max(23.5px, 3%) !important;
+        padding-bottom: max(23.5px, 3%) !important;
+        padding-left: max(24px, 4%) !important;
+        padding-right: max(17px, 4%) !important;
     }
 
     &__front-container {
         width: 100%;
-        height: 100%;
+        min-height: 100%;
         display: flex;
         flex-wrap: wrap;
     }
@@ -750,7 +752,7 @@ body {
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        min-height: 100%;
         display: flex;
         align-items: flex-start;
         justify-content: flex-end;
@@ -780,34 +782,27 @@ body {
 
     &__date {
         display: flex;
-        max-height: $quote-date-height;
+        height: min-content;
         align-items: center;
         width: 100%;
-        font-size: clamp(32px, 6.5vw, 55px);
+        font-size: clamp(38px, 1rem + 5.5vw, 60px);
         color: #ef3a32;
         font-weight: 300;
+        line-height: 1;
     }
 
     &__author {
-        width: 52%;
+        max-width: 52%;
+        width: fit-content;
         display: flex;
         align-items: flex-end;
-        height: calc(100% - $quote-date-height);
-        font-size: clamp(32px, 7vw, 95px);
+        padding-right: 2%;
+        padding-top: 0.1em;
+        font-size: clamp(38px, 1rem + 5.5vw, 95px);
         text-transform: uppercase;
         line-height: 0.9;
-        padding-right: 2%;
         word-spacing: -0.05vw;
         letter-spacing: -0.2vw;
-
-        &.--bigger-font-size {
-            font-size: clamp(32px, 9vw, 115px);
-        }
-
-        &.--smaller-font-size {
-            font-size: clamp(28px, 6vw, 90px);
-            text-wrap: wrap;
-        }
 
         &.--cyrillic {
             text-transform: capitalize;
@@ -816,30 +811,14 @@ body {
     }
 
     &__quote {
-        width: 48%;
-        height: -webkit-fit-content;
-        height: -moz-fit-content;
-        height: fit-content;
-        min-height: calc(100% - $quote-date-height);
-        flex: 1;
         display: flex;
         justify-content: flex-end;
         align-items: flex-end;
-        font-size: clamp(17px, 2.25vw, 26px);
+        flex: 1;
+        padding-top: 1.2em;
+        font-size: clamp(17px, 1rem + 0.7vw, 26px);
         font-weight: 300;
         line-height: 1.4;
-
-        &.--smaller-font-size {
-            font-size: clamp(18px, 1.9vw, 24px);
-        }
-
-        &.--bigger-font-size {
-            font-size: clamp(22px, 3.5vw, 34px);
-        }
-
-        &.--medium-bigger-font-size {
-            font-size: clamp(19px, 2.5vw, 30px);
-        }
     }
 }
 
@@ -1126,10 +1105,7 @@ body {
         }
 
         &__author {
-            width: 70%;
-            height: -webkit-fit-content;
-            height: -moz-fit-content;
-            height: fit-content;
+            max-width: 65%;
         }
 
         &__quote {
@@ -1137,9 +1113,6 @@ body {
             min-height: auto;
             align-items: flex-end;
             justify-content: flex-start;
-            padding-bottom: 30px;
-            font-size: clamp(18.5px, 2.5vw, 26px);
-            text-align: left !important;
         }
     }
 
@@ -1149,6 +1122,12 @@ body {
 }
 
 @media (max-width: 768px) {
+    .separator {
+        &__title {
+            margin-top: 0.3em;
+        }
+    }
+
     .action-btn {
         body.ru & {
             font-size: clamp(23px, 3.5vw, 30px);
@@ -1219,14 +1198,14 @@ body {
     .main-header__nav-bar {
         &__list {
             width: 320px;
-            min-height: 100vh;
             max-height: 100vh;
+            height: 100vh;
             justify-content: center;
             flex-direction: column;
             position: fixed;
             top: 0;
             right: 0;
-            padding-bottom: 10vh !important;
+            padding-bottom: 7vh !important;
             background-color: #ffffff;
             pointer-events: none;
             transform: translateX(100vw);
@@ -1302,20 +1281,7 @@ body {
         }
 
         &__author {
-            width: 100%;
-            height: -webkit-fit-content;
-            height: -moz-fit-content;
-            height: fit-content;
-        }
-
-        &__quote {
-            &.--smaller-font-size {
-                font-size: clamp(18px, 3.2vw, 18px);
-            }
-
-            &.--medium-bigger-font-size {
-                font-size: clamp(19px, 3vw, 30px);
-            }
+            max-width: none;
         }
     }
 }
@@ -1338,9 +1304,9 @@ body {
         &__quote {
             padding-right: 0;
 
-            &.--smaller-font-size {
-                font-size: clamp(17px, 2vw, 24px);
-            }
+            // &.--smaller-font-size {
+            //     font-size: clamp(17px, 2vw, 24px);
+            // }
         }
     }
 
@@ -1408,10 +1374,10 @@ body {
         &__quote {
             padding-right: 0;
 
-            &.--smaller-font-size {
-                font-size: clamp(16px, 2.2vw, 24px);
-                padding-bottom: 17.5px;
-            }
+            // &.--smaller-font-size {
+            //     font-size: clamp(16px, 2.2vw, 24px);
+            //     padding-bottom: 17.5px;
+            // }
         }
     }
 }
