@@ -154,7 +154,8 @@ function displayRequestResult(options) {
             displayElement.classList.add("--success");
         }
 
-        timeoutLength = 4000;
+        message = message + ".";
+        timeoutLength = 5000;
     } else {
         message = message + "...";
         timeoutLength = 999999;
@@ -240,6 +241,7 @@ async function sendSubmission() {
         email: submissionEmail.value,
         author: submissionAuthor.value,
         quote: submissionQuote.value,
+        lang: initialLocale,
     });
 
     displayRequestResult({ success: null, message: findTranslation("sub-loading"), displayElement: submisssionResult });
