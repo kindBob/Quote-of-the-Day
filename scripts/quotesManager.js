@@ -1,4 +1,3 @@
-import { startAnimation } from "./animations.js";
 import { initialLocale, findTranslation } from "./languageManager.js";
 import {
     isSavedSectionOpened,
@@ -152,8 +151,6 @@ function setupPreviousQuotes() {
         document.querySelectorAll(".history__quotes-element-quote")[i].textContent =
             previousQuotes[i + 1][initialLocaleQuote];
     }
-
-    startAnimation();
 }
 
 function setupQuotesIds() {

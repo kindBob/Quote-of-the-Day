@@ -118,25 +118,37 @@ function resetInputsFocus(inputs) {
 }
 // Basic ---
 // Genereal
-function handleRequestErrors(errCode) {
-    //1 - duplicate, 2- invalid, 3 - anything else
+function getEmailErrorMessage(errCode) {
     let errMessage = null;
 
     switch (errCode) {
         case 1:
-            errMessage = findTranslation("sub-error_1");
+            errMessage = findTranslation("duplicate-email");
             break;
 
         case 2:
-            errMessage = findTranslation("sub-error_2");
+            errMessage = findTranslation("invalid-email");
             break;
 
         default:
-            errMessage = findTranslation("sub-error_3");
+            errMessage = findTranslation("general-error");
             break;
     }
 
     return errMessage;
+}
+
+function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(",")[1]);
+    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ab], { type: mimeString });
 }
 
 let timeoutId = null;
@@ -154,10 +166,10 @@ function displayRequestResult(options) {
             displayElement.classList.add("--success");
         }
 
-        message = message + ".";
+        message = message;
         timeoutLength = 5000;
     } else {
-        message = message + "...";
+        message = message + "..";
         timeoutLength = 999999;
     }
 
@@ -224,7 +236,7 @@ function checkSubmission() {
         if (!isEmailValid) {
             displayRequestResult({
                 success: false,
-                message: handleRequestErrors(2),
+                message: getEmailErrorMessage(2),
                 displayElement: submisssionResult,
             });
         }
@@ -268,7 +280,7 @@ async function sendSubmission() {
 
     displayRequestResult({
         success: false,
-        message: handleRequestErrors(data.errCode),
+        message: getEmailErrorMessage(data.errCode),
         displayElement: submisssionResult,
     });
 }
@@ -286,13 +298,13 @@ async function subscribe() {
     if (!validateEmail(inputValue)) {
         displayRequestResult({
             success: false,
-            message: handleRequestErrors(2),
+            message: getEmailErrorMessage(2),
             displayElement: emailSubResult,
         });
     } else {
         displayRequestResult({
             success: null,
-            message: findTranslation("sub-loading"),
+            message: findTranslation("loading"),
             displayElement: emailSubResult,
         });
 
@@ -322,7 +334,7 @@ async function subscribe() {
 
         displayRequestResult({
             success: false,
-            message: handleRequestErrors(data.errCode),
+            message: getEmailErrorMessage(data.errCode),
             displayElement: emailSubResult,
         });
     }
@@ -340,22 +352,22 @@ export function setupSharingCard(event) {
     sharingCardQuoteOutput.textContent = quoteOutput.textContent;
     sharingCardDateOutput.textContent = dateOutput.textContent;
 
-    setupSharingProcess();
+    setupSharingQuoteProcess();
 }
 
-async function setupSharingProcess() {
+async function setupSharingQuoteProcess() {
     html2canvas(sharingCard, { dpi: 600 }).then(async (canvas) => {
         const imageDataUrl = canvas.toDataURL("image/png", 1);
 
         if (navigator.share && isScreenSmall) {
-            shareCard_mobiles(imageDataUrl);
+            shareQuote_mobiles(imageDataUrl);
         } else {
-            await shareCard_notMobiles(imageDataUrl);
+            await shareQuote_notMobiles(imageDataUrl);
         }
     });
 }
 
-async function shareCard_notMobiles(imageDataUrl) {
+async function shareQuote_notMobiles(imageDataUrl) {
     if (sharingInProcess) {
         return;
     }
@@ -401,7 +413,7 @@ async function shareCard_notMobiles(imageDataUrl) {
     sharingInProcess = false;
 }
 
-async function shareCard_mobiles(imageDataUrl) {
+async function shareQuote_mobiles(imageDataUrl) {
     const blobImage = dataURItoBlob(imageDataUrl);
     const imageFile = new File([blobImage], "quote-card.png", {
         type: "image/png",
@@ -417,19 +429,6 @@ async function shareCard_mobiles(imageDataUrl) {
             files: [imageFile],
         })
         .catch((error) => console.log(`Problems occured: ${error}`));
-}
-
-function dataURItoBlob(dataURI) {
-    const byteString = atob(dataURI.split(",")[1]);
-    const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ab], { type: mimeString });
 }
 // Sharing ---
 // Header
