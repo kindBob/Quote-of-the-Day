@@ -135,7 +135,6 @@ async function setupQuotes() {
     setupSavedQuotes();
     setupSectionsContent();
     setSharingButtonsEL(document.querySelectorAll(".share-button"));
-    setupFontSizes();
     setupQuotesIds();
 }
 
@@ -165,34 +164,6 @@ function setupQuotesIds() {
     }
 }
 
-export function setupFontSizes() {
-    const quoteOutputs = document.querySelectorAll(".quotes-element__quote");
-    const authorOutputs = document.querySelectorAll(".quotes-element__author");
-
-    quoteOutputs.forEach((output) => {
-        output.textContent.length >= 200
-            ? output.classList.add("--smaller-font-size")
-            : output.classList.remove("--smaller-font-size");
-
-        output.textContent.length <= 55
-            ? output.classList.add("--bigger-font-size")
-            : output.classList.remove("--bigger-font-size");
-
-        output.textContent.length <= 75
-            ? output.classList.add("--medium-bigger-font-size")
-            : output.classList.remove("--medium-bigger-font-size");
-    });
-
-    authorOutputs.forEach((output) => {
-        output.textContent.length >= 20
-            ? output.classList.add("--smaller-font-size")
-            : output.classList.remove("--smaller-font-size");
-        output.textContent.length <= 15 && output.textContent.split(" ").length > 1
-            ? output.classList.add("--bigger-font-size")
-            : output.classList.remove("--bigger-font-size");
-    });
-}
-
 function setupSavedQuotes() {
     const isEmpty = savedQuotes.length === 0;
 
@@ -202,7 +173,6 @@ function setupSavedQuotes() {
         createSavedQuotesElements();
         setupSavingButtonsText();
         setupSavedQuotesElementsText();
-        setupFontSizes();
     } else {
         savedSection.classList.add("--is-empty");
     }

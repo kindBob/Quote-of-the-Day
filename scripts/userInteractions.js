@@ -1,5 +1,5 @@
 import { findTranslation, initialLocale } from "./languageManager.js";
-import { manageSavedQuotes, setupFontSizes, previousQuotes } from "./quotesManager.js";
+import { manageSavedQuotes, previousQuotes } from "./quotesManager.js";
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -339,8 +339,6 @@ export function setupSharingCard(event) {
     sharingCardAuthorOutput.textContent = authorOutput.textContent;
     sharingCardQuoteOutput.textContent = quoteOutput.textContent;
     sharingCardDateOutput.textContent = dateOutput.textContent;
-
-    setupFontSizes();
 
     setupSharingProcess();
 }

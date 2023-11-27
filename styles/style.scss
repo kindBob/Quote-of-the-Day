@@ -716,7 +716,6 @@ body {
     width: 100%;
     background-color: transparent;
     margin-top: $quoteElementMarginTop;
-    //transition set in userInteractions.js
 
     &:first-child {
         margin-top: 0;
@@ -738,6 +737,7 @@ body {
         padding-bottom: max(23.5px, 3%) !important;
         padding-left: max(24px, 4%) !important;
         padding-right: max(17px, 4%) !important;
+        //transition set in userInteractions.js
     }
 
     &__front-container {
@@ -1005,6 +1005,7 @@ body {
         transform: translate(0, -50%);
         opacity: 0;
         transition: 0.2s;
+        pointer-events: none;
     }
 
     body.ru &__icon {
