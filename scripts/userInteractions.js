@@ -65,12 +65,12 @@ const quoteFlippingLength = 600;
 
 export let isSavedSectionOpened = false;
 
-// Basic
+// Genereal
 document.addEventListener("DOMContentLoaded", () => {
     //Quotes
     quotesSections.forEach((section) => (section.style.transition = `transform ${quotesSectionsTransitionTime}ms`));
 
-    savedSection.style.width = "0";
+    changeDisplay(savedSection, "hide");
 
     historyContainer.style.maxHeight = `${(380 + 50) * 3}px`;
 
@@ -104,10 +104,22 @@ function validateEmail(email) {
 
 function lockScrolling(element = document.body) {
     element.style.overflowY = "hidden";
+    element.style.maxHeight = "100vh";
 }
 
 function unlockScrolling(element = document.body) {
     element.style.overflowY = "auto";
+    element.style.maxHeight = "100%";
+}
+
+function changeDisplay(el, act) {
+    if (act == "show") {
+        el.style.width = "100%";
+        el.style.heigth = "100%";
+    } else {
+        el.style.width = "0";
+        el.style.heigth = "0";
+    }
 }
 
 function resetInputsFocus(inputs) {
@@ -116,8 +128,7 @@ function resetInputsFocus(inputs) {
         input.value = "";
     });
 }
-// Basic ---
-// Genereal
+
 function getEmailErrorMessage(errCode) {
     let errMessage = null;
 
@@ -442,7 +453,7 @@ burgerMenu.addEventListener("click", () => {
 });
 
 savedOpenButton.addEventListener("click", () => {
-    isScreenSmall ? closeNavBarList(() => toggleSaved(1)) : toggleSaved(1);
+    isScreenSmall ? closeNavBarList(() => toggleSaved("open")) : toggleSaved("open");
 });
 
 function closeNavBarList(cb) {
@@ -560,41 +571,47 @@ export function hideShowMoreBtn() {
 }
 // Quotes ---
 // Sections
-savedBackButtons.forEach((button) => button.addEventListener("click", () => toggleSaved(2)));
+savedBackButtons.forEach((button) => button.addEventListener("click", () => toggleSaved("close")));
 
 function toggleSaved(act) {
-    //act = 1 - open, act = 2 - close
-
     window.scrollTo({
         behavior: "smooth",
         top: 0,
         left: 0,
     });
 
-    if (act == 1) {
+    if (act == "open") {
         isSavedSectionOpened = true;
-        savedSection.style.width = "100%";
+        // savedSection.style.heigth = "100%";
+        changeDisplay(savedSection, "show");
 
         savedSection.classList.add("--active");
         mainSection.classList.add("--inactive");
     } else {
         isSavedSectionOpened = false;
 
-        mainSection.style.width = "100%";
+        // mainSection.style.heigth = "100%";
+        changeDisplay(mainSection, "show");
 
         savedSection.classList.remove("--active");
         mainSection.classList.remove("--inactive", "--left-side");
     }
 
     lockScrolling();
+    lockScrolling(savedSection);
+    lockScrolling(mainSection);
+
     overlay.classList.add("--active");
 
     setTimeout(() => {
-        act == 1 ? (mainSection.style.width = "0") : (savedSection.style.width = "0");
+        act == "open" ? changeDisplay(mainSection, "hide") : changeDisplay(savedSection, "hide");
     }, quotesSectionsTransitionTime);
 
     setTimeout(() => {
         unlockScrolling();
+        unlockScrolling(savedSection);
+        unlockScrolling(mainSection);
+
         overlay.classList.remove("--active");
     }, quotesSectionsTransitionTime + 100);
 }
