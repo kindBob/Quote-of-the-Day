@@ -8,7 +8,7 @@ const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
 
 const savedOpenButton = document.querySelector("#saved-open-button");
 const savedSection = document.querySelector("#saved-section");
-const savedBackButtons = savedSection.querySelectorAll(".back-button");
+const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
 
 const quotesSections = document.querySelectorAll(".quotes-section");
 const mainSection = document.querySelector("#main-section");
@@ -49,6 +49,7 @@ const legalTermsLink = document.querySelector("#legal-terms");
 
 let quoteAbleToFlip = true;
 
+const QUOTE_FLIPPING_LENGTH = 600;
 const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
@@ -61,7 +62,6 @@ let sharingInProcess = false;
 let isScreenSmall = detectSmallScreen();
 
 const quotesSectionsTransitionTime = isScreenSmall ? 600 : 800;
-const quoteFlippingLength = 600;
 
 export let isSavedSectionOpened = false;
 
@@ -87,7 +87,7 @@ document.addEventListener("click", (event) => {
         !burgerMenu.contains(event.target) &&
         !mainNavBarList.contains(event.target)
     )
-        closeNavBarList();
+        closeNavBar();
 
     setupQuotesFlipping(event);
 });
@@ -194,7 +194,33 @@ function displayRequestResult(options) {
         displayElement.classList.remove("--active");
     }, timeoutLength);
 }
+
+function scrollToPosition(cb, options) {
+    checkPosition();
+
+    function checkPosition() {
+        if (options?.top && window.scrollY == options.top) {
+            finish();
+        } else if (window.scrollY == 0) {
+            finish();
+        }
+    }
+
+    function finish() {
+        typeof cb === "function" && cb(options?.funcArgument && options.funcArgument);
+        window.removeEventListener("scroll", checkPosition);
+    }
+
+    window.scrollTo({
+        behavior: options?.behavior || "smooth",
+        top: options?.top || 0,
+        left: 0,
+    });
+
+    window.addEventListener("scroll", checkPosition);
+}
 // General ---
+
 // Submission
 submissionForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -296,6 +322,7 @@ async function sendSubmission() {
     });
 }
 // Submission ---
+
 // Email sub
 emailSubForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -351,6 +378,7 @@ async function subscribe() {
     }
 }
 // Email sub ---
+
 // Sharing
 export function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");
@@ -442,32 +470,47 @@ async function shareQuote_mobiles(imageDataUrl) {
         .catch((error) => console.log(`Problems occured: ${error}`));
 }
 // Sharing ---
+
 // Header
 burgerMenu.addEventListener("click", () => {
-    mainNavBar.classList.toggle("--active");
-    burgerMenu.classList.toggle("--active");
-
-    mainSectionBgBlur.classList.toggle("--active");
-
-    mainNavBar.classList.contains("--active") ? lockScrolling() : unlockScrolling();
+    if (mainNavBar.classList.contains("--active")) closeNavBar();
+    else scrollToPosition(openNavBar);
 });
 
 savedOpenButton.addEventListener("click", () => {
-    isScreenSmall ? closeNavBarList(() => toggleSaved("open")) : toggleSaved("open");
+    isScreenSmall ? closeNavBar(() => toggleSaved("open")) : scrollToPosition(toggleSaved, { funcArgument: "open" });
 });
 
-function closeNavBarList(cb) {
+savedCloseButtons.forEach(
+    (button) => button.addEventListener("click", () => scrollToPosition(toggleSaved, { funcArgument: "close" }))
+    // button.addEventListener("click", () => toggleSaved("close"))
+);
+
+function closeNavBar(cb) {
     mainNavBar.classList.remove("--active");
     burgerMenu.classList.remove("--active");
     mainSectionBgBlur.classList.remove("--active");
 
-    mainNavBarList.addEventListener("transitionend", cb);
-    setTimeout(() => {
-        mainNavBarList.removeEventListener("transitionend", cb);
+    if (cb && typeof cb == "function") mainNavBarList.addEventListener("transitionend", finish);
+    else finish();
+
+    function finish() {
+        if (cb && typeof cb == "function") cb();
+
         unlockScrolling();
-    }, 500);
+        mainNavBarList.removeEventListener("transitionend", finish);
+    }
+}
+
+function openNavBar() {
+    mainNavBar.classList.add("--active");
+    burgerMenu.classList.add("--active");
+    mainSectionBgBlur.classList.add("--active");
+
+    lockScrolling();
 }
 // Header ---
+
 // Quotes
 showMoreBtn.addEventListener("click", () => {
     if (showMoreBtn.textContent.includes(findTranslation("show-more-btn__show-more"))) {
@@ -522,7 +565,7 @@ function setupQuotesFlipping(event) {
     let allClickableQuotes = Array.from(document.querySelectorAll(".quotes-element.--clickable"));
 
     allClickableQuotes.forEach((element) => {
-        element.querySelector(".quotes-element__inner-container").style.transition = `${quoteFlippingLength}ms`;
+        element.querySelector(".quotes-element__inner-container").style.transition = `${QUOTE_FLIPPING_LENGTH}ms`;
     });
 
     const clickedQuote = event.target.classList.contains("--clickable")
@@ -558,7 +601,7 @@ function flipQuote(event) {
     }
 
     quoteAbleToFlip = false;
-    setTimeout(() => (quoteAbleToFlip = true), quoteFlippingLength);
+    setTimeout(() => (quoteAbleToFlip = true), QUOTE_FLIPPING_LENGTH);
 }
 
 function flipQuoteBack(elements) {
@@ -570,19 +613,11 @@ export function hideShowMoreBtn() {
     showMoreBtn.style.display = "none";
 }
 // Quotes ---
+
 // Sections
-savedBackButtons.forEach((button) => button.addEventListener("click", () => toggleSaved("close")));
-
 function toggleSaved(act) {
-    window.scrollTo({
-        behavior: "smooth",
-        top: 0,
-        left: 0,
-    });
-
     if (act == "open") {
         isSavedSectionOpened = true;
-        // savedSection.style.heigth = "100%";
         changeDisplay(savedSection, "show");
 
         savedSection.classList.add("--active");
@@ -590,7 +625,6 @@ function toggleSaved(act) {
     } else {
         isSavedSectionOpened = false;
 
-        // mainSection.style.heigth = "100%";
         changeDisplay(mainSection, "show");
 
         savedSection.classList.remove("--active");
@@ -598,8 +632,8 @@ function toggleSaved(act) {
     }
 
     lockScrolling();
-    lockScrolling(savedSection);
-    lockScrolling(mainSection);
+    // lockScrolling(savedSection);
+    // lockScrolling(mainSection);
 
     overlay.classList.add("--active");
 
@@ -609,8 +643,8 @@ function toggleSaved(act) {
 
     setTimeout(() => {
         unlockScrolling();
-        unlockScrolling(savedSection);
-        unlockScrolling(mainSection);
+        // unlockScrolling(savedSection);
+        // unlockScrolling(mainSection);
 
         overlay.classList.remove("--active");
     }, quotesSectionsTransitionTime + 100);

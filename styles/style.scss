@@ -34,7 +34,7 @@ html,
 body {
     padding: 0;
     margin: 0;
-    // min-height: 100%;
+    min-height: 100%;
 }
 
 html {
@@ -276,11 +276,20 @@ body {
     }
 
     &::before {
-        transform: translateY(1.2px) rotateZ(-45deg);
+        transform: translateY(1px) rotateZ(-45deg);
     }
 
     &::after {
         transform: translateY(-1px) rotateZ(45deg);
+    }
+
+    &:active {
+        background: #ef3a32;
+    }
+
+    &:active::after,
+    &:active::before {
+        background: #fff;
     }
 }
 
@@ -422,10 +431,14 @@ body {
     &__element {
         width: 100%;
     }
-}
 
-.saved-header .nav-bar > * {
-    max-width: 50%;
+    &__element > .close-btn.--cross {
+        display: none;
+    }
+
+    * {
+        max-width: 50%;
+    }
 }
 
 .nav-bar {
@@ -445,29 +458,17 @@ body {
     }
 }
 
-.main-header__nav-bar__element {
-    margin-left: $buttons-margin;
+.main-header {
+    &__nav-bar__element {
+        margin-left: $buttons-margin;
 
-    &:first-child {
-        margin-left: 0;
-    }
+        &:first-child {
+            margin-left: 0;
+        }
 
-    &.--bigger {
-        min-width: 200px;
-    }
-}
-
-.nav-bar__element.close-btn.--cross {
-    display: none;
-
-    &:active {
-        background: #ef3a32;
-        // border-radius: 50%;
-    }
-
-    &:active::after,
-    &:active::before {
-        background: #fff;
+        &.--bigger {
+            min-width: 200px;
+        }
     }
 }
 
@@ -499,7 +500,6 @@ body {
         margin-bottom: 1em;
         font-size: clamp(20px, 4.5vw, 27px);
         text-align: center;
-        // text-wrap: balance;
     }
 
     &__form {
@@ -536,13 +536,12 @@ body {
         top: 0.4em;
     }
 
-    & .close-btn:hover {
-        background: #ef3a32;
+    & .close-btn:hover::after {
+        // transform: rotate(45deg) translateY(-1.1px);
     }
 
-    & .close-btn:hover::after,
     & .close-btn:hover::before {
-        background: #fff;
+        // transform: rotate(-45deg) translateY(1.1px);
     }
 
     &__result {
@@ -1135,7 +1134,6 @@ body {
 
     .submission {
         width: 90%;
-        // padding: 60px 20px 0;
 
         &__input {
             width: 100%;
@@ -1167,12 +1165,14 @@ body {
         width: 135px;
     }
 
-    .nav-bar__element.close-btn.--cross {
-        display: flex;
-    }
+    .saved-header .nav-bar {
+        &__element > .close-btn.--cross {
+            display: flex;
+        }
 
-    .nav-bar__element.back-button:not(.--cross) {
-        display: none;
+        &__element.close-btn:not(.--cross) {
+            display: none;
+        }
     }
 
     .burger-menu {
@@ -1194,33 +1194,35 @@ body {
         }
     }
 
-    .main-header__nav-bar {
-        &__list {
-            width: 320px;
-            max-height: 100vh;
-            height: 100vh;
-            justify-content: center;
-            flex-direction: column;
-            position: fixed;
-            top: 0;
-            right: 0;
-            padding-bottom: 7vh !important;
-            background-color: #ffffff;
-            pointer-events: none;
-            transform: translateX(100vw);
-        }
+    .main-header {
+        &__nav-bar {
+            &__list {
+                width: 320px;
+                max-height: 100vh;
+                height: 100vh;
+                justify-content: center;
+                flex-direction: column;
+                position: fixed;
+                top: 0;
+                right: 0;
+                padding-bottom: 7vh !important;
+                background-color: #ffffff;
+                pointer-events: none;
+                transform: translateX(100vw);
+            }
 
-        &.--active &__list {
-            pointer-events: all;
-            transform: translateX(0);
-        }
+            &.--active &__list {
+                pointer-events: all;
+                transform: translateX(0);
+            }
 
-        &__element {
-            min-width: 200px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            margin: 50px 0;
-            border-radius: 50px;
+            &__element {
+                min-width: 200px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                margin: 50px 0;
+                border-radius: 50px;
+            }
         }
     }
 
