@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     changeDisplay(savedSection, "hide");
 
-    historyContainer.style.maxHeight = `${(380 + 50) * 3}px`;
+    historyContainer.style.maxHeight = `${(380 + 55) * 3}px`;
 
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
@@ -539,7 +539,7 @@ function showLessPreviousQuotes() {
         historyContainer.style.maxHeight = `${(380 + 50) * 3}px`;
 
         showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
-    }, 700);
+    }, 400);
 }
 
 export function setupSavingButtonsEL(buttons = []) {
