@@ -987,13 +987,13 @@ body {
         color: #fff;
     }
 
-    body.ru & {
+    html[lang="ru"] & {
         width: 13em;
         font-size: clamp(23px, 3vw, 27px);
         padding: 0.7em 1em 0.7em 1.2em;
     }
 
-    body.ru &:hover {
+    html[lang="ru"] &:hover {
         padding-left: 0.95em;
     }
 
@@ -1008,7 +1008,7 @@ body {
         pointer-events: none;
     }
 
-    body.ru &__icon {
+    html[lang="ru"] &__icon {
         width: 2.3em;
     }
 
@@ -1061,11 +1061,11 @@ body {
 // Bottom ---
 // Adaptive
 @media (min-width: 1280px) {
-    body.ru .footer__element:nth-child(3) {
+    html[lang="ru"] .footer__element:nth-child(3) {
         width: 20%;
     }
 
-    body.ru .footer__element:nth-child(2) {
+    html[lang="ru"] .footer__element:nth-child(2) {
         width: 14%;
     }
 }
@@ -1082,11 +1082,11 @@ body {
         }
     }
 
-    body.ru .footer__element:nth-child(2) {
+    html[lang="ru"] .footer__element:nth-child(2) {
         padding-left: 3em;
     }
 
-    body.ru .footer__element:nth-child(3) {
+    html[lang="ru"] .footer__element:nth-child(3) {
         padding-left: 1.5em;
     }
 
@@ -1130,7 +1130,7 @@ body {
     }
 
     .action-btn {
-        body.ru & {
+        html[lang="ru"] & {
             font-size: clamp(23px, 3.5vw, 30px);
         }
     }
@@ -1154,7 +1154,7 @@ body {
         }
     }
 
-    body.ru .footer__element {
+    html[lang="ru"] .footer__element {
         padding: 0 !important;
     }
 
@@ -1350,7 +1350,7 @@ body {
     .action-btn {
         font-size: clamp(23px, 3vw, 30px);
 
-        body.ru & {
+        html[lang="ru"] & {
             font-size: clamp(21px, 3vw, 30px);
         }
     }
@@ -1388,17 +1388,6 @@ body {
 // Adaptive ---
 
 // Animations
-@-webkit-keyframes blink {
-    50% {
-        opacity: 0;
-    }
-}
-@keyframes blink {
-    50% {
-        opacity: 0;
-    }
-}
-
 @-webkit-keyframes quote-card-flip {
     0% {
         transform: rotateY(0deg);
@@ -1425,24 +1414,6 @@ body {
     }
     100% {
         transform: rotateY(0deg);
-    }
-}
-
-@-webkit-keyframes quote-hiding {
-    50% {
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(200vw) scale(0);
-    }
-}
-
-@keyframes quote-hiding {
-    50% {
-        opacity: 0;
-    }
-    100% {
-        transform: translateX(200vw) scale(0);
     }
 }
 
