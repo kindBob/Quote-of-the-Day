@@ -18,7 +18,6 @@ async function setupInitialLocale() {
     translations = await fetchTranslations(initialLocale);
 
     document.querySelector("html").setAttribute("lang", initialLocale);
-    document.body.classList.add(initialLocale);
 
     translatePage();
 }

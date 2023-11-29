@@ -51,13 +51,6 @@ document.addEventListener("keydown", (e) => {
 
                 break;
             }
-
-        case "a":
-            if (developerMode) {
-                createDummyHistory();
-
-                break;
-            }
     }
 
     if (keysPressed[keysCombination[0]] && keysPressed[keysCombination[1]] && !developerMode) {
@@ -78,26 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetchQuotes();
 });
-
-function createDummyHistory() {
-    previousQuotes = [];
-
-    const dummy = {
-        id: Math.floor(Math.random() * 1000),
-        "quote-en": "Some quote",
-        "quote-ru": "Some quote",
-        "author-en": "Some author",
-        "author-ru": "Some author",
-    };
-
-    for (let i = 10; i >= 1; i--) {
-        previousQuotes.unshift(dummy);
-    }
-
-    localStorage.setItem("previousQuotes", JSON.stringify(previousQuotes));
-
-    location.reload();
-}
 
 async function fetchQuotes() {
     const response = await fetch(QUOTES_API);
@@ -140,7 +113,7 @@ async function setupQuotes() {
 function setupPreviousQuotes() {
     if (previousQuotes.length > 1) {
         for (let i = 0; i < previousQuotes.length - 2; i++) {
-            createClone(historyContainer, document.querySelector(".history-quote-element"));
+            const clone = createClone(historyContainer, document.querySelector(".history-quote-element"));
         }
     }
 
@@ -150,7 +123,35 @@ function setupPreviousQuotes() {
             previousQuotes[i + 1][initialLocaleAuthor];
         document.querySelectorAll(".history__quotes-element-quote")[i].textContent =
             previousQuotes[i + 1][initialLocaleQuote];
+
+        if (i == 2) {
+            const elem = document.querySelectorAll(".history-quote-element")[i];
+
+            const dummyElement = document.createElement("div");
+            dummyElement.setAttribute("id", "scroll-position");
+
+            elem.appendChild(dummyElement);
+
+            dummyElement.style.position = "absolute";
+            dummyElement.style.bottom = "-20vh";
+            dummyElement.style.left = "0";
+        }
     }
+}
+
+export function checkPreviousQuotesReadiness() {
+    return new Promise((resolve) => {
+        const check = () => {
+            const firstQuote = document.querySelectorAll(".history-quote-element")[0];
+
+            if (firstQuote.getAttribute("id") == "1") resolve();
+            else {
+                requestAnimationFrame(check);
+            }
+        };
+
+        requestAnimationFrame(check);
+    });
 }
 
 function setupQuotesIds() {

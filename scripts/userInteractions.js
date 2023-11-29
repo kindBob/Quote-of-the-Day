@@ -1,5 +1,5 @@
 import { findTranslation, initialLocale } from "./languageManager.js";
-import { manageSavedQuotes, previousQuotes } from "./quotesManager.js";
+import { manageSavedQuotes, previousQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -66,13 +66,15 @@ const quotesSectionsTransitionTime = isScreenSmall ? 600 : 800;
 export let isSavedSectionOpened = false;
 
 // Genereal
+checkPreviousQuotesReadiness().then(() => {
+    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     //Quotes
     quotesSections.forEach((section) => (section.style.transition = `transform ${quotesSectionsTransitionTime}ms`));
 
     changeDisplay(savedSection, "hide");
-
-    historyContainer.style.maxHeight = `${(380 + 55) * 3}px`;
 
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
@@ -521,22 +523,39 @@ showMoreBtn.addEventListener("click", () => {
     showLessPreviousQuotes();
 });
 
+function getHistoryQuoteElementsHeight(number) {
+    const historyQuotes = document.querySelectorAll(".history-quote-element");
+
+    let totalHeight = 0;
+
+    for (let i = 0; i < number; i++) {
+        const computedStyles = getComputedStyle(historyQuotes[i]);
+        totalHeight +=
+            historyQuotes[i].offsetHeight +
+            parseInt(computedStyles.marginTop) +
+            parseInt(computedStyles.marginBottom) +
+            10;
+    }
+
+    return totalHeight;
+}
+
 function showMorePreviousQuotes() {
-    historyContainer.style.maxHeight = `${(380 + 50) * previousQuotes.length}px`;
+    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length - 1)}px`;
 
     showMoreBtn.textContent = findTranslation("show-more-btn__show-less");
 }
 
 function showLessPreviousQuotes() {
-    const allMainPageQuotes = document.querySelectorAll(".main-page-quote");
+    const scrollToPosition = document.querySelector("#scroll-position");
 
-    allMainPageQuotes[3].scrollIntoView({
+    scrollToPosition.scrollIntoView({
         behavior: "smooth",
         block: "end",
     });
 
     setTimeout(() => {
-        historyContainer.style.maxHeight = `${(380 + 50) * 3}px`;
+        historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
 
         showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
     }, 400);
