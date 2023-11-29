@@ -122,7 +122,7 @@ function changeDisplay(el, act) {
     }
 }
 
-function resetInputsFocus(inputs) {
+function resetInputs(inputs) {
     inputs.forEach((input) => {
         input.blur();
         input.value = "";
@@ -293,7 +293,7 @@ async function sendSubmission() {
         lang: initialLocale,
     });
 
-    displayRequestResult({ success: null, message: findTranslation("sub-loading"), displayElement: submisssionResult });
+    displayRequestResult({ success: null, message: findTranslation("loading"), displayElement: submisssionResult });
 
     const response = await fetch(SUBMISSIONS_API, {
         method: "POST",
@@ -308,7 +308,7 @@ async function sendSubmission() {
             displayElement: submisssionResult,
         });
 
-        resetInputsFocus(submissionForm.querySelectorAll(".submission-input"));
+        resetInputs(submissionForm.querySelectorAll(".submission__input"));
 
         return;
     }
@@ -363,7 +363,7 @@ async function subscribe() {
                 message: findTranslation("sub-success"),
                 displayElement: emailSubResult,
             });
-            resetInputsFocus([emailSubEmailInput]);
+            resetInputs([emailSubEmailInput]);
 
             return;
         }

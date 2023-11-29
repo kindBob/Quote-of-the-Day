@@ -262,6 +262,11 @@ body {
     transition: 0.4s;
     cursor: pointer;
 
+    &:active,
+    &:hover {
+        background: #ef3a32;
+    }
+
     &::before,
     &::after {
         content: "";
@@ -283,12 +288,10 @@ body {
         transform: translateY(-1px) rotateZ(45deg);
     }
 
-    &:active {
-        background: #ef3a32;
-    }
-
     &:active::after,
-    &:active::before {
+    &:active::before,
+    &:hover::after,
+    &:hover::before {
         background: #fff;
     }
 }
