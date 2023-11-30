@@ -18,7 +18,25 @@
         <title>Quote of the Day</title>
     </head>
     <body>
-        <section id="main-section" class="section quotes-section main-section">
+        <section id="about-us-section" class="section about-us__section">
+            <header id="about-us-header" class="header about-us-header">
+                <div class="container header__container">
+                    <nav class="nav-bar">
+                        <h2 data-i18n-key="about-us" class="section-title header__title">Saved Quotes</h2>
+                        <ul class="button-list nav-bar__list">
+                            <li data-i18n-key="back-button" class="close-btn button nav-bar__element">Back</li>
+                            <li class="nav-bar__element"><button class="close-btn --cross back-button"></button></li>
+                        </ul>
+                    </nav>
+                </div>
+            </header>
+
+            <div class="container">
+
+            </div>
+        </section>
+
+        <section id="main-section" class="section main-section --active">
             <header id="main-header" class="header main-header">
                 <div class="container header__container">
                     <nav class="nav-bar main-header__nav-bar">
@@ -29,6 +47,9 @@
                         </div>
 
                         <ul class="button-list nav-bar__list main-header__nav-bar__list">
+                            <li data-i18n-key="about-us" id="about-us-open-button" class="button nav-bar__element main-header__nav-bar__element">
+                                About us
+                            </li>
                             <li class="button nav-bar__element main-header__nav-bar__element --bigger">
                                 <a
                                     data-i18n-key="support_us-button"
@@ -53,7 +74,7 @@
                 </div>
             </header>
 
-            <div class="container quotes-section__container">
+            <div class="container section__container">
                 <div class="quotes-element main-page-quote --clickable">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
@@ -78,9 +99,9 @@
                     </div>
                 </div>
 
-                <div class="separator">
-                    <div data-i18n-key="previous-quotes-title" class="separator__title">Previous Quotes</div>
+                <div class="separator"> 
                 </div>
+                <div data-i18n-key="previous-quotes-title" class="history-title">Previous Quotes</div>
                 
             </div>
 
@@ -196,10 +217,9 @@
             </footer>
 
             <div class="bg-blur section"></div>
-        </section>
-        <div class="bg-blur body"></div>
+        </section>   
 
-        <section id="saved-section" class="section quotes-section saved__section">
+        <section id="saved-section" class="section saved__section">
             <header id="saved-header" class="header saved-header">
                 <div class="container header__container">
                     <nav class="nav-bar">
@@ -306,7 +326,7 @@
 
         <div id="loading" class="loading">
             <div class="status">
-                <div class="icon-container --successful">
+                <div class="status__icon-container --successful">
                     <svg
                         class="icon"
                         viewBox="0 -3 32 32"
@@ -337,7 +357,7 @@
                         </g>
                     </svg>
                 </div>
-                <div class="icon-container --unsuccessful">
+                <div class="status__icon-container --unsuccessful">
                     <svg
                         class="icon"
                         width="800px"
@@ -375,17 +395,18 @@
             <div class="spinner"></div>
         </div>
 
+        <div class="bg-blur body"></div>
+
         <div id="overlay"></div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script> 
         <script type="module" src="./scripts/languageManager.js"></script>
         <script type="module" src="./scripts/quotesManager.js"></script>
         <script type="module" src="./scripts/userInteractions.js"></script>  
-        <script src="scripts/animationsManager.js"></script>
-        <pre>
-            penis
-            big penis
-        </pre>
+        <!-- <script type="module" src="scripts/animationsManager.js"></script> -->
     </body>
 </html>

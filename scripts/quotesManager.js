@@ -144,7 +144,7 @@ export function checkPreviousQuotesReadiness() {
         const check = () => {
             const firstQuote = document.querySelectorAll(".history-quote-element")[0];
 
-            if (firstQuote.getAttribute("id") == "1") resolve();
+            if (firstQuote.getAttribute("id")?.includes("1")) resolve();
             else {
                 requestAnimationFrame(check);
             }
@@ -158,7 +158,7 @@ function setupQuotesIds() {
     const allClickableQuotes = document.querySelectorAll(".--clickable");
 
     for (let i = 0; i < allClickableQuotes.length; i++) {
-        if (!allClickableQuotes[i].hasAttribute("id")) allClickableQuotes[i].id = i;
+        if (!allClickableQuotes[i].hasAttribute("id")) allClickableQuotes[i].id = `index-${i}`;
     }
 }
 

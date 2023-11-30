@@ -1,6 +1,8 @@
 import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, previousQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
+gsap.registerPlugin(ScrollToPlugin);
+
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
 const mainNavBar = mainHeader.querySelector(".nav-bar");
@@ -10,8 +12,11 @@ const savedOpenButton = document.querySelector("#saved-open-button");
 const savedSection = document.querySelector("#saved-section");
 const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
 
-const quotesSections = document.querySelectorAll(".quotes-section");
-const mainSection = document.querySelector("#main-section");
+const aboutUsOpenButton = document.querySelector("#about-us-open-button");
+const aboutUsSection = document.querySelector("#about-us-section");
+const aboutUsCloseButtons = aboutUsSection.querySelectorAll(".close-btn");
+
+const sections = document.querySelectorAll(".section");
 
 const historyContainer = document.querySelector("#history-container");
 
@@ -58,10 +63,10 @@ const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission"
 // const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
 // const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
 
-let sharingInProcess = false;
-let isScreenSmall = detectSmallScreen();
+const smallScreen = detectSmallScreen();
+export const prefersReducedMotion = detectReducedMotion();
 
-const quotesSectionsTransitionTime = isScreenSmall ? 600 : 800;
+const sectionTransitionTime = smallScreen ? 600 : 800;
 
 export let isSavedSectionOpened = false;
 
@@ -72,9 +77,11 @@ checkPreviousQuotesReadiness().then(() => {
 
 document.addEventListener("DOMContentLoaded", () => {
     //Quotes
-    quotesSections.forEach((section) => (section.style.transition = `transform ${quotesSectionsTransitionTime}ms`));
+    sections.forEach((section) => (section.style.transition = `transform ${sectionTransitionTime}ms`));
 
-    changeDisplay(savedSection, "hide");
+    // changeDisplay(savedSection, "hide");
+
+    sections.forEach((el) => !el.classList.contains("--active") && changeDisplay(el, "hide"));
 
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
@@ -82,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("click", (event) => {
-    if (!isScreenSmall) return;
+    if (!smallScreen) return;
 
     if (
         mainNavBar.classList.contains("--active") &&
@@ -96,6 +103,10 @@ document.addEventListener("click", (event) => {
 
 function detectSmallScreen() {
     return window.screen.width <= 768;
+}
+
+function detectReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function validateEmail(email) {
@@ -198,6 +209,8 @@ function displayRequestResult(options) {
 }
 
 function scrollToPosition(cb, options) {
+    window.addEventListener("scroll", checkPosition);
+
     checkPosition();
 
     function checkPosition() {
@@ -209,17 +222,11 @@ function scrollToPosition(cb, options) {
     }
 
     function finish() {
-        typeof cb === "function" && cb(options?.funcArgument && options.funcArgument);
+        typeof cb === "function" && cb(options?.funcArgument !== undefined && options.funcArgument);
         window.removeEventListener("scroll", checkPosition);
     }
 
-    window.scrollTo({
-        behavior: options?.behavior || "smooth",
-        top: options?.top || 0,
-        left: 0,
-    });
-
-    window.addEventListener("scroll", checkPosition);
+    gsap.to(window, { scrollTo: 0, duration: prefersReducedMotion ? 0 : 0.3, ease: "power2.inOut" });
 }
 // General ---
 
@@ -382,6 +389,7 @@ async function subscribe() {
 // Email sub ---
 
 // Sharing
+let sharingInProcess = false;
 export function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");
 
@@ -400,15 +408,15 @@ async function setupSharingQuoteProcess() {
     html2canvas(sharingCard, { dpi: 600 }).then(async (canvas) => {
         const imageDataUrl = canvas.toDataURL("image/png", 1);
 
-        if (navigator.share && isScreenSmall) {
-            shareQuote_mobiles(imageDataUrl);
+        if (navigator.share && smallScreen) {
+            shareQuote_navigatorShare(imageDataUrl);
         } else {
-            await shareQuote_notMobiles(imageDataUrl);
+            shareQuote_custom(imageDataUrl);
         }
     });
 }
 
-async function shareQuote_notMobiles(imageDataUrl) {
+async function shareQuote_custom(imageDataUrl) {
     if (sharingInProcess) {
         return;
     }
@@ -454,7 +462,7 @@ async function shareQuote_notMobiles(imageDataUrl) {
     sharingInProcess = false;
 }
 
-async function shareQuote_mobiles(imageDataUrl) {
+async function shareQuote_navigatorShare(imageDataUrl) {
     const blobImage = dataURItoBlob(imageDataUrl);
     const imageFile = new File([blobImage], "quote-card.png", {
         type: "image/png",
@@ -480,12 +488,31 @@ burgerMenu.addEventListener("click", () => {
 });
 
 savedOpenButton.addEventListener("click", () => {
-    isScreenSmall ? closeNavBar(() => toggleSaved("open")) : scrollToPosition(toggleSaved, { funcArgument: "open" });
+    smallScreen
+        ? closeNavBar(() => toggleSection({ act: "open", section: "saved" }))
+        : scrollToPosition(toggleSection, { funcArgument: { act: "open", section: "saved" } });
+
+    isSavedSectionOpened = true;
 });
 
-savedCloseButtons.forEach(
-    (button) => button.addEventListener("click", () => scrollToPosition(toggleSaved, { funcArgument: "close" }))
-    // button.addEventListener("click", () => toggleSaved("close"))
+aboutUsOpenButton.addEventListener("click", () => {
+    smallScreen
+        ? closeNavBar(() => toggleSection("open"))
+        : scrollToPosition(toggleSection, { funcArgument: { section: "about-us" } });
+});
+
+savedCloseButtons.forEach((button) =>
+    button.addEventListener("click", () => {
+        scrollToPosition(toggleSection, { funcArgument: { section: "main" } });
+
+        isSavedSectionOpened = false;
+    })
+);
+
+aboutUsCloseButtons.forEach((button) =>
+    button.addEventListener("click", () => {
+        scrollToPosition(toggleSection, { funcArgument: { section: "main" } });
+    })
 );
 
 function closeNavBar(cb) {
@@ -534,7 +561,7 @@ function getHistoryQuoteElementsHeight(number) {
             historyQuotes[i].offsetHeight +
             parseInt(computedStyles.marginTop) +
             parseInt(computedStyles.marginBottom) +
-            10;
+            15;
     }
 
     return totalHeight;
@@ -547,18 +574,23 @@ function showMorePreviousQuotes() {
 }
 
 function showLessPreviousQuotes() {
-    const scrollToPosition = document.querySelector("#scroll-position");
+    const scrollToPosition = document.querySelector("#index-3");
+    const offset = window.screen.width * (window.screen.width > 1600 ? 0.2 : 0.11);
 
-    scrollToPosition.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
+    gsap.to(window, {
+        duration: prefersReducedMotion ? 0 : 1,
+        scrollTo: { y: scrollToPosition, offsetY: offset },
+        ease: "power2.inOut",
     });
 
-    setTimeout(() => {
-        historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+    setTimeout(
+        () => {
+            historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
 
-        showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
-    }, 400);
+            showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
+        },
+        prefersReducedMotion ? 0 : 900
+    );
 }
 
 export function setupSavingButtonsEL(buttons = []) {
@@ -634,38 +666,37 @@ export function hideShowMoreBtn() {
 // Quotes ---
 
 // Sections
-function toggleSaved(act) {
-    if (act == "open") {
-        isSavedSectionOpened = true;
-        changeDisplay(savedSection, "show");
+function toggleSection(options) {
+    const { act, section } = options;
 
-        savedSection.classList.add("--active");
-        mainSection.classList.add("--inactive");
-    } else {
-        isSavedSectionOpened = false;
+    for (let i = 0; i < sections.length; i++) {
+        if (sections[i].getAttribute("id") == `${section}-section`) {
+            changeDisplay(sections[i], "show");
 
-        changeDisplay(mainSection, "show");
+            sections[i].classList.add("--active");
 
-        savedSection.classList.remove("--active");
-        mainSection.classList.remove("--inactive", "--left-side");
+            sections[i].classList.contains("--right-side") && sections[i].classList.remove("--right-side");
+        } else {
+            if (sections[i].getAttribute("id") == "main-section") {
+                if (section == "about-us") sections[i].classList.add("--right-side");
+            }
+
+            sections[i].classList.remove("--active");
+
+            setTimeout(() => {
+                changeDisplay(sections[i], "hide");
+            }, sectionTransitionTime);
+        }
     }
 
     lockScrolling();
-    // lockScrolling(savedSection);
-    // lockScrolling(mainSection);
 
     overlay.classList.add("--active");
 
     setTimeout(() => {
-        act == "open" ? changeDisplay(mainSection, "hide") : changeDisplay(savedSection, "hide");
-    }, quotesSectionsTransitionTime);
-
-    setTimeout(() => {
         unlockScrolling();
-        // unlockScrolling(savedSection);
-        // unlockScrolling(mainSection);
 
         overlay.classList.remove("--active");
-    }, quotesSectionsTransitionTime + 100);
+    }, sectionTransitionTime + 100);
 }
 // Sections ---

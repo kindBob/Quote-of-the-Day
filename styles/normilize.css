@@ -29,7 +29,7 @@ dd {
 
 body {
     min-height: 100vh;
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
     text-rendering: optimizeSpeed;
     line-height: 1.5;
 }
