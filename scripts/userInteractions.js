@@ -1,3 +1,4 @@
+import { lenis } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, previousQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
@@ -76,10 +77,8 @@ checkPreviousQuotesReadiness().then(() => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    //Quotes
+    //Sections
     sections.forEach((section) => (section.style.transition = `transform ${sectionTransitionTime}ms`));
-
-    // changeDisplay(savedSection, "hide");
 
     sections.forEach((el) => !el.classList.contains("--active") && changeDisplay(el, "hide"));
 
@@ -116,13 +115,17 @@ function validateEmail(email) {
 }
 
 function lockScrolling(element = document.body) {
-    element.style.overflowY = "hidden";
-    element.style.maxHeight = "100vh";
+    // element.style.overflowY = "hidden";
+    // element.style.maxHeight = "100vh";
+
+    lenis.stop();
 }
 
 function unlockScrolling(element = document.body) {
-    element.style.overflowY = "auto";
-    element.style.maxHeight = "100%";
+    // element.style.overflowY = "auto";
+    // element.style.maxHeight = "100%";
+
+    lenis.start();
 }
 
 function changeDisplay(el, act) {
@@ -400,6 +403,8 @@ export function setupSharingCard(event) {
     sharingCardAuthorOutput.textContent = authorOutput.textContent;
     sharingCardQuoteOutput.textContent = quoteOutput.textContent;
     sharingCardDateOutput.textContent = dateOutput.textContent;
+
+    console.log(quoteOutput, sharingCardQuoteOutput);
 
     setupSharingQuoteProcess();
 }
