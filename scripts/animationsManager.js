@@ -3,7 +3,7 @@ import { prefersReducedMotion } from "./userInteractions.js";
 
 const tl = gsap.timeline();
 
-export const lenis = new Lenis();
+// export const lenis = new Lenis();
 
 checkPreviousQuotesReadiness().then(() => {
     if (prefersReducedMotion) return;
@@ -12,7 +12,7 @@ checkPreviousQuotesReadiness().then(() => {
 });
 
 function startAnimations() {
-    requestAnimationFrame(raf);
+    // requestAnimationFrame(raf);
 
     const quotes = gsap.utils.toArray(".quotes-element");
 
@@ -34,7 +34,7 @@ function startAnimations() {
     // tl.from(".history-title", { opacity: 0, duration: 1, ease: "power2.inOut" }, "-=30%");
 }
 
-function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-}
+// function raf(time) {
+//     lenis.raf(time);
+//     requestAnimationFrame(raf);
+// }

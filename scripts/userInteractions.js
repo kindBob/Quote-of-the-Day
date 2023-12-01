@@ -1,4 +1,4 @@
-import { lenis } from "./animationsManager.js";
+// import { lenis } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, previousQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
@@ -47,8 +47,8 @@ const actionBtn = document.querySelector("#action-btn");
 const showMoreBtn = document.querySelector("#show-more");
 
 const overlay = document.querySelector("#overlay");
-const mainSectionBgBlur = document.querySelector(".bg-blur.section");
-const bodyBgBlur = document.querySelector(".bg-blur.body");
+const mainSectionBgBlur = document.querySelector(".bg-blur-section");
+const bodyBgBlur = document.querySelector(".bg-blur-body");
 
 const legalPolicyLink = document.querySelector("#legal-policy");
 const legalTermsLink = document.querySelector("#legal-terms");
@@ -57,12 +57,12 @@ let quoteAbleToFlip = true;
 
 const QUOTE_FLIPPING_LENGTH = 600;
 const MAIN_PAGE = window.location.href;
-const IMAGE_UPLOAD_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
+// const IMAGE_SHARE_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
 const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission";
 // const SUBMISSIONS_API = "http://localhost:3000/submission";
 // const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
-// const IMAGE_UPLOAD_API_URL = "http://localhost:3000/shareQuote";
+const IMAGE_SHARE_API = "http://localhost:3000/shareQuote";
 
 const smallScreen = detectSmallScreen();
 export const prefersReducedMotion = detectReducedMotion();
@@ -117,15 +117,13 @@ function validateEmail(email) {
 function lockScrolling(element = document.body) {
     // element.style.overflowY = "hidden";
     // element.style.maxHeight = "100vh";
-
-    lenis.stop();
+    // lenis.stop();
 }
 
 function unlockScrolling(element = document.body) {
     // element.style.overflowY = "auto";
     // element.style.maxHeight = "100%";
-
-    lenis.start();
+    // lenis.start();
 }
 
 function changeDisplay(el, act) {
@@ -404,41 +402,43 @@ export function setupSharingCard(event) {
     sharingCardQuoteOutput.textContent = quoteOutput.textContent;
     sharingCardDateOutput.textContent = dateOutput.textContent;
 
-    console.log(quoteOutput, sharingCardQuoteOutput);
-
     setupSharingQuoteProcess();
 }
 
 async function setupSharingQuoteProcess() {
     html2canvas(sharingCard, { dpi: 600 }).then(async (canvas) => {
         const imageDataUrl = canvas.toDataURL("image/png", 1);
+        const blobImage = dataURItoBlob(imageDataUrl);
+
+        const imageFile = new File([blobImage], "quote-card.png", {
+            type: "image/png",
+        });
 
         if (navigator.share && smallScreen) {
-            shareQuote_navigatorShare(imageDataUrl);
+            shareQuote_navigatorShare(imageFile);
         } else {
-            shareQuote_custom(imageDataUrl);
+            shareQuote_custom(imageFile);
         }
     });
 }
 
-async function shareQuote_custom(imageDataUrl) {
-    if (sharingInProcess) {
-        return;
-    }
+async function shareQuote_custom(imageFile) {
+    if (sharingInProcess) return;
+
     sharingInProcess = true;
 
     try {
+        const formData = new FormData();
+        formData.append("quote-card", imageFile);
+
         loadingElement.classList.add("--active");
         loadingElementSpinner.classList.add("--active");
 
         loadingElement.classList.remove("--success", "--error");
 
-        const res = await fetch(`${IMAGE_UPLOAD_API}?fileName=quote-card`, {
+        const res = await fetch(`${IMAGE_SHARE_API}?fileName=quote-card`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ imageDataUrl }),
+            body: formData,
         });
 
         const data = await res.json();
@@ -467,21 +467,12 @@ async function shareQuote_custom(imageDataUrl) {
     sharingInProcess = false;
 }
 
-async function shareQuote_navigatorShare(imageDataUrl) {
-    const blobImage = dataURItoBlob(imageDataUrl);
-    const imageFile = new File([blobImage], "quote-card.png", {
-        type: "image/png",
-    });
-
-    const navigatorShareTitle = findTranslation("sharing-card-title");
-    const navigatorShareText = findTranslation("sharing-card-text");
-
+async function shareQuote_navigatorShare(imageFile) {
     navigator
         .share({
-            title: navigatorShareTitle,
-            text: `${navigatorShareText}: ` + MAIN_PAGE,
             files: [imageFile],
         })
+        .then(() => console.log("Shared successfully"))
         .catch((error) => console.log(`Problems occured: ${error}`));
 }
 // Sharing ---
@@ -494,15 +485,15 @@ burgerMenu.addEventListener("click", () => {
 
 savedOpenButton.addEventListener("click", () => {
     smallScreen
-        ? closeNavBar(() => toggleSection({ act: "open", section: "saved" }))
-        : scrollToPosition(toggleSection, { funcArgument: { act: "open", section: "saved" } });
+        ? closeNavBar(() => toggleSection({ section: "saved" }))
+        : scrollToPosition(toggleSection, { funcArgument: { section: "saved" } });
 
     isSavedSectionOpened = true;
 });
 
 aboutUsOpenButton.addEventListener("click", () => {
     smallScreen
-        ? closeNavBar(() => toggleSection("open"))
+        ? closeNavBar(() => toggleSection({ section: "about-us" }))
         : scrollToPosition(toggleSection, { funcArgument: { section: "about-us" } });
 });
 
@@ -634,7 +625,10 @@ function setupQuotesFlipping(event) {
 
     flipQuoteBack(allClickableQuotes);
 
-    if (event.target.classList.contains("--clickable") || event.target.closest(".quotes-element")) {
+    if (
+        event.target.classList.contains("--clickable") ||
+        event.target.closest(".quotes-element").classList.contains("--clickable")
+    ) {
         flipQuote(event);
     }
 }
@@ -647,7 +641,7 @@ function flipQuote(event) {
         element = target;
     }
 
-    if (!quoteAbleToFlip) return console.log("returned");
+    if (!quoteAbleToFlip) return;
 
     if (
         !target.classList.contains("quotes-element__buttons-container") &&
@@ -672,7 +666,7 @@ export function hideShowMoreBtn() {
 
 // Sections
 function toggleSection(options) {
-    const { act, section } = options;
+    const { section } = options;
 
     for (let i = 0; i < sections.length; i++) {
         if (sections[i].getAttribute("id") == `${section}-section`) {
