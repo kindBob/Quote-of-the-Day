@@ -3,12 +3,13 @@ import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, previousQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
 const QUOTE_FLIPPING_LENGTH = 600;
-const MAIN_PAGE = window.location.href;
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
 const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission";
 // const SUBMISSIONS_API = "http://localhost:3000/submission";
 // const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
+
+const mainPage = window.location.href;
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -454,11 +455,11 @@ async function shareQuote_custom(imageFile) {
 
     loadingElement.classList.remove("--success", "--error");
 
-    try {
-        const formData = new FormData();
-        formData.append("image", imageFile);
-        formData.append("album", "SmFCHG8PRreakyc");
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("album", "SmFCHG8PRreakyc");
 
+    try {
         const res = await fetch(IMAGE_UPLOAD_ENDPOINT, {
             method: "POST",
             headers: new Headers({
@@ -473,7 +474,7 @@ async function shareQuote_custom(imageFile) {
 
         const quoteLink = `https://imgur.com/${data.data.id}`;
 
-        await navigator.clipboard.writeText(quoteLink);
+        // await navigator.clipboard.writeText(quoteLink);
 
         loadingStatusText.textContent = findTranslation("saved-to-clipboard");
         loadingElement.classList.add("--success");
@@ -481,6 +482,7 @@ async function shareQuote_custom(imageFile) {
         loadingStatusText.textContent = findTranslation("general-error");
         loadingElement.classList.add("--error");
 
+        alert(err);
         console.log(`Some error occured while sharing: ${err}`);
     }
 
@@ -492,8 +494,9 @@ async function shareQuote_custom(imageFile) {
         loadingElement.classList.remove("--active");
         loadingStatus.classList.remove("--active");
         loadingElement.style.width = "90px";
+
+        sharingInProcess = false;
     }, 5000);
-    sharingInProcess = false;
 }
 
 async function shareQuote_navigatorShare(imageFile) {
@@ -504,7 +507,7 @@ async function shareQuote_navigatorShare(imageFile) {
 
     try {
         await navigator.share({
-            text: `${MAIN_PAGE}`,
+            text: `${mainPage}`,
             files: [imageFile],
         });
         console.log("Web share API works!");

@@ -5,7 +5,7 @@ $header-height: 130px;
 $footer-height: 90px;
 
 $headerNFooter-bg: #fff;
-$successColor: #79d379;
+$successColor: #55d355;
 $errorColor: #e26c5a;
 
 $buttons-margin: 15px;
@@ -292,13 +292,13 @@ body {
 
 .loading {
     width: 95px;
-    height: 90px;
+    height: 70px;
     display: block;
     position: fixed;
     bottom: 25px;
-    left: -90px;
-    padding: 15px 30px 15px 0;
-    font-size: 20px;
+    left: -95px;
+    // padding: 0.7em 2em 0.7em 0;
+    font-size: clamp(20px, 3.5vw, 26px);
     z-index: 100;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
@@ -321,7 +321,6 @@ body {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    font-size: clamp(20px, 3.5vw, 26px);
     padding: 0 1em 0 1.2em;
     transition: $transition-length;
 
@@ -333,44 +332,18 @@ body {
         width: max-content;
         flex: 1;
         color: #000;
-        // margin-right: 0.4em;
-    }
-
-    &__icon-container {
-        display: none !important;
-        width: max-content;
-        justify-content: center;
-        align-items: center;
-
-        &.--successful .icon {
-            width: 2em;
-            margin-top: -1px;
-
-            path {
-                fill: #79d379;
-            }
-        }
-
-        &.--unsuccessful .icon {
-            width: 1.5em;
-
-            path {
-                fill: #e07272;
-                stroke-width: 10px;
-            }
-        }
     }
 }
 
 .spinner {
-    position: absolute;
-    top: 23.5px;
-    right: 22px;
-    border: 6px solid #6e6e6e;
-    border-top: 6px solid #ee5f5f;
-    border-radius: 50%;
     height: 45px;
     width: 45px;
+    position: absolute;
+    top: 13px;
+    right: 22px;
+    border: 6px solid #4b4b4b;
+    border-top: 6px solid #ee5f5f;
+    border-radius: 50%;
     opacity: 0;
     transition: 0.2s;
 

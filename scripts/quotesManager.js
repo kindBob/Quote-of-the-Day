@@ -270,11 +270,11 @@ async function manageSavedQuotes(button, quoteElement) {
 
                     const savedQuoteElement = dates[j].closest(".saved__quote-element");
                     if (savedQuoteElement) {
-                        // if (!savedOpened) return finishElementRemoval(dates[j].closest(".saved__quote-element"));
+                        if (!savedOpened) return finishElementRemoval(savedQuoteElement);
 
-                        // callElementRemoval(dates[j].closest(".saved__quote-element"));
+                        callElementRemoval(savedQuoteElement);
 
-                        finishElementRemoval(savedQuoteElement);
+                        // finishElementRemoval(savedQuoteElement);
                     }
                 }
             }
@@ -282,35 +282,39 @@ async function manageSavedQuotes(button, quoteElement) {
     }
 }
 
-async function callElementRemoval(element) {
-    // elementRemovalCheck(element);
+function callElementRemoval(element) {
+    element.style.height = getComputedStyle(element).height;
+    // element.style.height = 0;
+    element.classList.add("--hiding-animation");
 
-    const state = Flip.getState(".saved__quote-element");
+    elementRemovalCheck(element);
+    setupSectionsContent();
+    // const state = Flip.getState(".saved__quote-element");
     // const state = Flip.getState(element);
     // element.classList.toggle("--hiding-animation");
 
-    gsap.set(element, { height: 0, x: 100, overflow: "hidden" });
+    // gsap.set(element, { height: 0, x: 100, overflow: "hidden" });
 
-    Flip.from(state, {
-        duration: 0.4,
-        ease: "power2.inOut",
-        absolute: true,
-        onComplete: () => finishElementRemoval(element),
-    });
-
-    setupSectionsContent();
+    // Flip.from(state, {
+    //     duration: 0.4,
+    //     ease: "power2.inOut",
+    //     absolute: true,
+    //     onComplete: () => finishElementRemoval(element),
+    // });
 }
 
 function elementRemovalCheck(element) {
     if (element.offsetHeight <= 0) {
-        // finishElementRemoval(element);
+        finishElementRemoval(element);
         return;
     }
+
+    // console.log(element.offsetHeight);
 
     window.requestAnimationFrame(() => elementRemovalCheck(element));
 }
 
-async function finishElementRemoval(element) {
+function finishElementRemoval(element) {
     element.remove();
     setupSectionsContent();
     setupSavedQuotes();
