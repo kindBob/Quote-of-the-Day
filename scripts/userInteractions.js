@@ -441,6 +441,8 @@ async function setupSharingQuoteProcess() {
             shareQuote_custom(imageFile);
         }
     } catch (error) {
+        manageSharingResult("error");
+
         console.error("Error generating or sharing image:", error);
     }
 }
@@ -448,6 +450,7 @@ async function setupSharingQuoteProcess() {
 async function shareQuote_custom(imageFile) {
     if (sharingInProcess) return;
 
+    let quoteLink = null;
     sharingInProcess = true;
 
     loadingElement.classList.add("--active");
@@ -472,39 +475,30 @@ async function shareQuote_custom(imageFile) {
 
         const data = await res.json();
 
-        const quoteLink = `https://imgur.com/${data.data.id}`;
+        quoteLink = `https://imgur.com/${data.data.id}`;
 
-        // await navigator.clipboard.writeText(quoteLink);
+        if ((smallScreen && shareAPINotSupported) || !navigator.clipboard) {
+            window.open(quoteLink, "_blank");
+            manageSharingResult();
 
-        loadingStatusText.textContent = findTranslation("saved-to-clipboard");
-        loadingElement.classList.add("--success");
+            return;
+        }
+
+        await navigator.clipboard.writeText(quoteLink);
+
+        manageSharingResult("success");
     } catch (err) {
-        loadingStatusText.textContent = findTranslation("general-error");
-        loadingElement.classList.add("--error");
+        manageSharingResult("error");
 
-        alert(err);
         console.log(`Some error occured while sharing: ${err}`);
     }
 
-    loadingElementSpinner.classList.remove("--active");
-    loadingElement.style.width = loadingStatus.offsetWidth + "px";
-    loadingStatus.classList.add("--active");
-
     setTimeout(() => {
-        loadingElement.classList.remove("--active");
-        loadingStatus.classList.remove("--active");
-        loadingElement.style.width = "90px";
-
-        sharingInProcess = false;
+        manageSharingResult();
     }, 5000);
 }
 
 async function shareQuote_navigatorShare(imageFile) {
-    const navigatorShareTitle = findTranslation("sharing-card-title");
-    const navigatorShareText = findTranslation("sharing-card-text");
-
-    // document.body.dispatchEvent(clickEvent);
-
     try {
         await navigator.share({
             text: `${mainPage}`,
@@ -513,6 +507,38 @@ async function shareQuote_navigatorShare(imageFile) {
         console.log("Web share API works!");
     } catch (err) {
         console.log(err);
+    }
+}
+
+function manageSharingResult(result) {
+    !loadingElement.classList.contains("--active") && loadingElement.classList.add("--active");
+    loadingElementSpinner.classList.remove("--active");
+
+    switch (result) {
+        case "success":
+            loadingStatusText.textContent = findTranslation("saved-to-clipboard");
+            loadingElement.classList.add("--success");
+
+            loadingElement.style.width = loadingStatus.offsetWidth + "px";
+            loadingStatus.classList.add("--active");
+            break;
+
+        case "error":
+            loadingStatusText.textContent = findTranslation("general-error");
+            loadingElement.classList.add("--error");
+
+            loadingElement.style.width = loadingStatus.offsetWidth + "px";
+            loadingStatus.classList.add("--active");
+            break;
+
+        default:
+            loadingElement.classList.remove("--active");
+            loadingStatus.classList.remove("--active");
+            loadingElement.style.width = "90px";
+
+            sharingInProcess = false;
+
+            break;
     }
 }
 // Sharing ---
@@ -743,11 +769,4 @@ function toggleSection(options) {
 }
 // Sections ---
 
-export {
-    hideShowMoreBtn,
-    setupSavingButtonsEL,
-    setupSharingButtonsEL,
-    setupSharingCard,
-    savedOpened,
-    prefersReducedMotion,
-};
+export { hideShowMoreBtn, setupSavingButtonsEL, setupSharingButtonsEL, savedOpened, prefersReducedMotion };

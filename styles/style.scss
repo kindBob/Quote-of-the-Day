@@ -297,7 +297,6 @@ body {
     position: fixed;
     bottom: 25px;
     left: -95px;
-    // padding: 0.7em 2em 0.7em 0;
     font-size: clamp(20px, 3.5vw, 26px);
     z-index: 100;
     background-color: #fff;
@@ -345,11 +344,10 @@ body {
     border-top: 6px solid #ee5f5f;
     border-radius: 50%;
     opacity: 0;
-    transition: 0.2s;
+    transition: 0.3s;
 
     &.--active {
         opacity: 1;
-        -webkit-animation: spin 2s ease-in-out infinite;
         animation: spin 2s ease-in-out infinite;
     }
 }
@@ -807,6 +805,7 @@ body {
     position: absolute;
     top: -200vh;
     left: -200vw;
+    transition: scale(3);
     z-index: -1000;
     background-color: transparent;
 }
