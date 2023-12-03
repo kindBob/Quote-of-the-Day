@@ -1,11 +1,11 @@
+const TRANSLATION_API = "https://quote-of-the-day-api.up.railway.app/translations";
+// const TRANSLATION_API = "http://localhost:3000/translations";
+
 const defaultLocale = "en";
 const supportedLocales = ["en", "ru", "uk"];
 
-// const TRANSLATION_API = "http://localhost:3000/translations";
-const TRANSLATION_API = "https://quote-of-the-day-api.up.railway.app/translations";
-
-export let translations = {};
-export let initialLocale = null;
+let translations = {};
+let initialLocale = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     setupInitialLocale();
@@ -47,7 +47,9 @@ function translateElement(element) {
     } else element.innerHTML = translation[initialLocale].replace("<n>", "<br />");
 }
 
-export function findTranslation(keyWord) {
+function findTranslation(keyWord) {
     const translation = translations.find((translation) => translation.keyWord === keyWord);
     return translation[initialLocale];
 }
+
+export { initialLocale, findTranslation };

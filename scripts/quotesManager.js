@@ -1,10 +1,8 @@
 import { initialLocale, findTranslation } from "./languageManager.js";
-import {
-    isSavedSectionOpened,
-    setupSavingButtonsEL,
-    setSharingButtonsEL,
-    hideShowMoreBtn,
-} from "./userInteractions.js";
+import { savedOpened, setupSavingButtonsEL, setupSharingButtonsEL, hideShowMoreBtn } from "./userInteractions.js";
+
+// const QUOTES_API = "http://localhost:3000/quotes";
+const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
 
 const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
@@ -15,12 +13,8 @@ const historyContainer = document.querySelector("#history-container");
 const savedSection = document.querySelector("#saved-section");
 const savedContainer = document.querySelector("#saved-container");
 
-// const QUOTES_API = "http://localhost:3000/quotes";
-const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
-
 let currentQuote = null;
-
-export let previousQuotes = [];
+let previousQuotes = [];
 let savedQuotes = [];
 
 let initialLocaleAuthor = null;
@@ -106,7 +100,7 @@ async function setupQuotes() {
     setupSavingButtonsEL(document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)"));
     setupSavedQuotes();
     setupSectionsContent();
-    setSharingButtonsEL(document.querySelectorAll(".share-button"));
+    setupSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupQuotesIds();
 }
 
@@ -139,7 +133,7 @@ function setupPreviousQuotes() {
     }
 }
 
-export function checkPreviousQuotesReadiness() {
+function checkPreviousQuotesReadiness() {
     return new Promise((resolve) => {
         const check = () => {
             const firstQuote = document.querySelectorAll(".history-quote-element")[0];
@@ -188,7 +182,7 @@ function createSavedQuotesElements() {
 
             setupSavingButtonsEL([savingButton]);
 
-            setSharingButtonsEL([clone.querySelector(".share-button")]);
+            setupSharingButtonsEL([clone.querySelector(".share-button")]);
         }
     }
 }
@@ -239,7 +233,7 @@ function setupSectionsContent() {
         : savedContainer.classList.remove("--content-centered", "--fixed-height");
 }
 
-export async function manageSavedQuotes(button, quoteElement) {
+async function manageSavedQuotes(button, quoteElement) {
     // Saved quote addition
     if (button.textContent == findTranslation("save-button")) {
         for (let i = 0; i < previousQuotes.length; i++) {
@@ -274,11 +268,13 @@ export async function manageSavedQuotes(button, quoteElement) {
                         }
                     }
 
-                    if (dates[j].closest(".saved__quote-element")) {
-                        if (!isSavedSectionOpened)
-                            return finishElementRemoval(dates[j].closest(".saved__quote-element"));
+                    const savedQuoteElement = dates[j].closest(".saved__quote-element");
+                    if (savedQuoteElement) {
+                        // if (!savedOpened) return finishElementRemoval(dates[j].closest(".saved__quote-element"));
 
-                        callElementRemoval(dates[j].closest(".saved__quote-element"));
+                        // callElementRemoval(dates[j].closest(".saved__quote-element"));
+
+                        finishElementRemoval(savedQuoteElement);
                     }
                 }
             }
@@ -287,15 +283,27 @@ export async function manageSavedQuotes(button, quoteElement) {
 }
 
 async function callElementRemoval(element) {
-    element.classList.add("--hiding-animation");
-    elementRemovalCheck(element);
+    // elementRemovalCheck(element);
+
+    const state = Flip.getState(".saved__quote-element");
+    // const state = Flip.getState(element);
+    // element.classList.toggle("--hiding-animation");
+
+    gsap.set(element, { height: 0, x: 100, overflow: "hidden" });
+
+    Flip.from(state, {
+        duration: 0.4,
+        ease: "power2.inOut",
+        absolute: true,
+        onComplete: () => finishElementRemoval(element),
+    });
 
     setupSectionsContent();
 }
 
 function elementRemovalCheck(element) {
     if (element.offsetHeight <= 0) {
-        finishElementRemoval(element);
+        // finishElementRemoval(element);
         return;
     }
 
@@ -307,3 +315,5 @@ async function finishElementRemoval(element) {
     setupSectionsContent();
     setupSavedQuotes();
 }
+
+export { previousQuotes, checkPreviousQuotesReadiness, manageSavedQuotes };

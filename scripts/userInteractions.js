@@ -1,8 +1,14 @@
-// import { lenis } from "./animationsManager.js";
+import { lenis } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, previousQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
-gsap.registerPlugin(ScrollToPlugin);
+const QUOTE_FLIPPING_LENGTH = 600;
+const MAIN_PAGE = window.location.href;
+const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
+const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
+const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission";
+// const SUBMISSIONS_API = "http://localhost:3000/submission";
+// const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
 
 const burgerMenu = document.querySelector(".nav-bar__burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -46,6 +52,7 @@ const actionBtn = document.querySelector("#action-btn");
 
 const showMoreBtn = document.querySelector("#show-more");
 
+const quoteHint = document.querySelector("#quote-hint");
 const overlay = document.querySelector("#overlay");
 const mainSectionBgBlur = document.querySelector(".bg-blur-section");
 const bodyBgBlur = document.querySelector(".bg-blur-body");
@@ -53,25 +60,15 @@ const bodyBgBlur = document.querySelector(".bg-blur-body");
 const legalPolicyLink = document.querySelector("#legal-policy");
 const legalTermsLink = document.querySelector("#legal-terms");
 
-let quoteAbleToFlip = true;
-
-const QUOTE_FLIPPING_LENGTH = 600;
-const MAIN_PAGE = window.location.href;
-// const IMAGE_SHARE_API = "https://quote-of-the-day-api.up.railway.app/shareQuote";
-const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
-const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission";
-// const SUBMISSIONS_API = "http://localhost:3000/submission";
-// const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
-const IMAGE_SHARE_API = "http://localhost:3000/shareQuote";
-
 const smallScreen = detectSmallScreen();
-export const prefersReducedMotion = detectReducedMotion();
+const prefersReducedMotion = detectReducedMotion();
+const shareAPINotSupported = detectShareAPISupport();
 
 const sectionTransitionTime = smallScreen ? 600 : 800;
 
-export let isSavedSectionOpened = false;
-
 // Genereal
+gsap.registerPlugin(ScrollToPlugin);
+
 checkPreviousQuotesReadiness().then(() => {
     historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
 });
@@ -82,6 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sections.forEach((el) => !el.classList.contains("--active") && changeDisplay(el, "hide"));
 
+    //Quotes
+    if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
+    else quoteHint.classList.add("--active");
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
@@ -108,6 +108,18 @@ function detectReducedMotion() {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function detectShareAPISupport() {
+    if (
+        /CriOS/.test(navigator.userAgent) &&
+        /iPhone/.test(navigator.userAgent) &&
+        screen.height == 896 &&
+        screen.width == 414
+    )
+        return true;
+
+    return false;
+}
+
 function validateEmail(email) {
     const regex =
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -117,13 +129,15 @@ function validateEmail(email) {
 function lockScrolling(element = document.body) {
     // element.style.overflowY = "hidden";
     // element.style.maxHeight = "100vh";
-    // lenis.stop();
+
+    lenis.stop();
 }
 
 function unlockScrolling(element = document.body) {
     // element.style.overflowY = "auto";
-    // element.style.maxHeight = "100%";
-    // lenis.start();
+    // element.style.maxHeight = "auto";
+
+    lenis.start();
 }
 
 function changeDisplay(el, act) {
@@ -215,7 +229,7 @@ function scrollToPosition(cb, options) {
     checkPosition();
 
     function checkPosition() {
-        if (options?.top && window.scrollY == options.top) {
+        if (options?.y && window.scrollY == options.y) {
             finish();
         } else if (window.scrollY == 0) {
             finish();
@@ -227,7 +241,11 @@ function scrollToPosition(cb, options) {
         window.removeEventListener("scroll", checkPosition);
     }
 
-    gsap.to(window, { scrollTo: 0, duration: prefersReducedMotion ? 0 : 0.3, ease: "power2.inOut" });
+    gsap.to(window, {
+        scrollTo: { y: options?.y || 0, offsetY: options?.offsetY || 0 },
+        duration: prefersReducedMotion ? 0 : options?.speed || 0.3,
+        ease: "power2.inOut",
+    });
 }
 // General ---
 
@@ -391,7 +409,7 @@ async function subscribe() {
 
 // Sharing
 let sharingInProcess = false;
-export function setupSharingCard(event) {
+function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");
 
     const quoteOutput = parent.querySelector(".quotes-element__quote");
@@ -406,7 +424,9 @@ export function setupSharingCard(event) {
 }
 
 async function setupSharingQuoteProcess() {
-    html2canvas(sharingCard, { dpi: 600 }).then(async (canvas) => {
+    try {
+        const canvas = await html2canvas(sharingCard, { dpi: 600 });
+
         const imageDataUrl = canvas.toDataURL("image/png", 1);
         const blobImage = dataURItoBlob(imageDataUrl);
 
@@ -414,12 +434,14 @@ async function setupSharingQuoteProcess() {
             type: "image/png",
         });
 
-        if (navigator.share && smallScreen) {
+        if (navigator.share && smallScreen && !shareAPINotSupported) {
             shareQuote_navigatorShare(imageFile);
         } else {
             shareQuote_custom(imageFile);
         }
-    });
+    } catch (error) {
+        console.error("Error generating or sharing image:", error);
+    }
 }
 
 async function shareQuote_custom(imageFile) {
@@ -427,32 +449,39 @@ async function shareQuote_custom(imageFile) {
 
     sharingInProcess = true;
 
+    loadingElement.classList.add("--active");
+    loadingElementSpinner.classList.add("--active");
+
+    loadingElement.classList.remove("--success", "--error");
+
     try {
         const formData = new FormData();
-        formData.append("quote-card", imageFile);
+        formData.append("image", imageFile);
+        formData.append("album", "SmFCHG8PRreakyc");
 
-        loadingElement.classList.add("--active");
-        loadingElementSpinner.classList.add("--active");
-
-        loadingElement.classList.remove("--success", "--error");
-
-        const res = await fetch(`${IMAGE_SHARE_API}?fileName=quote-card`, {
+        const res = await fetch(IMAGE_UPLOAD_ENDPOINT, {
             method: "POST",
+            headers: new Headers({
+                Authorization: "Client-ID 1b02bab60d454de",
+            }),
             body: formData,
         });
 
+        if (!res.ok) throw new Error();
+
         const data = await res.json();
-        const quoteLink = data.link;
+
+        const quoteLink = `https://imgur.com/${data.data.id}`;
 
         await navigator.clipboard.writeText(quoteLink);
 
         loadingStatusText.textContent = findTranslation("saved-to-clipboard");
         loadingElement.classList.add("--success");
-    } catch (error) {
-        loadingStatusText.textContent = findTranslation("error-saving-to-clipboard");
+    } catch (err) {
+        loadingStatusText.textContent = findTranslation("general-error");
         loadingElement.classList.add("--error");
 
-        console.log(`Some error occured while sharing: ${error.message}`);
+        console.log(`Some error occured while sharing: ${err}`);
     }
 
     loadingElementSpinner.classList.remove("--active");
@@ -463,17 +492,25 @@ async function shareQuote_custom(imageFile) {
         loadingElement.classList.remove("--active");
         loadingStatus.classList.remove("--active");
         loadingElement.style.width = "90px";
-    }, 3000);
+    }, 5000);
     sharingInProcess = false;
 }
 
 async function shareQuote_navigatorShare(imageFile) {
-    navigator
-        .share({
+    const navigatorShareTitle = findTranslation("sharing-card-title");
+    const navigatorShareText = findTranslation("sharing-card-text");
+
+    // document.body.dispatchEvent(clickEvent);
+
+    try {
+        await navigator.share({
+            text: `${MAIN_PAGE}`,
             files: [imageFile],
-        })
-        .then(() => console.log("Shared successfully"))
-        .catch((error) => console.log(`Problems occured: ${error}`));
+        });
+        console.log("Web share API works!");
+    } catch (err) {
+        console.log(err);
+    }
 }
 // Sharing ---
 
@@ -483,12 +520,13 @@ burgerMenu.addEventListener("click", () => {
     else scrollToPosition(openNavBar);
 });
 
+let savedOpened = false;
 savedOpenButton.addEventListener("click", () => {
     smallScreen
         ? closeNavBar(() => toggleSection({ section: "saved" }))
         : scrollToPosition(toggleSection, { funcArgument: { section: "saved" } });
 
-    isSavedSectionOpened = true;
+    savedOpened = true;
 });
 
 aboutUsOpenButton.addEventListener("click", () => {
@@ -501,7 +539,7 @@ savedCloseButtons.forEach((button) =>
     button.addEventListener("click", () => {
         scrollToPosition(toggleSection, { funcArgument: { section: "main" } });
 
-        isSavedSectionOpened = false;
+        savedOpened = false;
     })
 );
 
@@ -570,14 +608,12 @@ function showMorePreviousQuotes() {
 }
 
 function showLessPreviousQuotes() {
-    const scrollToPosition = document.querySelector("#index-3");
-    const offset = window.screen.width * (window.screen.width > 1600 ? 0.2 : 0.11);
+    const screenWidth = window.screen.width;
 
-    gsap.to(window, {
-        duration: prefersReducedMotion ? 0 : 1,
-        scrollTo: { y: scrollToPosition, offsetY: offset },
-        ease: "power2.inOut",
-    });
+    const y = document.querySelector("#index-3");
+    const offsetY = screenWidth * (screenWidth > 768 && screenWidth <= 1620 ? 0.12 : 0.2);
+
+    scrollToPosition(null, { speed: 1, y, offsetY });
 
     setTimeout(
         () => {
@@ -585,11 +621,11 @@ function showLessPreviousQuotes() {
 
             showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
         },
-        prefersReducedMotion ? 0 : 900
+        prefersReducedMotion ? 0 : 700
     );
 }
 
-export function setupSavingButtonsEL(buttons = []) {
+function setupSavingButtonsEL(buttons = []) {
     buttons.forEach((button) => {
         if (!button.classList.contains("--hasEL")) {
             button.addEventListener("click", (event) => {
@@ -600,7 +636,7 @@ export function setupSavingButtonsEL(buttons = []) {
     });
 }
 
-export function setSharingButtonsEL(elements) {
+function setupSharingButtonsEL(elements) {
     for (let i = 0; i < elements.length; i++) {
         elements[i].addEventListener("click", (event) => {
             setupSharingCard(event);
@@ -608,6 +644,7 @@ export function setSharingButtonsEL(elements) {
     }
 }
 
+let quoteAbleToFlip = true;
 function setupQuotesFlipping(event) {
     let allClickableQuotes = Array.from(document.querySelectorAll(".quotes-element.--clickable"));
 
@@ -615,20 +652,17 @@ function setupQuotesFlipping(event) {
         element.querySelector(".quotes-element__inner-container").style.transition = `${QUOTE_FLIPPING_LENGTH}ms`;
     });
 
-    const clickedQuote = event.target.classList.contains("--clickable")
-        ? event.target.classList.contains("--clickable")
-        : event.target.closest(".quotes-element");
+    const clickedQuote = event?.target.classList.contains("--clickable")
+        ? event?.target.classList.contains("--clickable")
+        : event?.target.closest(".quotes-element");
 
     allClickableQuotes = allClickableQuotes.filter((element) => element.id !== clickedQuote?.id);
 
     allClickableQuotes = allClickableQuotes.filter((element) => element.id !== clickedQuote?.id);
 
-    flipQuoteBack(allClickableQuotes);
+    flipQuotesBack(allClickableQuotes);
 
-    if (
-        event.target.classList.contains("--clickable") ||
-        event.target.closest(".quotes-element").classList.contains("--clickable")
-    ) {
+    if (event?.target.classList.contains("--clickable") || event?.target.closest(".quotes-element")) {
         flipQuote(event);
     }
 }
@@ -652,14 +686,20 @@ function flipQuote(event) {
 
     quoteAbleToFlip = false;
     setTimeout(() => (quoteAbleToFlip = true), QUOTE_FLIPPING_LENGTH);
+
+    if (quoteHint) {
+        localStorage.setItem("quoteFlipped", true);
+
+        quoteHint.style.opacity = "0";
+    }
 }
 
-function flipQuoteBack(elements) {
+function flipQuotesBack(elements) {
     if (!quoteAbleToFlip) return;
     elements.forEach((element) => element.classList.remove("--flipped"));
 }
 
-export function hideShowMoreBtn() {
+function hideShowMoreBtn() {
     showMoreBtn.style.display = "none";
 }
 // Quotes ---
@@ -699,3 +739,12 @@ function toggleSection(options) {
     }, sectionTransitionTime + 100);
 }
 // Sections ---
+
+export {
+    hideShowMoreBtn,
+    setupSavingButtonsEL,
+    setupSharingButtonsEL,
+    setupSharingCard,
+    savedOpened,
+    prefersReducedMotion,
+};

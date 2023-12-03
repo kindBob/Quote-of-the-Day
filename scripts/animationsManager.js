@@ -1,9 +1,10 @@
 import { checkPreviousQuotesReadiness } from "./quotesManager.js";
 import { prefersReducedMotion } from "./userInteractions.js";
 
-const tl = gsap.timeline();
+const lenisOptions = { duration: 0.9 };
+let lenis = null;
 
-// export const lenis = new Lenis();
+const tl = gsap.timeline();
 
 checkPreviousQuotesReadiness().then(() => {
     if (prefersReducedMotion) return;
@@ -12,9 +13,11 @@ checkPreviousQuotesReadiness().then(() => {
 });
 
 function startAnimations() {
-    // requestAnimationFrame(raf);
-
     const quotes = gsap.utils.toArray(".quotes-element");
+
+    lenis = new Lenis(lenisOptions);
+
+    requestAnimationFrame(raf);
 
     // quotes.forEach((quote) => {
     //     gsap.from(quote, {
@@ -23,7 +26,7 @@ function startAnimations() {
     //             trigger: quote,
     //             scrub: 1,
     //             start: "-65% center",
-    //             end: "35% center",
+    //             end: "30% center",
     //             markers: true,
     //         },
     //     });
@@ -34,7 +37,9 @@ function startAnimations() {
     // tl.from(".history-title", { opacity: 0, duration: 1, ease: "power2.inOut" }, "-=30%");
 }
 
-// function raf(time) {
-//     lenis.raf(time);
-//     requestAnimationFrame(raf);
-// }
+function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+}
+
+export { lenis };

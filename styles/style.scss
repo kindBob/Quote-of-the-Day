@@ -5,6 +5,8 @@ $header-height: 130px;
 $footer-height: 90px;
 
 $headerNFooter-bg: #fff;
+$successColor: #79d379;
+$errorColor: #e26c5a;
 
 $buttons-margin: 15px;
 // Variables ---
@@ -76,10 +78,10 @@ body {
     min-width: 100vw;
     min-height: 100vh;
     z-index: 5;
-    background-color: rgba(226, 226, 226, 0.8);
+    background-color: rgba(255, 255, 255, 0.7);
     opacity: 0;
-    -webkit-backdrop-filter: blur(5px);
-    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     transition: 0.4s;
 
     &.--active {
@@ -157,8 +159,8 @@ body {
 .form-input {
     font-size: clamp(16px, 3vw, 19px);
     border: 2px solid #000;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }
 
 .form-btn {
@@ -170,7 +172,7 @@ body {
 
 .form-input {
     padding-left: 0.75em;
-    // padding-right: 0.75em;
+    padding-right: 0.75em;
     border-radius: 0;
     transition: $transition-length;
     background-color: transparent;
@@ -246,9 +248,7 @@ body {
 
 .close-btn.--cross {
     display: flex;
-    width: -webkit-fit-content !important;
-    width: -moz-fit-content !important;
-    width: fit-content !important;
+    min-width: fit-content;
     padding: 22px 10px;
     border-radius: 10px;
     flex-direction: column;
@@ -291,13 +291,13 @@ body {
 }
 
 .loading {
+    width: 95px;
+    height: 90px;
     display: block;
     position: fixed;
     bottom: 25px;
-    right: -90px;
-    width: 90px;
-    height: 90px;
-    padding: 15px 30px 15px 15px;
+    left: -90px;
+    padding: 15px 30px 15px 0;
     font-size: 20px;
     z-index: 100;
     background-color: #fff;
@@ -307,52 +307,43 @@ body {
     overflow: hidden;
 
     &.--active {
-        right: -10px;
+        left: -10px;
     }
 }
 
 .status {
     max-width: 95vw;
+    width: max-content;
     position: absolute;
     top: 50%;
-    right: 100px;
+    left: 100px;
     transform: translate(0, -50%);
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    color: #000;
-    width: -webkit-max-content;
-    width: -moz-max-content;
-    width: max-content;
-    padding: 0 22.5px 0 20px;
+    font-size: clamp(20px, 3.5vw, 26px);
+    padding: 0 1em 0 1.2em;
     transition: $transition-length;
 
     &.--active {
-        right: 0px;
+        left: 0px;
     }
 
     &__text {
-        width: fit-content;
-        margin-left: 0.5em;
-        display: flex;
-        justify-content: flex-end;
-        font-size: clamp(20px, 3.5vw, 26px);
+        width: max-content;
+        flex: 1;
+        color: #000;
+        // margin-right: 0.4em;
     }
 
     &__icon-container {
-        display: none;
-        width: -webkit-fit-content;
-        width: -moz-fit-content;
-        width: fit-content;
-        height: -webkit-fit-content;
-        height: -moz-fit-content;
-        height: fit-content;
+        display: none !important;
+        width: max-content;
         justify-content: center;
         align-items: center;
 
         &.--successful .icon {
-            width: 45px;
-            height: 45px;
+            width: 2em;
             margin-top: -1px;
 
             path {
@@ -361,11 +352,11 @@ body {
         }
 
         &.--unsuccessful .icon {
-            width: 30px;
-            height: 30px;
+            width: 1.5em;
 
             path {
                 fill: #e07272;
+                stroke-width: 10px;
             }
         }
     }
@@ -374,7 +365,7 @@ body {
 .spinner {
     position: absolute;
     top: 23.5px;
-    left: 22px;
+    right: 22px;
     border: 6px solid #6e6e6e;
     border-top: 6px solid #ee5f5f;
     border-radius: 50%;
@@ -390,11 +381,12 @@ body {
     }
 }
 
-.loading.--success .status__icon-container.--successful {
-    display: flex;
+.loading.--success .status__text {
+    color: $successColor;
 }
-.loading.--error .status__icon-container.--unsuccessful {
-    display: flex;
+
+.loading.--error .status__text {
+    color: $errorColor;
 }
 
 .--content-centered {
@@ -425,10 +417,6 @@ body {
 
     &__element {
         width: 100%;
-    }
-
-    &__element > .close-btn.--cross {
-        display: none;
     }
 
     * {
@@ -529,14 +517,6 @@ body {
         position: absolute;
         right: 0.4em;
         top: 0.4em;
-    }
-
-    & .close-btn:hover::after {
-        // transform: rotate(45deg) translateY(-1.1px);
-    }
-
-    & .close-btn:hover::before {
-        // transform: rotate(-45deg) translateY(1.1px);
     }
 
     &__result {
@@ -689,13 +669,13 @@ body {
 
     &__quote-element {
         &.--hiding-animation {
-            transition: all $transition-length ease;
             opacity: 0;
             height: 0;
             padding: 0;
             margin: 0;
-            transform: translate(100%) scale(0) translateZ(0);
+            transform: translate(100%) scale(0);
             overflow: hidden;
+            transition: $transition-length;
         }
     }
 
@@ -836,6 +816,16 @@ body {
         font-weight: 300;
         line-height: 1.4;
     }
+
+    &__tap-hint {
+        width: 50px;
+        display: none;
+        position: absolute;
+        top: 3%;
+        right: 3%;
+        background-color: transparent;
+        transition: 0.2s;
+    }
 }
 
 .quotes-element.--sharing-card {
@@ -844,7 +834,7 @@ body {
     position: absolute;
     top: -200vh;
     left: -200vw;
-    z-index: 1000;
+    z-index: -1000;
     background-color: transparent;
 }
 
@@ -1071,16 +1061,22 @@ body {
         }
 
         &.--success {
-            color: #79d379;
+            color: $successColor;
         }
 
         &.--failure {
-            color: rgb(226, 108, 90);
+            color: $errorColor;
         }
     }
 }
 // Bottom ---
 // Adaptive
+@media (any-pointer: fine) {
+    #cursor {
+        display: block;
+    }
+}
+
 @media (min-width: 1280px) {
     html[lang="ru"] .footer__element:nth-child(3) {
         width: 20%;
@@ -1188,11 +1184,11 @@ body {
     }
 
     .nav-bar {
-        &__element > .close-btn.--cross {
+        .close-btn.--cross {
             display: flex;
         }
 
-        &__element.close-btn:not(.--cross) {
+        .close-btn:not(.--cross) {
             display: none;
         }
     }
@@ -1261,7 +1257,7 @@ body {
             backface-visibility: hidden;
             background-color: #ffffff;
             border-radius: inherit;
-            transform: rotateY(180deg);
+            transform: rotateY(180deg) translateZ(1px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1306,6 +1302,12 @@ body {
 
         &__author {
             max-width: none;
+        }
+
+        &__tap-hint {
+            &.--active {
+                display: block;
+            }
         }
     }
 }
