@@ -1,5 +1,11 @@
 import { initialLocale, findTranslation } from "./languageManager.js";
-import { savedOpened, setupSavingButtonsEL, setupSharingButtonsEL, hideShowMoreBtn } from "./userInteractions.js";
+import {
+    savedOpened,
+    setupSavingButtonsEL,
+    setupSharingButtonsEL,
+    hideShowMoreBtn,
+    prefersReducedMotion,
+} from "./userInteractions.js";
 
 // const QUOTES_API = "http://localhost:3000/quotes";
 const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
@@ -8,10 +14,10 @@ const currentQuoteOutput = document.querySelector("#current-quote");
 const currentAuthorOutput = document.querySelector("#current-author");
 const currentDateOutput = document.querySelector("#current-date");
 
+const savedContainer = document.querySelector("#saved-container");
 const historyContainer = document.querySelector("#history-container");
 
 const savedSection = document.querySelector("#saved-section");
-const savedContainer = document.querySelector("#saved-container");
 
 let currentQuote = null;
 let previousQuotes = [];
@@ -58,14 +64,6 @@ document.addEventListener("keyup", (e) => {
     delete keysPressed[e.key];
 });
 //Dev mode ---
-
-document.addEventListener("DOMContentLoaded", () => {
-    initialLocaleAuthor = `author-${initialLocale}`;
-    initialLocaleQuote = `quote-${initialLocale}`;
-
-    fetchQuotes();
-});
-
 async function fetchQuotes() {
     const response = await fetch(QUOTES_API);
     if (!response.ok) return;
@@ -75,10 +73,16 @@ async function fetchQuotes() {
     currentQuote = quotes[quotes.length - 1];
     previousQuotes = quotes.slice(0, quotes.length).reverse();
 
+    const localStorageQuotes = JSON.parse(localStorage.getItem("savedQuotes"));
+    if (localStorageQuotes) savedQuotes = localStorageQuotes;
+
     setupQuotes();
 }
 
 async function setupQuotes() {
+    initialLocaleAuthor = `author-${initialLocale}`;
+    initialLocaleQuote = `quote-${initialLocale}`;
+
     let quoteObjectQuote = currentQuote[initialLocaleQuote];
     let quoteObjectAuthor = currentQuote[initialLocaleAuthor];
 
@@ -99,7 +103,7 @@ async function setupQuotes() {
     setupPreviousQuotes();
     setupSavingButtonsEL(document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)"));
     setupSavedQuotes();
-    setupSectionsContent();
+
     setupSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupQuotesIds();
 }
@@ -134,17 +138,20 @@ function setupPreviousQuotes() {
 }
 
 function checkPreviousQuotesReadiness() {
+    let intervalId = null;
     return new Promise((resolve) => {
         const check = () => {
             const firstQuote = document.querySelectorAll(".history-quote-element")[0];
 
-            if (firstQuote.getAttribute("id")?.includes("1")) resolve();
-            else {
-                requestAnimationFrame(check);
+            if (firstQuote.getAttribute("id")?.includes("1")) {
+                clearInterval(intervalId);
+                resolve();
             }
         };
 
-        requestAnimationFrame(check);
+        intervalId = setInterval(() => {
+            check();
+        }, 10);
     });
 }
 
@@ -152,12 +159,14 @@ function setupQuotesIds() {
     const allClickableQuotes = document.querySelectorAll(".--clickable");
 
     for (let i = 0; i < allClickableQuotes.length; i++) {
-        if (!allClickableQuotes[i].hasAttribute("id")) allClickableQuotes[i].id = `index-${i}`;
+        allClickableQuotes[i].id = `index-${i}`;
     }
 }
 
 function setupSavedQuotes() {
     const isEmpty = savedQuotes.length === 0;
+
+    setupSavedCentering();
 
     if (!isEmpty) {
         savedSection.classList.remove("--is-empty");
@@ -165,6 +174,7 @@ function setupSavedQuotes() {
         createSavedQuotesElements();
         setupSavingButtonsText();
         setupSavedQuotesElementsText();
+        setupQuotesIds();
     } else {
         savedSection.classList.add("--is-empty");
     }
@@ -177,11 +187,10 @@ function createSavedQuotesElements() {
         if (savedQuotes.length > document.querySelectorAll(".saved__quote-element").length) {
             let clone = createClone(savedContainer, dummyElement);
             removeClassRecursively(clone, "--dummy");
-            clone.classList.add("saved__quote-element");
+            clone.classList.add("saved__quote-element", "--clickable");
+
             const savingButton = clone.querySelector(".quotes-element__saving-button");
-
             setupSavingButtonsEL([savingButton]);
-
             setupSharingButtonsEL([clone.querySelector(".share-button")]);
         }
     }
@@ -227,7 +236,7 @@ function createClone(parent, element) {
     return clone;
 }
 
-function setupSectionsContent() {
+function setupSavedCentering() {
     savedQuotes.length <= 1
         ? savedContainer.classList.add("--content-centered", "--fixed-height")
         : savedContainer.classList.remove("--content-centered", "--fixed-height");
@@ -244,7 +253,7 @@ async function manageSavedQuotes(button, quoteElement) {
         }
 
         setupSavedQuotes();
-        setupSectionsContent();
+        setupSavedCentering();
 
         return;
     }
@@ -272,9 +281,7 @@ async function manageSavedQuotes(button, quoteElement) {
                     if (savedQuoteElement) {
                         if (!savedOpened) return finishElementRemoval(savedQuoteElement);
 
-                        callElementRemoval(savedQuoteElement);
-
-                        // finishElementRemoval(savedQuoteElement);
+                        setupElementRemoval(savedQuoteElement);
                     }
                 }
             }
@@ -282,42 +289,51 @@ async function manageSavedQuotes(button, quoteElement) {
     }
 }
 
-function callElementRemoval(element) {
-    element.style.height = getComputedStyle(element).height;
-    // element.style.height = 0;
-    element.classList.add("--hiding-animation");
+function setupElementRemoval(element) {
+    const precedingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) + 1}`;
+    const followingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) - 1}`;
+    const precedingElem = document.querySelector(`${precedingElemId}.saved__quote-element`);
+    const followingElem = document.querySelector(`${followingElemId}.saved__quote-element`);
 
-    elementRemovalCheck(element);
-    setupSectionsContent();
-    // const state = Flip.getState(".saved__quote-element");
-    // const state = Flip.getState(element);
-    // element.classList.toggle("--hiding-animation");
+    const margin = parseFloat(getComputedStyle(element).height.replace("px", "")) / 3;
 
-    // gsap.set(element, { height: 0, x: 100, overflow: "hidden" });
+    const closeElems = [];
 
-    // Flip.from(state, {
-    //     duration: 0.4,
-    //     ease: "power2.inOut",
-    //     absolute: true,
-    //     onComplete: () => finishElementRemoval(element),
-    // });
-}
+    precedingElem && closeElems.push(precedingElem);
+    followingElem && closeElems.push(followingElem);
 
-function elementRemovalCheck(element) {
-    if (element.offsetHeight <= 0) {
-        finishElementRemoval(element);
-        return;
+    const tl = gsap.timeline({ defaults: { duration: prefersReducedMotion ? 0 : 0.6, ease: "power2.inOut" } });
+
+    tl.addLabel("curElem", 0);
+
+    tl.to(element, {
+        x: "100vw",
+        height: 0,
+        margin: 0,
+        padding: 0,
+        scaleY: 0,
+        opacity: 0,
+        overflow: "hidden",
+        onComplete: () => finishElementRemoval(element),
+    });
+
+    if (precedingElem) {
+        tl.to(precedingElem, { marginTop: margin }, "curElem");
     }
 
-    // console.log(element.offsetHeight);
+    if (followingElem) {
+        tl.to(followingElem, { marginBottom: margin }, "curElem");
+    }
 
-    window.requestAnimationFrame(() => elementRemovalCheck(element));
+    if (closeElems.length > 0) tl.to(closeElems, { margin: "25" }, "-=100%");
+
+    setupSavedCentering();
 }
 
 function finishElementRemoval(element) {
     element.remove();
-    setupSectionsContent();
+    setupSavedCentering();
     setupSavedQuotes();
 }
 
-export { previousQuotes, checkPreviousQuotesReadiness, manageSavedQuotes };
+export { previousQuotes, checkPreviousQuotesReadiness, manageSavedQuotes, fetchQuotes };

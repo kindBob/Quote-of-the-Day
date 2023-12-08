@@ -1,10 +1,12 @@
+import { fetchQuotes } from "./quotesManager.js";
+
 const TRANSLATION_API = "https://quote-of-the-day-api.up.railway.app/translations";
 // const TRANSLATION_API = "http://localhost:3000/translations";
 
 const defaultLocale = "en";
 const supportedLocales = ["en", "ru", "uk"];
 
-let translations = {};
+let translations = [];
 let initialLocale = null;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -20,6 +22,7 @@ async function setupInitialLocale() {
     document.querySelector("html").setAttribute("lang", initialLocale);
 
     translatePage();
+    callAwaitedFunctions();
 }
 
 function isLocaleSupported(locale) {
@@ -50,6 +53,10 @@ function translateElement(element) {
 function findTranslation(keyWord) {
     const translation = translations.find((translation) => translation.keyWord === keyWord);
     return translation[initialLocale];
+}
+
+function callAwaitedFunctions() {
+    fetchQuotes();
 }
 
 export { initialLocale, findTranslation };

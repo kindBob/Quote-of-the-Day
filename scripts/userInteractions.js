@@ -17,14 +17,15 @@ const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
 
 const savedOpenButton = document.querySelector("#saved-open-button");
-const savedSection = document.querySelector("#saved-section");
-const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
-
-const aboutUsOpenButton = document.querySelector("#about-us-open-button");
-const aboutUsSection = document.querySelector("#about-us-section");
-const aboutUsCloseButtons = aboutUsSection.querySelectorAll(".close-btn");
 
 const sections = document.querySelectorAll(".section");
+const mainSection = document.querySelector("#main-section");
+const aboutUsSection = document.querySelector("#about-us-section");
+const savedSection = document.querySelector("#saved-section");
+
+const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
+const aboutUsOpenButton = document.querySelector("#about-us-open-button");
+const aboutUsCloseButtons = aboutUsSection.querySelectorAll(".close-btn");
 
 const historyContainer = document.querySelector("#history-container");
 
@@ -61,24 +62,22 @@ const bodyBgBlur = document.querySelector(".bg-blur-body");
 const legalPolicyLink = document.querySelector("#legal-policy");
 const legalTermsLink = document.querySelector("#legal-terms");
 
-const smallScreen = detectSmallScreen();
+let smallScreen = detectSmallScreen();
 const prefersReducedMotion = detectReducedMotion();
 const shareAPINotSupported = detectShareAPISupport();
 
-const sectionTransitionTime = smallScreen ? 600 : 800;
+const sectionTransitionTime = prefersReducedMotion ? 0 : smallScreen ? 600 : 800;
 
 // Genereal
 gsap.registerPlugin(ScrollToPlugin);
 
-checkPreviousQuotesReadiness().then(() => {
-    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+window.addEventListener("orientationchange", () => {
+    smallScreen = detectSmallScreen();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
     //Sections
     sections.forEach((section) => (section.style.transition = `transform ${sectionTransitionTime}ms`));
-
-    sections.forEach((el) => !el.classList.contains("--active") && changeDisplay(el, "hide"));
 
     //Quotes
     if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
@@ -99,6 +98,10 @@ document.addEventListener("click", (event) => {
         closeNavBar();
 
     setupQuotesFlipping(event);
+});
+
+checkPreviousQuotesReadiness().then(() => {
+    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
 });
 
 function detectSmallScreen() {
@@ -139,16 +142,6 @@ function unlockScrolling(element = document.body) {
     // element.style.maxHeight = "auto";
 
     lenis.start();
-}
-
-function changeDisplay(el, act) {
-    if (act == "show") {
-        el.style.width = "100%";
-        el.style.heigth = "100%";
-    } else {
-        el.style.width = "0";
-        el.style.heigth = "0";
-    }
 }
 
 function resetInputs(inputs) {
@@ -739,7 +732,7 @@ function toggleSection(options) {
 
     for (let i = 0; i < sections.length; i++) {
         if (sections[i].getAttribute("id") == `${section}-section`) {
-            changeDisplay(sections[i], "show");
+            sections[i].style.width = "100%";
 
             sections[i].classList.add("--active");
 
@@ -752,10 +745,68 @@ function toggleSection(options) {
             sections[i].classList.remove("--active");
 
             setTimeout(() => {
-                changeDisplay(sections[i], "hide");
+                sections[i].style.width = "0";
             }, sectionTransitionTime);
         }
     }
+
+    // const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+    // const duration = prefersReducedMotion ? 0 : 0.4;
+
+    // switch (section) {
+    //     case "saved":
+    //         changeDisplay(savedSection, "show");
+
+    //         tl.to(mainSection, {
+    //             x: "-100vw",
+    //             duration,
+    //             onComplete: () => changeDisplay(mainSection, "hide"),
+    //         });
+    //         tl.to(savedSection, { x: 0, duration }, "<");
+
+    //         break;
+
+    //     case "about-us":
+    //         changeDisplay(aboutUsSection, "show");
+
+    //         tl.to(mainSection, {
+    //             x: "100vw",
+    //             duration,
+    //             onComplete: () => changeDisplay(mainSection, "hide"),
+    //         });
+    //         tl.to(aboutUsSection, { x: 0, duration }, "<");
+
+    //         break;
+
+    //     case "main":
+    //         changeDisplay(mainSection, "show");
+
+    //         tl.to(mainSection, { x: 0, duration });
+    //         tl.to(
+    //             aboutUsSection,
+    //             {
+    //                 x: "-100vw",
+    //                 duration,
+    //                 onComplete: () => {
+    //                     changeDisplay(aboutUsSection, "hide");
+    //                 },
+    //             },
+    //             "<"
+    //         );
+    //         tl.to(
+    //             savedSection,
+    //             {
+    //                 x: "100vw",
+    //                 duration,
+    //                 onComplete: () => {
+    //                     changeDisplay(savedSection, "hide");
+    //                 },
+    //             },
+    //             "<"
+    //         );
+
+    //         break;
+    // }
 
     lockScrolling();
 
