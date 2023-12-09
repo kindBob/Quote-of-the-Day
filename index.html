@@ -41,6 +41,12 @@
         <title>Quote of the Day</title>
     </head>
     <body>
+        <noscript>
+            <h3 style="width: 90%; margin: 20px auto; text-align: center"
+                >JavaScript is disabled, if you want to continue, please enable it in the settings of your browser.</h3
+            >
+        </noscript>
+
         <section id="about-us-section" class="section about-us__section">
             <header id="about-us-header" class="header about-us-header">
                 <div class="container header__container">
@@ -103,7 +109,7 @@
             </header>
 
             <div class="container main-section__container">
-                <div class="quotes-element main-page-quote --clickable">
+                <div id="index-0" class="quotes-element main-page-quote --clickable">
                     <div class="quotes-element__inner-container">
                         <img
                             id="quote-hint"
@@ -111,9 +117,9 @@
                             src="./assets/gifs/tap-gesture.gif"
                             alt="Tap gesture" />
                         <div class="quotes-element__front-container">
-                            <div id="current-date" class="quotes-element__date"></div>
-                            <div id="current-author" class="quotes-element__author"></div>
-                            <div id="current-quote" class="quotes-element__quote"></div>
+                            <div class="quotes-element__date"></div>
+                            <div class="quotes-element__author"></div>
+                            <div class="quotes-element__quote"></div>
                         </div>
                         <div class="quotes-element__back-container">
                             <div class="quotes-element__buttons-container">
@@ -131,13 +137,15 @@
                         </div>
                     </div>
                 </div>
-
+            </div>
+            <div class="container">
                 <div class="separator"> </div>
                 <div data-i18n-key="previous-quotes-title" class="history-title">Previous Quotes</div>
             </div>
+
             <div class="bg-blur-section"></div>
             <div id="history-container" class="container history-container">
-                <div class="quotes-element history-quote-element main-page-quote --clickable">
+                <div class="quotes-element history-quote-element main-page-quote --clickable --always-shown">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
                             <div class="quotes-element__date history__quotes-element-date"></div>
@@ -370,7 +378,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.3/Flip.min.js"></script>
         <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
         <script type="module" src="./scripts/languageManager.js"></script>
         <script type="module" src="./scripts/quotesManager.js"></script>

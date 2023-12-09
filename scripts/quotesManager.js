@@ -10,14 +10,17 @@ import {
 // const QUOTES_API = "http://localhost:3000/quotes";
 const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
 
-const currentQuoteOutput = document.querySelector("#current-quote");
-const currentAuthorOutput = document.querySelector("#current-author");
-const currentDateOutput = document.querySelector("#current-date");
+const currentQuoteElement = document.querySelector("#index-0");
+const currentQuoteOutput = currentQuoteElement.querySelector(".quotes-element__quote");
+const currentAuthorOutput = currentQuoteElement.querySelector(".quotes-element__author");
+const currentDateOutput = currentQuoteElement.querySelector(".quotes-element__date");
 
 const savedContainer = document.querySelector("#saved-container");
 const historyContainer = document.querySelector("#history-container");
 
 const savedSection = document.querySelector("#saved-section");
+
+let previousQuotesElements = [];
 
 let currentQuote = null;
 let previousQuotes = [];
@@ -71,7 +74,7 @@ async function fetchQuotes() {
     const data = await response.json();
     const quotes = data.quotes;
     currentQuote = quotes[quotes.length - 1];
-    previousQuotes = quotes.slice(0, quotes.length).reverse();
+    previousQuotes = quotes.slice(0, quotes.length - 1);
 
     const localStorageQuotes = JSON.parse(localStorage.getItem("savedQuotes"));
     if (localStorageQuotes) savedQuotes = localStorageQuotes;
@@ -103,38 +106,53 @@ async function setupQuotes() {
     setupPreviousQuotes();
     setupSavingButtonsEL(document.querySelectorAll(".quotes-element__saving-button:not(.--dummy)"));
     setupSavedQuotes();
-
     setupSharingButtonsEL(document.querySelectorAll(".share-button"));
     setupQuotesIds();
 }
 
+function setupPreviousQuotesText(element, content) {
+    element.querySelector(".history__quotes-element-date").textContent = content.id;
+    element.querySelector(".quotes-element__author").textContent = content.author;
+    element.querySelector(".quotes-element__quote").textContent = content.quote;
+}
+
 function setupPreviousQuotes() {
-    if (previousQuotes.length > 1) {
-        for (let i = 0; i < previousQuotes.length - 2; i++) {
-            const clone = createClone(historyContainer, document.querySelector(".history-quote-element"));
+    const firstPreviousQuote = document.querySelector(".history-quote-element");
+
+    setupPreviousQuotesText(firstPreviousQuote, {
+        id: previousQuotes[previousQuotes.length - 1].id,
+        author: previousQuotes[previousQuotes.length - 1][initialLocaleAuthor],
+        quote: previousQuotes[previousQuotes.length - 1][initialLocaleQuote],
+    });
+
+    previousQuotesElements.push(firstPreviousQuote);
+
+    for (let i = previousQuotes.length - 2; i >= 0; i--) {
+        const clone = createClone(historyContainer, document.querySelector(".history-quote-element"), { pos: "end" });
+
+        setupPreviousQuotesText(clone, {
+            id: previousQuotes[i].id,
+            author: previousQuotes[i][initialLocaleAuthor],
+            quote: previousQuotes[i][initialLocaleQuote],
+        });
+
+        if (i < previousQuotes.length - 3) {
+            clone.classList.add("--hidden");
+            clone.classList.remove("--always-shown");
         }
+
+        previousQuotesElements.push(clone);
     }
 
-    for (let i = 0; i < previousQuotes.length - 1; i++) {
-        document.querySelectorAll(".history__quotes-element-date")[i].textContent = previousQuotes[i + 1].id;
-        document.querySelectorAll(".history__quotes-element-author")[i].textContent =
-            previousQuotes[i + 1][initialLocaleAuthor];
-        document.querySelectorAll(".history__quotes-element-quote")[i].textContent =
-            previousQuotes[i + 1][initialLocaleQuote];
+    // for (let i = previousQuotes.length - 1; i >= 0; i--) {
+    //     document.querySelectorAll(".history__quotes-element-date")[i].textContent = previousQuotes[i].id;
+    //     document.querySelectorAll(".history__quotes-element-author")[i].textContent =
+    //         previousQuotes[i][initialLocaleAuthor];
+    //     document.querySelectorAll(".history__quotes-element-quote")[i].textContent =
+    //         previousQuotes[i][initialLocaleQuote];
 
-        if (i == 2) {
-            const elem = document.querySelectorAll(".history-quote-element")[i];
-
-            const dummyElement = document.createElement("div");
-            dummyElement.setAttribute("id", "scroll-position");
-
-            elem.appendChild(dummyElement);
-
-            dummyElement.style.position = "absolute";
-            dummyElement.style.bottom = "-20vh";
-            dummyElement.style.left = "0";
-        }
-    }
+    //     // if(i < 2)
+    // }
 }
 
 function checkPreviousQuotesReadiness() {
@@ -230,9 +248,12 @@ function removeClassRecursively(element, className) {
     }
 }
 
-function createClone(parent, element) {
+function createClone(parent, element, options) {
     const clone = element.cloneNode(true);
-    parent.prepend(clone);
+
+    if (options?.pos == "end") parent.append(clone);
+    else parent.prepend(clone);
+
     return clone;
 }
 
@@ -295,14 +316,17 @@ function setupElementRemoval(element) {
     const precedingElem = document.querySelector(`${precedingElemId}.saved__quote-element`);
     const followingElem = document.querySelector(`${followingElemId}.saved__quote-element`);
 
-    const margin = parseFloat(getComputedStyle(element).height.replace("px", "")) / 3;
+    const margin = parseFloat(getComputedStyle(element).height.replace("px", ""));
+    let initialMargin = 0;
 
     const closeElems = [];
 
     precedingElem && closeElems.push(precedingElem);
     followingElem && closeElems.push(followingElem);
 
-    const tl = gsap.timeline({ defaults: { duration: prefersReducedMotion ? 0 : 0.6, ease: "power2.inOut" } });
+    if (closeElems[0]) initialMargin = parseInt(getComputedStyle(closeElems[0]).marginTop.replace("px", ""));
+
+    const tl = gsap.timeline({ defaults: { duration: prefersReducedMotion ? 0 : 0.8, ease: "power3.inOut" } });
 
     tl.addLabel("curElem", 0);
 
@@ -317,15 +341,15 @@ function setupElementRemoval(element) {
         onComplete: () => finishElementRemoval(element),
     });
 
-    if (precedingElem) {
-        tl.to(precedingElem, { marginTop: margin }, "curElem");
-    }
+    // if (precedingElem) {
+    //     tl.to(precedingElem, { marginTop: "+=5" }, "curElem");
+    // }
 
-    if (followingElem) {
-        tl.to(followingElem, { marginBottom: margin }, "curElem");
-    }
+    // if (followingElem) {
+    //     tl.to(followingElem, { marginBottom: "+=5" }, "curElem");
+    // }
 
-    if (closeElems.length > 0) tl.to(closeElems, { margin: "25" }, "-=100%");
+    // if (closeElems.length > 0) tl.to(closeElems, { margin: "25", duration: 0.2 });
 
     setupSavedCentering();
 }
@@ -336,4 +360,4 @@ function finishElementRemoval(element) {
     setupSavedQuotes();
 }
 
-export { previousQuotes, checkPreviousQuotesReadiness, manageSavedQuotes, fetchQuotes };
+export { previousQuotes, checkPreviousQuotesReadiness, manageSavedQuotes, fetchQuotes, previousQuotesElements };

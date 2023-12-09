@@ -1,7 +1,7 @@
 // Variables
 $transition-length: 0.6s;
 
-$header-height: 130px;
+$header-height: min(25vw, 120px);
 $footer-height: 90px;
 
 $headerNFooter-bg: #fff;
@@ -42,6 +42,31 @@ body {
     overflow-x: hidden;
     font-family: "Montserrat", sans-serif;
     background-color: #fff;
+
+    &:after,
+    &:before {
+        content: "";
+        display: block;
+        position: fixed;
+        z-index: -1;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        width: 100vmax;
+        height: 100vmax;
+        background: rgba(0, 0, 0, 0.05);
+        animation: bodyBackground 90s linear infinite;
+    }
+
+    &:after {
+        left: 15vw;
+    }
+
+    &:before {
+        right: 15vw;
+        animation-delay: -30s;
+        animation-direction: reverse;
+    }
 }
 
 #overlay {
@@ -413,6 +438,9 @@ body {
 }
 
 .main-header {
+    z-index: 50;
+    transform: translateZ(-10px);
+
     &__nav-bar__element {
         margin-left: $buttons-margin;
 
@@ -526,7 +554,6 @@ body {
     left: 0;
     top: 0;
     z-index: 3;
-    background-color: #dddddd;
     overflow-x: hidden;
 }
 
@@ -545,10 +572,13 @@ body {
     }
 
     &__container {
+        min-height: min(650px, calc(100svh - $header-height));
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
-        padding-top: 55px;
+        // padding-top: 55px;
+        // background-color: #000;
     }
 }
 
@@ -557,7 +587,7 @@ body {
     width: calc(100% - 22px);
     height: 2.5px;
     background-color: #4b4b4b;
-    margin-top: min(8vh, 100px);
+    // margin-top: min(8vh, 100px);
 
     &::before,
     &::after {
@@ -594,17 +624,9 @@ body {
     display: flex;
     flex-direction: column;
     padding: 30px 25px;
-    overflow: hidden;
+    // overflow-y: hidden;
     transition: $transition-length;
 }
-
-// .history-quote-element {
-//     display: none;
-
-//     &.--active {
-//         display: block;
-//     }
-// }
 
 .about-us {
     &__section {
@@ -626,6 +648,8 @@ body {
 .saved {
     &__section {
         width: 0;
+        display: flex;
+        flex-direction: column;
         transform: translateX(100%);
         overflow-y: hidden;
 
@@ -636,7 +660,7 @@ body {
     }
 
     &__container {
-        min-height: calc(100vh - $footer-height - $header-height);
+        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -645,10 +669,6 @@ body {
     }
 
     &__quote-element {
-        // &:nth-child(1) {
-        //     margin-bottom: 0;
-        // }
-
         &.--hiding-animation {
             opacity: 0;
             height: 0;
@@ -688,13 +708,10 @@ body {
 }
 
 .quotes-element {
-    height: fit-content;
     width: 100%;
     position: relative;
-    background-color: transparent;
-    // margin-bottom: 50px;
-    border: 1px solid transparent;
     margin: 25px 0;
+    background-color: transparent;
 
     &.--dummy {
         display: none;
@@ -733,6 +750,7 @@ body {
         justify-content: flex-end;
         padding-top: 30px;
         padding-right: 40px;
+        transform: translateZ(-1px);
     }
 
     &__buttons-container {
@@ -807,9 +825,15 @@ body {
     }
 }
 
-// .main-page-quote:last-child {
-//     margin-bottom: 0;
-// }
+.history-quote-element {
+    // &.--hidden {
+    //     height: 0;
+    //     padding: 0;
+    //     margin: 0;
+    //     transform: scale(0);
+    //     overflow: hidden;
+    // }
+}
 
 .quotes-element.--sharing-card {
     width: 325px;
@@ -1196,14 +1220,13 @@ body {
         &__nav-bar {
             &__list {
                 width: 320px;
-                height: 100vh;
+                height: 100dvh;
                 justify-content: center;
                 flex-direction: column;
                 position: fixed;
                 top: 0;
                 right: 0;
                 transform: translateX(100vw);
-                padding-bottom: 7vh !important;
                 background-color: #ffffff;
                 box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
                 pointer-events: none;
@@ -1450,6 +1473,16 @@ body {
 
     100% {
         transform: rotate(1080deg);
+    }
+}
+
+@keyframes bodyBackground {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
     }
 }
 // Animations ---

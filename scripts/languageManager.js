@@ -22,7 +22,7 @@ async function setupInitialLocale() {
     document.querySelector("html").setAttribute("lang", initialLocale);
 
     translatePage();
-    callAwaitedFunctions();
+    callAwaitingFunctions();
 }
 
 function isLocaleSupported(locale) {
@@ -55,7 +55,7 @@ function findTranslation(keyWord) {
     return translation[initialLocale];
 }
 
-function callAwaitedFunctions() {
+function callAwaitingFunctions() {
     fetchQuotes();
 }
 

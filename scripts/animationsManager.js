@@ -1,40 +1,111 @@
 import { checkPreviousQuotesReadiness } from "./quotesManager.js";
 import { prefersReducedMotion } from "./userInteractions.js";
 
-const lenisOptions = { duration: 0.9 };
+let previousQuotesTl = null;
 let lenis = null;
+let quotes = [];
 
-const tl = gsap.timeline();
+const lenisOptions = {
+    // duration: 0.9,
+    // lerp: 0.2,
+    duration: 1,
+    normalizeWheel: true,
+    // easing: (x) => Math.sin((x * Math.PI) / 2),
+};
+const previousQuotesHiddenOptions = {
+    height: 0,
+    width: 0,
+    margin: 0,
+    padding: 0,
+    overflow: "hidden",
+    duration: 0,
+    stagger: 0,
+    ease: "power2.inOut",
+};
 
 checkPreviousQuotesReadiness().then(() => {
     if (prefersReducedMotion) return;
 
-    startAnimations();
+    setupInitialAnimations();
 });
 
-function startAnimations() {
-    const quotes = gsap.utils.toArray(".quotes-element");
+function setupInitialAnimations() {
+    previousQuotesTl = gsap.timeline();
 
+    quotes = gsap.utils.toArray(".history-quote-element");
     lenis = new Lenis(lenisOptions);
 
     requestAnimationFrame(raf);
 
-    // quotes.forEach((quote) => {
-    //     gsap.from(quote, {
-    //         x: "-100vw",
-    //         scrollTrigger: {
-    //             trigger: quote,
-    //             scrub: 1,
-    //             start: "-65% center",
-    //             end: "30% center",
-    //             markers: true,
-    //         },
-    //     });
+    // gsap.set(".history-quote-element:not(.--always-shown)", previousQuotesHiddenOptions);
+
+    previousQuotesHiddenOptions.duration = prefersReducedMotion ? 0 : 1;
+    previousQuotesHiddenOptions.stagger = prefersReducedMotion ? 0 : 0.1;
+
+    previousQuotesTl.to(".history-quote-element:not(.--always-shown)", previousQuotesHiddenOptions);
+
+    // gsap.from("#index-0", {
+    //     y: "100vh",
+    //     duration: 1.5,
+    //     ease: "expo.inOut",
     // });
 
-    // tl.from(".quotes-element", { y: "100vw", duration: 1.5, ease: "expo.inOut" });
-    // tl.from(".separator", { scale: 0, duration: 1, ease: "expo.inOut" }, "-=60%");
-    // tl.from(".history-title", { opacity: 0, duration: 1, ease: "power2.inOut" }, "-=30%");
+    startScrollAnimations();
+}
+
+function startScrollAnimations() {
+    gsap.to("#index-0", {
+        y: "-100%",
+        scrollTrigger: {
+            trigger: "#index-0",
+            scrub: 1.2,
+            start: "top top",
+            end: "bottom top",
+            overwrite: "true",
+        },
+    });
+
+    gsap.from(".separator", {
+        scale: 0,
+        scrollTrigger: {
+            trigger: ".separator",
+            scrub: 1.2,
+            start: "top bottom",
+            end: "bottom center",
+            // markers: true,
+        },
+    });
+    gsap.from(".history-title", {
+        opacity: 0,
+        scrollTrigger: {
+            trigger: ".history-title",
+            scrub: 1.2,
+            start: "top bottom",
+            end: "bottom center",
+            // markers: true,
+        },
+    });
+
+    quotes.forEach((quote) => {
+        gsap.from(quote, {
+            x: "-100vw",
+            scrollTrigger: {
+                trigger: quote,
+                scrub: 1.5,
+                start: "center bottom",
+                end: "bottom bottom",
+                // markers: true,
+            },
+        });
+    });
+}
+
+function changePreviousQuotesVisibility(act) {
+    previousQuotesHiddenOptions.duration = prefersReducedMotion ? 0 : 1;
+    previousQuotesHiddenOptions.stagger = prefersReducedMotion ? 0 : 0.1;
+
+    if (act == "showMore") previousQuotesTl.reverse();
+    else previousQuotesTl.restart();
 }
 
 function raf(time) {
@@ -42,4 +113,4 @@ function raf(time) {
     requestAnimationFrame(raf);
 }
 
-export { lenis };
+export { lenis, changePreviousQuotesVisibility };

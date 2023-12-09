@@ -1,6 +1,6 @@
-import { lenis } from "./animationsManager.js";
+import { lenis, changePreviousQuotesVisibility } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
-import { manageSavedQuotes, previousQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
+import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
 const QUOTE_FLIPPING_LENGTH = 600;
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
@@ -19,7 +19,6 @@ const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
 const savedOpenButton = document.querySelector("#saved-open-button");
 
 const sections = document.querySelectorAll(".section");
-const mainSection = document.querySelector("#main-section");
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
 
@@ -82,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //Quotes
     if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
     else quoteHint.classList.add("--active");
+
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
@@ -101,7 +101,8 @@ document.addEventListener("click", (event) => {
 });
 
 checkPreviousQuotesReadiness().then(() => {
-    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+    // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+    // showLessPreviousQuotes({ noScroll: true });
 });
 
 function detectSmallScreen() {
@@ -131,15 +132,15 @@ function validateEmail(email) {
 }
 
 function lockScrolling(element = document.body) {
-    // element.style.overflowY = "hidden";
-    // element.style.maxHeight = "100vh";
+    element.style.overflowY = "hidden";
+    element.style.maxHeight = "100vh";
 
     lenis.stop();
 }
 
 function unlockScrolling(element = document.body) {
-    // element.style.overflowY = "auto";
-    // element.style.maxHeight = "auto";
+    element.style.overflowY = "auto";
+    element.style.maxHeight = "auto";
 
     lenis.start();
 }
@@ -624,22 +625,32 @@ function getHistoryQuoteElementsHeight(number) {
 }
 
 function showMorePreviousQuotes() {
-    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length - 1)}px`;
+    // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length - 1)}px`;
+
+    // previousQuotesElements.forEach((el) => el.classList.remove("--hidden"));
+
+    changePreviousQuotesVisibility("showMore");
 
     showMoreBtn.textContent = findTranslation("show-more-btn__show-less");
 }
 
-function showLessPreviousQuotes() {
+function showLessPreviousQuotes(options) {
     const screenWidth = window.screen.width;
 
     const y = document.querySelector("#index-3");
     const offsetY = screenWidth * (screenWidth > 768 && screenWidth <= 1620 ? 0.12 : 0.2);
 
-    scrollToPosition(null, { speed: 1, y, offsetY });
+    if (!options?.noScroll) scrollToPosition(null, { speed: 1, y, offsetY });
 
     setTimeout(
         () => {
-            historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+            // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+
+            // previousQuotesElements.forEach((el) => {
+            //     !el.classList.contains("--always-shown") && el.classList.add("--hidden");
+            // });
+
+            changePreviousQuotesVisibility("showLess");
 
             showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
         },
