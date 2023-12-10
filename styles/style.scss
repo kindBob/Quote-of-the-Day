@@ -102,6 +102,7 @@ body {
     top: 0;
     min-width: 100vw;
     min-height: 100vh;
+    min-height: 100lvh;
     z-index: 5;
     background-color: transparent;
     opacity: 0;
@@ -438,8 +439,7 @@ body {
 }
 
 .main-header {
-    z-index: 50;
-    transform: translateZ(-10px);
+    z-index: 20;
 
     &__nav-bar__element {
         margin-left: $buttons-margin;
@@ -823,16 +823,6 @@ body {
         background-color: transparent;
         transition: 0.2s;
     }
-}
-
-.history-quote-element {
-    // &.--hidden {
-    //     height: 0;
-    //     padding: 0;
-    //     margin: 0;
-    //     transform: scale(0);
-    //     overflow: hidden;
-    // }
 }
 
 .quotes-element.--sharing-card {
@@ -1226,12 +1216,11 @@ body {
                 position: fixed;
                 top: 0;
                 right: 0;
+                z-index: 10;
                 transform: translateX(100vw);
                 background-color: #ffffff;
                 box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
                 pointer-events: none;
-
-                z-index: 10;
             }
 
             &.--active &__list {

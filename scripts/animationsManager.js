@@ -56,12 +56,16 @@ function setupInitialAnimations() {
 function startScrollAnimations() {
     gsap.to("#index-0", {
         y: "-100%",
+        ease: (x) => x < 0.5
+            ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+            : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
+        overwrite: "true",
         scrollTrigger: {
             trigger: "#index-0",
             scrub: 1.2,
             start: "top top",
             end: "bottom top",
-            overwrite: "true",
+
         },
     });
 
@@ -89,6 +93,9 @@ function startScrollAnimations() {
     quotes.forEach((quote) => {
         gsap.from(quote, {
             x: "-100vw",
+            ease: (x) => x < 0.5
+                ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+                : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
             scrollTrigger: {
                 trigger: quote,
                 scrub: 1.5,

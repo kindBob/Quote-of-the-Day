@@ -266,12 +266,27 @@ function setupSavedCentering() {
 async function manageSavedQuotes(button, quoteElement) {
     // Saved quote addition
     if (button.textContent == findTranslation("save-button")) {
-        for (let i = 0; i < previousQuotes.length; i++) {
-            if (previousQuotes[i].id == quoteElement.querySelector(".quotes-element__date").textContent) {
-                savedQuotes.unshift(previousQuotes[i]);
-                localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
+        const date = quoteElement.querySelector(".quotes-element__date").textContent;
+        let quoteToSave = null;
+
+        if (currentQuote.id == date) {
+            quoteToSave = currentQuote;
+        } else {
+            for (let i = 0; i < previousQuotes.length; i++) {
+                if (previousQuotes[i].id == date) {
+                    quoteToSave = previousQuotes[i];
+                }
+
+                console.log(
+                    `Previous quotes id - ${previousQuotes[i].id}\nQuotes element date - ${quoteElement.querySelector(
+                        ".quotes-element__date"
+                    )}`
+                );
             }
         }
+
+        savedQuotes.unshift(quoteToSave);
+        localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
 
         setupSavedQuotes();
         setupSavedCentering();

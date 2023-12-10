@@ -74,7 +74,7 @@ window.addEventListener("orientationchange", () => {
     smallScreen = detectSmallScreen();
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+function initialSetup() {
     //Sections
     sections.forEach((section) => (section.style.transition = `transform ${sectionTransitionTime}ms`));
 
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
-});
+}
 
 document.addEventListener("click", (event) => {
     if (!smallScreen) return;
@@ -441,6 +441,7 @@ async function setupSharingQuoteProcess() {
     }
 }
 
+//Doesn't work on localhost
 async function shareQuote_custom(imageFile) {
     if (sharingInProcess) return;
 
@@ -465,7 +466,7 @@ async function shareQuote_custom(imageFile) {
             body: formData,
         });
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error("Bad response");
 
         const data = await res.json();
 
@@ -831,4 +832,11 @@ function toggleSection(options) {
 }
 // Sections ---
 
-export { hideShowMoreBtn, setupSavingButtonsEL, setupSharingButtonsEL, savedOpened, prefersReducedMotion };
+export {
+    hideShowMoreBtn,
+    setupSavingButtonsEL,
+    setupSharingButtonsEL,
+    initialSetup,
+    savedOpened,
+    prefersReducedMotion,
+};

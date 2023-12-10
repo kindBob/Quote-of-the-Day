@@ -1,4 +1,5 @@
 import { fetchQuotes } from "./quotesManager.js";
+import { initialSetup } from "./userInteractions.js";
 
 const TRANSLATION_API = "https://quote-of-the-day-api.up.railway.app/translations";
 // const TRANSLATION_API = "http://localhost:3000/translations";
@@ -57,6 +58,7 @@ function findTranslation(keyWord) {
 
 function callAwaitingFunctions() {
     fetchQuotes();
+    initialSetup();
 }
 
 export { initialLocale, findTranslation };
