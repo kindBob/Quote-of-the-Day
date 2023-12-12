@@ -326,26 +326,22 @@ async function manageSavedQuotes(button, quoteElement) {
 }
 
 function setupElementRemoval(element) {
-    const precedingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) + 1}`;
-    const followingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) - 1}`;
-    const precedingElem = document.querySelector(`${precedingElemId}.saved__quote-element`);
-    const followingElem = document.querySelector(`${followingElemId}.saved__quote-element`);
+    // const precedingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) + 1}`;
+    // const followingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) - 1}`;
+    // const precedingElem = document.querySelector(`${precedingElemId}.saved__quote-element`);
+    // const followingElem = document.querySelector(`${followingElemId}.saved__quote-element`);
 
-    const margin = parseFloat(getComputedStyle(element).height.replace("px", ""));
-    let initialMargin = 0;
+    // const margin = parseFloat(getComputedStyle(element).height.replace("px", ""));
+    // let initialMargin = 0;
 
-    const closeElems = [];
+    // const closeElems = [];
 
-    precedingElem && closeElems.push(precedingElem);
-    followingElem && closeElems.push(followingElem);
+    // precedingElem && closeElems.push(precedingElem);
+    // followingElem && closeElems.push(followingElem);
 
-    if (closeElems[0]) initialMargin = parseInt(getComputedStyle(closeElems[0]).marginTop.replace("px", ""));
+    // if (closeElems[0]) initialMargin = parseInt(getComputedStyle(closeElems[0]).marginTop.replace("px", ""));
 
-    const tl = gsap.timeline({ defaults: { duration: prefersReducedMotion ? 0 : 0.8, ease: "power3.inOut" } });
-
-    tl.addLabel("curElem", 0);
-
-    tl.to(element, {
+    gsap.to(element, {
         x: "100vw",
         height: 0,
         margin: 0,
@@ -353,18 +349,10 @@ function setupElementRemoval(element) {
         scaleY: 0,
         opacity: 0,
         overflow: "hidden",
+        duration: prefersReducedMotion ? 0 : 0.8,
+        ease: "back.inOut(0.9)",
         onComplete: () => finishElementRemoval(element),
     });
-
-    // if (precedingElem) {
-    //     tl.to(precedingElem, { marginTop: "+=5" }, "curElem");
-    // }
-
-    // if (followingElem) {
-    //     tl.to(followingElem, { marginBottom: "+=5" }, "curElem");
-    // }
-
-    // if (closeElems.length > 0) tl.to(closeElems, { margin: "25", duration: 0.2 });
 
     setupSavedCentering();
 }

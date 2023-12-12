@@ -2,48 +2,33 @@ import { checkPreviousQuotesReadiness } from "./quotesManager.js";
 import { prefersReducedMotion } from "./userInteractions.js";
 
 let previousQuotesTl = null;
-let lenis = null;
 let quotes = [];
 
-const lenisOptions = {
-    // duration: 0.9,
-    // lerp: 0.2,
-    duration: 1,
-    normalizeWheel: true,
-    // easing: (x) => Math.sin((x * Math.PI) / 2),
-};
 const previousQuotesHiddenOptions = {
     height: 0,
     width: 0,
     margin: 0,
     padding: 0,
     overflow: "hidden",
-    duration: 0,
-    stagger: 0,
-    ease: "power2.inOut",
+    opacity: 0,
+    ease: "none",
 };
 
 checkPreviousQuotesReadiness().then(() => {
-    if (prefersReducedMotion) return;
+    if (!prefersReducedMotion) setupInitialAnimations();
 
-    setupInitialAnimations();
+    previousQuotesTl = gsap.timeline();
+
+    previousQuotesTl.to(".history-quote-element:not(.--always-shown)", {
+        duration: prefersReducedMotion ? 0 : 1,
+        ease: (x) =>
+            x < 0.5 ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2 : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
+        keyframes: [{ opacity: 0, yPercent: 100 }, previousQuotesHiddenOptions],
+    });
+    previousQuotesTl.seek(previousQuotesTl.duration());
 });
 
 function setupInitialAnimations() {
-    previousQuotesTl = gsap.timeline();
-
-    quotes = gsap.utils.toArray(".history-quote-element");
-    lenis = new Lenis(lenisOptions);
-
-    requestAnimationFrame(raf);
-
-    // gsap.set(".history-quote-element:not(.--always-shown)", previousQuotesHiddenOptions);
-
-    previousQuotesHiddenOptions.duration = prefersReducedMotion ? 0 : 1;
-    previousQuotesHiddenOptions.stagger = prefersReducedMotion ? 0 : 0.1;
-
-    previousQuotesTl.to(".history-quote-element:not(.--always-shown)", previousQuotesHiddenOptions);
-
     // gsap.from("#index-0", {
     //     y: "100vh",
     //     duration: 1.5,
@@ -54,18 +39,17 @@ function setupInitialAnimations() {
 }
 
 function startScrollAnimations() {
+    quotes = gsap.utils.toArray(".history-quote-element");
+
     gsap.to("#index-0", {
         y: "-100%",
-        ease: (x) => x < 0.5
-            ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
-            : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
-        overwrite: "true",
+        overwrite: "auto",
+        ease: "power2.inOut",
         scrollTrigger: {
             trigger: "#index-0",
             scrub: 1.2,
             start: "top top",
             end: "bottom top",
-
         },
     });
 
@@ -76,8 +60,8 @@ function startScrollAnimations() {
             scrub: 1.2,
             start: "top bottom",
             end: "bottom center",
-            // markers: true,
         },
+        ease: "power2.inOut",
     });
     gsap.from(".history-title", {
         opacity: 0,
@@ -86,38 +70,118 @@ function startScrollAnimations() {
             scrub: 1.2,
             start: "top bottom",
             end: "bottom center",
-            // markers: true,
         },
+
+        ease: "power2.inOut",
     });
 
     quotes.forEach((quote) => {
         gsap.from(quote, {
             x: "-100vw",
-            ease: (x) => x < 0.5
-                ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
-                : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
+            overwrite: "auto",
             scrollTrigger: {
                 trigger: quote,
-                scrub: 1.5,
-                start: "center bottom",
-                end: "bottom bottom",
-                // markers: true,
+                scrub: 1.2,
+                start: "55% bottom",
+                end: "105% bottom",
             },
+            ease: "power2.inOut",
         });
     });
 }
 
-function changePreviousQuotesVisibility(act) {
-    previousQuotesHiddenOptions.duration = prefersReducedMotion ? 0 : 1;
-    previousQuotesHiddenOptions.stagger = prefersReducedMotion ? 0 : 0.1;
+const openedSections = [];
+function startSecondarySectionAnimations(options) {
+    const { section, delay } = options;
 
+    if (section == "main") return;
+
+    for (const el of openedSections) {
+        if (el == section) return;
+    }
+
+    openedSections.push(section);
+
+    const tl = gsap.timeline({
+        delay: `${delay}`,
+        defaults: {
+            duration: 0.7,
+            ease: (x) =>
+                x < 0.5
+                    ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+                    : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
+        },
+    });
+
+    const sectionElement = document.querySelector(`#${section}-section`);
+    const footer = sectionElement.querySelector("footer");
+    const header = sectionElement.querySelector("header");
+    const title = sectionElement.querySelector(".section-title");
+    const closeBtn = sectionElement.querySelector(".close-btn");
+    const footerContent = footer.querySelector(".content");
+    const mainContainer = sectionElement.querySelector(".container.--main");
+
+    const footerHeight = footer.clientHeight;
+    const headerWidth = header.clientWidth;
+
+    tl.addLabel("first");
+
+    tl.from(
+        footer,
+        {
+            yPercent: 100,
+        },
+        "first"
+    );
+
+    tl.from(
+        header,
+        {
+            yPercent: -100,
+        },
+        "first"
+    );
+
+    tl.addLabel("second", "first+=0.2");
+
+    tl.from(
+        title,
+        {
+            x: -headerWidth / 2,
+        },
+        "second"
+    );
+
+    tl.from(
+        closeBtn,
+        {
+            x: headerWidth / 2,
+        },
+        "second"
+    );
+
+    tl.from(
+        footerContent,
+        {
+            y: footerHeight,
+            skewY: 15,
+        },
+        "second+=75%"
+    );
+
+    tl.from(
+        mainContainer,
+        {
+            autoAlpha: 0,
+            ease: "none",
+        },
+        ">-=20%"
+    );
+}
+
+function changePreviousQuotesVisibility(act) {
     if (act == "showMore") previousQuotesTl.reverse();
     else previousQuotesTl.restart();
 }
 
-function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-}
-
-export { lenis, changePreviousQuotesVisibility };
+export { changePreviousQuotesVisibility, startSecondarySectionAnimations };

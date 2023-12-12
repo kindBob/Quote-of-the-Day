@@ -1,14 +1,12 @@
 // Variables
-$transition-length: 0.6s;
+$defaultTransitionLength: 0.6s;
 
-$header-height: min(25vw, 120px);
-$footer-height: 90px;
+$headerHeight: min(25vw, 120px);
+$buttonsMargin: 15px;
 
-$headerNFooter-bg: #fff;
+$headerNFooterBg: #fff;
 $successColor: #55d355;
 $errorColor: #e26c5a;
-
-$buttons-margin: 15px;
 // Variables ---
 
 // Basic styles
@@ -36,7 +34,7 @@ html {
 
 body {
     max-width: 100vw;
-    min-height: 100%;
+    min-height: 100vh;
     padding: 0;
     margin: 0;
     overflow-x: hidden;
@@ -49,23 +47,26 @@ body {
         display: block;
         position: fixed;
         z-index: -1;
-        top: 0;
+        top: -5vh;
         width: 100vw;
         height: 100vh;
-        width: 100vmax;
+        width: 90vmax;
         height: 100vmax;
         background: rgba(0, 0, 0, 0.05);
-        animation: bodyBackground 90s linear infinite;
+        animation: bodyBackground 130s linear infinite;
     }
 
     &:after {
         left: 15vw;
+        // background-color: red;
     }
 
     &:before {
-        right: 15vw;
-        animation-delay: -30s;
+        left: -5vw;
+        animation-duration: 110s;
+        animation-delay: -70s;
         animation-direction: reverse;
+        // background-color: blue;
     }
 }
 
@@ -162,7 +163,7 @@ body {
     color: #ef3a32;
     font-weight: bold;
     text-align: center;
-    transition: 0.4s;
+    transition: background 0.4s, color 0.4s;
     cursor: pointer;
 
     &:hover,
@@ -200,7 +201,7 @@ body {
     padding-left: 0.75em;
     padding-right: 0.75em;
     border-radius: 0;
-    transition: $transition-length;
+    transition: $defaultTransitionLength;
     background-color: transparent;
 }
 
@@ -267,7 +268,7 @@ body {
         width: 100%;
         height: 3px;
         margin: 5px auto;
-        transition: calc($transition-length / 100 * 50);
+        transition: calc($defaultTransitionLength / 100 * 50);
         background-color: #000000;
     }
 }
@@ -297,7 +298,7 @@ body {
         background: #ef3a32;
         border-radius: 10px;
         display: block;
-        transition: $transition-length;
+        transition: $defaultTransitionLength;
     }
 
     &::before {
@@ -323,12 +324,12 @@ body {
     position: fixed;
     bottom: 25px;
     left: -95px;
-    font-size: clamp(20px, 3.5vw, 26px);
+    font-size: clamp(20px, 3.2vw, 26px);
     z-index: 100;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
     border-radius: 10px;
-    transition: $transition-length;
+    transition: $defaultTransitionLength;
     overflow: hidden;
 
     &.--active {
@@ -347,7 +348,7 @@ body {
     justify-content: flex-start;
     align-items: center;
     padding: 0 1em 0 1.2em;
-    transition: $transition-length;
+    transition: $defaultTransitionLength;
 
     &.--active {
         left: 0px;
@@ -396,14 +397,10 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: $header-height;
-    background-color: $headerNFooter-bg;
+    height: $headerHeight;
+    background-color: $headerNFooterBg;
     z-index: 9;
-    transition: $transition-length;
-
-    &__container {
-        transition: $transition-length;
-    }
+    // transition: $defaultTransitionLength;
 }
 
 .saved-header .nav-bar {
@@ -429,7 +426,7 @@ body {
 
     &__list {
         justify-content: flex-end;
-        transition: $transition-length;
+        transition: $defaultTransitionLength;
         z-index: 10;
     }
 
@@ -439,10 +436,10 @@ body {
 }
 
 .main-header {
-    z-index: 20;
+    // z-index: 20;
 
     &__nav-bar__element {
-        margin-left: $buttons-margin;
+        margin-left: $buttonsMargin;
 
         &:first-child {
             margin-left: 0;
@@ -470,7 +467,7 @@ body {
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
-    transition: $transition-length;
+    transition: $defaultTransitionLength;
     pointer-events: none;
 
     &.--active {
@@ -554,25 +551,15 @@ body {
     left: 0;
     top: 0;
     z-index: 3;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .main-section {
-    transform: translateX(-100%);
     overflow-y: hidden;
     z-index: 4;
 
-    &.--active {
-        transform: translateX(0);
-        overflow-y: auto;
-    }
-
-    &.--right-side {
-        transform: translateX(100%);
-    }
-
     &__container {
-        min-height: min(650px, calc(100svh - $header-height));
+        min-height: min(650px, calc(100svh - $headerHeight));
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -625,41 +612,14 @@ body {
     flex-direction: column;
     padding: 30px 25px;
     // overflow-y: hidden;
-    transition: $transition-length;
+    transition: $defaultTransitionLength;
 }
 
-.about-us {
-    &__section {
-        width: 0;
-        transform: translateX(-100%);
-        overflow-y: hidden;
+.section.--secondary {
+    display: flex;
+    flex-direction: column;
 
-        &.--active {
-            transform: translateX(0);
-            overflow-y: auto;
-        }
-    }
-
-    &__container {
-        min-height: calc(100vh - $footer-height - $header-height) !important;
-    }
-}
-
-.saved {
-    &__section {
-        width: 0;
-        display: flex;
-        flex-direction: column;
-        transform: translateX(100%);
-        overflow-y: hidden;
-
-        &.--active {
-            transform: translateX(0);
-            overflow-y: auto;
-        }
-    }
-
-    &__container {
+    & .container.--main {
         flex: 1;
         display: flex;
         flex-direction: column;
@@ -667,17 +627,19 @@ body {
         padding-top: 50px;
         padding-bottom: 50px;
     }
+}
 
-    &__quote-element {
-        &.--hiding-animation {
-            opacity: 0;
-            height: 0;
-            padding: 0;
-            margin: 0;
-            transform: translate(100%) scale(0);
-            overflow: hidden;
-            transition: $transition-length;
-        }
+.about-us {
+    &__section {
+        width: 0;
+        transform: translateX(-100%);
+    }
+}
+
+.saved {
+    &__section {
+        width: 0;
+        transform: translateX(100%);
     }
 
     &__placeholder {
@@ -686,14 +648,14 @@ body {
         font-size: clamp(23px, 4vw, 26px);
         color: #ffffff;
         opacity: 0;
-        transition: $transition-length;
+        transition: $defaultTransitionLength;
         display: none;
     }
 
     &__section.--is-empty &__placeholder {
         display: block;
-        -webkit-animation: placeholder-appearance $transition-length forwards;
-        animation: placeholder-appearance $transition-length forwards;
+        -webkit-animation: placeholder-appearance $defaultTransitionLength forwards;
+        animation: placeholder-appearance $defaultTransitionLength forwards;
     }
 }
 
@@ -765,7 +727,7 @@ body {
     }
 
     &__button {
-        margin-left: $buttons-margin;
+        margin-left: $buttonsMargin;
         position: relative;
 
         &:first-child {
@@ -789,7 +751,7 @@ body {
         width: fit-content;
         display: flex;
         align-items: flex-end;
-        padding-right: 2%;
+        padding-right: 5%;
         padding-top: 0.1em;
         font-size: clamp(30px, 1rem + 5.5vw, 95px);
         text-transform: uppercase;
@@ -826,12 +788,12 @@ body {
 }
 
 .quotes-element.--sharing-card {
-    width: 325px;
+    width: 360px;
     height: fit-content;
     position: absolute;
     top: -200vh;
     left: -200vw;
-    transition: scale(3);
+    transform: scale(3);
     z-index: -1000;
     background-color: transparent;
 }
@@ -841,10 +803,8 @@ body {
     height: fit-content;
     display: flex;
     flex-direction: column;
-    // margin: -160px 0 0 -10px;
     padding-right: 40px !important;
     transform: translateY(-14px);
-    border-radius: 25px;
 }
 
 .quotes-element.--sharing-card .quotes-element__date {
@@ -911,8 +871,10 @@ body {
 .footer {
     position: relative;
     width: 100%;
-    background-color: $headerNFooter-bg;
+    background-color: $headerNFooterBg;
+    overflow: hidden;
 }
+
 .main-section .footer {
     .container {
         height: 100%;

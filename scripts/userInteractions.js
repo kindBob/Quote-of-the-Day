@@ -1,4 +1,4 @@
-import { lenis, changePreviousQuotesVisibility } from "./animationsManager.js";
+import { changePreviousQuotesVisibility, startSecondarySectionAnimations } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
@@ -18,9 +18,9 @@ const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
 
 const savedOpenButton = document.querySelector("#saved-open-button");
 
-const sections = document.querySelectorAll(".section");
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
+const mainSection = document.querySelector("#main-section");
 
 const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
 const aboutUsOpenButton = document.querySelector("#about-us-open-button");
@@ -65,27 +65,12 @@ let smallScreen = detectSmallScreen();
 const prefersReducedMotion = detectReducedMotion();
 const shareAPINotSupported = detectShareAPISupport();
 
-const sectionTransitionTime = prefersReducedMotion ? 0 : smallScreen ? 600 : 800;
-
 // Genereal
 gsap.registerPlugin(ScrollToPlugin);
 
 window.addEventListener("orientationchange", () => {
     smallScreen = detectSmallScreen();
 });
-
-function initialSetup() {
-    //Sections
-    sections.forEach((section) => (section.style.transition = `transform ${sectionTransitionTime}ms`));
-
-    //Quotes
-    if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
-    else quoteHint.classList.add("--active");
-
-    //Links
-    legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
-    legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
-}
 
 document.addEventListener("click", (event) => {
     if (!smallScreen) return;
@@ -104,6 +89,16 @@ checkPreviousQuotesReadiness().then(() => {
     // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
     // showLessPreviousQuotes({ noScroll: true });
 });
+
+function initialSetup() {
+    //Quotes
+    if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
+    else quoteHint.classList.add("--active");
+
+    //Links
+    legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
+    legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
+}
 
 function detectSmallScreen() {
     return window.screen.width <= 768;
@@ -131,18 +126,20 @@ function validateEmail(email) {
     return regex.test(email);
 }
 
+// document.querySelector("")
+
 function lockScrolling(element = document.body) {
     element.style.overflowY = "hidden";
     element.style.maxHeight = "100vh";
 
-    lenis.stop();
+    // lenis.stop();
 }
 
 function unlockScrolling(element = document.body) {
     element.style.overflowY = "auto";
     element.style.maxHeight = "auto";
 
-    lenis.start();
+    // lenis.start();
 }
 
 function resetInputs(inputs) {
@@ -219,28 +216,24 @@ function displayRequestResult(options) {
 }
 
 function scrollToPosition(cb, options) {
-    window.addEventListener("scroll", checkPosition);
+    if (!options?.y) options.y = 0;
 
-    checkPosition();
+    if (window.scrollY == options.y) {
+        finish();
 
-    function checkPosition() {
-        if (options?.y && window.scrollY == options.y) {
-            finish();
-        } else if (window.scrollY == 0) {
-            finish();
-        }
-    }
-
-    function finish() {
-        typeof cb === "function" && cb(options?.funcArgument !== undefined && options.funcArgument);
-        window.removeEventListener("scroll", checkPosition);
+        return;
     }
 
     gsap.to(window, {
         scrollTo: { y: options?.y || 0, offsetY: options?.offsetY || 0 },
         duration: prefersReducedMotion ? 0 : options?.speed || 0.3,
         ease: "power2.inOut",
+        onComplete: finish,
     });
+
+    function finish() {
+        typeof cb === "function" && cb(options?.funcArgument !== undefined && options.funcArgument);
+    }
 }
 // General ---
 
@@ -455,7 +448,7 @@ async function shareQuote_custom(imageFile) {
 
     const formData = new FormData();
     formData.append("image", imageFile);
-    formData.append("album", "SmFCHG8PRreakyc");
+    formData.append("album", "RjJ0L6QBBeESsCn");
 
     try {
         const res = await fetch(IMAGE_UPLOAD_ENDPOINT, {
@@ -742,93 +735,71 @@ function hideShowMoreBtn() {
 function toggleSection(options) {
     const { section } = options;
 
-    for (let i = 0; i < sections.length; i++) {
-        if (sections[i].getAttribute("id") == `${section}-section`) {
-            sections[i].style.width = "100%";
+    const tl = gsap.timeline({
+        defaults: { duration: prefersReducedMotion ? 0 : 1, ease: "power2.inOut", onComplete: finish },
+    });
 
-            sections[i].classList.add("--active");
+    switch (section) {
+        case "saved":
+            savedSection.style.width = "100%";
 
-            sections[i].classList.contains("--right-side") && sections[i].classList.remove("--right-side");
-        } else {
-            if (sections[i].getAttribute("id") == "main-section") {
-                if (section == "about-us") sections[i].classList.add("--right-side");
-            }
+            tl.to(mainSection, {
+                x: "-100vw",
+                onComplete: () => (mainSection.style.width = 0),
+            });
+            tl.to(savedSection, { x: 0 }, "<");
 
-            sections[i].classList.remove("--active");
+            break;
 
-            setTimeout(() => {
-                sections[i].style.width = "0";
-            }, sectionTransitionTime);
-        }
+        case "about-us":
+            aboutUsSection.style.width = "100%";
+
+            tl.to(mainSection, {
+                x: "100vw",
+                onComplete: () => (mainSection.style.width = 0),
+            });
+            tl.to(aboutUsSection, { x: 0 }, "<");
+
+            break;
+
+        case "main":
+            mainSection.style.width = "100%";
+
+            tl.to(mainSection, { x: 0 });
+            tl.to(
+                aboutUsSection,
+                {
+                    x: "-100vw",
+                    onComplete: () => {
+                        aboutUsSection.style.width = 0;
+                    },
+                },
+                "<"
+            );
+            tl.to(
+                savedSection,
+                {
+                    x: "100vw",
+                    onComplete: () => {
+                        savedSection.style.width = 0;
+                    },
+                },
+                "<"
+            );
+
+            break;
     }
 
-    // const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-    // const duration = prefersReducedMotion ? 0 : 0.4;
-
-    // switch (section) {
-    //     case "saved":
-    //         changeDisplay(savedSection, "show");
-
-    //         tl.to(mainSection, {
-    //             x: "-100vw",
-    //             duration,
-    //             onComplete: () => changeDisplay(mainSection, "hide"),
-    //         });
-    //         tl.to(savedSection, { x: 0, duration }, "<");
-
-    //         break;
-
-    //     case "about-us":
-    //         changeDisplay(aboutUsSection, "show");
-
-    //         tl.to(mainSection, {
-    //             x: "100vw",
-    //             duration,
-    //             onComplete: () => changeDisplay(mainSection, "hide"),
-    //         });
-    //         tl.to(aboutUsSection, { x: 0, duration }, "<");
-
-    //         break;
-
-    //     case "main":
-    //         changeDisplay(mainSection, "show");
-
-    //         tl.to(mainSection, { x: 0, duration });
-    //         tl.to(
-    //             aboutUsSection,
-    //             {
-    //                 x: "-100vw",
-    //                 duration,
-    //                 onComplete: () => {
-    //                     changeDisplay(aboutUsSection, "hide");
-    //                 },
-    //             },
-    //             "<"
-    //         );
-    //         tl.to(
-    //             savedSection,
-    //             {
-    //                 x: "100vw",
-    //                 duration,
-    //                 onComplete: () => {
-    //                     changeDisplay(savedSection, "hide");
-    //                 },
-    //             },
-    //             "<"
-    //         );
-
-    //         break;
-    // }
-
+    startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
     lockScrolling();
 
     overlay.classList.add("--active");
 
-    setTimeout(() => {
+    function finish() {
         unlockScrolling();
 
         overlay.classList.remove("--active");
-    }, sectionTransitionTime + 100);
+    }
 }
 // Sections ---
 
