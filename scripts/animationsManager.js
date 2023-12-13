@@ -1,8 +1,14 @@
 import { checkPreviousQuotesReadiness } from "./quotesManager.js";
 import { prefersReducedMotion } from "./userInteractions.js";
 
+const mainHeader = document.querySelector("#main-header");
+const mainLogo = mainHeader.querySelector(".logo");
+const mainNavBar = mainHeader.querySelector(".nav-bar");
+const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
+const mainNavBarListElements = mainNavBarList.children;
+
 let previousQuotesTl = null;
-let quotes = [];
+let previousQuotes = [];
 
 const previousQuotesHiddenOptions = {
     height: 0,
@@ -14,15 +20,16 @@ const previousQuotesHiddenOptions = {
     ease: "none",
 };
 
+gsap.registerPlugin(ScrollToPlugin);
+
 checkPreviousQuotesReadiness().then(() => {
     if (!prefersReducedMotion) setupInitialAnimations();
 
     previousQuotesTl = gsap.timeline();
 
     previousQuotesTl.to(".history-quote-element:not(.--always-shown)", {
-        duration: prefersReducedMotion ? 0 : 1,
-        ease: (x) =>
-            x < 0.5 ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2 : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
+        duration: prefersReducedMotion ? 0 : 0.5,
+        ease: "power2.inOut",
         keyframes: [{ opacity: 0, yPercent: 100 }, previousQuotesHiddenOptions],
     });
     previousQuotesTl.seek(previousQuotesTl.duration());
@@ -38,8 +45,49 @@ function setupInitialAnimations() {
     startScrollAnimations();
 }
 
+const mainHeaderTl = gsap.timeline({ delay: 2, defaults: { duration: 0.4, ease: "power4.inOut" } });
+function setupMainHeaderAnim() {
+    gsap.set([mainNavBar, mainLogo], { xPercent: -50, yPercent: -50 });
+
+    mainHeaderTl.to(mainNavBarListElements[0], {
+        x: mainNavBarListElements[0].clientWidth * 1.2 + 15,
+    });
+    mainHeaderTl.to(
+        mainNavBarListElements[2],
+        {
+            x: -mainNavBarListElements[2].clientWidth * 1.2 - 15,
+        },
+        "<"
+    );
+    mainHeaderTl.to(mainNavBar, { rotateZ: 180, scale: 0, opacity: 0 });
+    mainHeaderTl.fromTo(mainLogo, { rotateZ: 180, scale: 0 }, { rotateZ: 360, scale: 1, opacity: 1 }, "<");
+}
+
+const navBarTransition = 0.6;
+function playNavBarOpeningAnim() {
+    const tl = gsap.timeline({ defaults: { ease: "power2.inOut", duration: 0.5 } });
+
+    tl.to(mainNavBarList, {
+        x: 0,
+        duration: navBarTransition,
+        ease: "power2.inOut",
+    });
+
+    tl.from(
+        mainNavBarListElements,
+        {
+            x: mainNavBarList.clientWidth,
+            ease: "back",
+            stagger: {
+                each: 0.1,
+            },
+        },
+        "<+=40%"
+    );
+}
+
 function startScrollAnimations() {
-    quotes = gsap.utils.toArray(".history-quote-element");
+    previousQuotes = gsap.utils.toArray(".history-quote-element");
 
     gsap.to("#index-0", {
         y: "-100%",
@@ -48,8 +96,8 @@ function startScrollAnimations() {
         scrollTrigger: {
             trigger: "#index-0",
             scrub: 1.2,
-            start: "top top",
-            end: "bottom top",
+            start: "-50% top",
+            end: "110% top",
         },
     });
 
@@ -75,10 +123,10 @@ function startScrollAnimations() {
         ease: "power2.inOut",
     });
 
-    quotes.forEach((quote) => {
+    previousQuotes.forEach((quote) => {
         gsap.from(quote, {
             x: "-100vw",
-            overwrite: "auto",
+            overwrite: true,
             scrollTrigger: {
                 trigger: quote,
                 scrub: 1.2,
@@ -180,8 +228,53 @@ function startSecondarySectionAnimations(options) {
 }
 
 function changePreviousQuotesVisibility(act) {
-    if (act == "showMore") previousQuotesTl.reverse();
-    else previousQuotesTl.restart();
+    if (act == "showMore") {
+        const firstHiddenElement = document.querySelector("#index-4");
+
+        previousQuotesTl.reverse();
+
+        // setTimeout(
+        //     () =>
+        //         scrollToPosition(null, {
+        //             y: parseInt(
+        //                 firstHiddenElement.getBoundingClientRect().top -
+        //                     firstHiddenElement.clientHeight / 2 +
+        //                     window.scrollY
+        //             ),
+        //             ease: "none",
+        //         }),
+        //     prefersReducedMotion ? 0 : 600
+        // );
+    } else previousQuotesTl.restart();
 }
 
-export { changePreviousQuotesVisibility, startSecondarySectionAnimations };
+function scrollToPosition(cb, options = {}) {
+    if (options?.y == undefined) options.y = 0;
+
+    if (window.scrollY == options.y) {
+        finish();
+
+        return;
+    }
+
+    gsap.to(window, {
+        scrollTo: { y: options.y, offsetY: options?.offsetY || 0 },
+        duration: prefersReducedMotion ? 0 : options?.duration || 0.8,
+        ease: options?.ease || "power2.inOut",
+        onComplete: finish,
+    });
+
+    function finish() {
+        typeof cb === "function" && cb(options?.funcArgument !== undefined && options.funcArgument);
+    }
+}
+
+export {
+    changePreviousQuotesVisibility,
+    startSecondarySectionAnimations,
+    scrollToPosition,
+    setupMainHeaderAnim,
+    playNavBarOpeningAnim,
+    mainHeaderTl,
+    navBarTransition,
+};

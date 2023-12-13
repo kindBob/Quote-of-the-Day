@@ -118,14 +118,11 @@ body {
 }
 
 .logo {
-    width: fit-content;
     display: flex;
     align-items: center;
-    justify-content: center;
 
     img {
-        width: 150px;
-        height: auto;
+        width: clamp(125px, 20vw, 140px);
         aspect-ratio: 2.2 / 1;
     }
 }
@@ -157,7 +154,7 @@ body {
     width: fit-content;
     min-width: 100px;
     padding: 5.5px 25px;
-    background-color: transparent;
+    background-color: #fff;
     border: 2px solid #ef3a32;
     border-radius: 20px;
     color: #ef3a32;
@@ -400,7 +397,34 @@ body {
     height: $headerHeight;
     background-color: $headerNFooterBg;
     z-index: 9;
-    // transition: $defaultTransitionLength;
+}
+
+.main-header {
+    .container {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo {
+        width: 50%;
+    }
+
+    .nav-bar {
+        width: 50%;
+        justify-content: flex-end;
+
+        &__element {
+            margin-left: $buttonsMargin;
+
+            &:first-child {
+                margin-left: 0;
+            }
+
+            &.--bigger {
+                min-width: 200px;
+            }
+        }
+    }
 }
 
 .saved-header .nav-bar {
@@ -426,28 +450,12 @@ body {
 
     &__list {
         justify-content: flex-end;
-        transition: $defaultTransitionLength;
+        // transition: $defaultTransitionLength;
         z-index: 10;
     }
 
     &__element .back-button.--cross {
         display: none;
-    }
-}
-
-.main-header {
-    // z-index: 20;
-
-    &__nav-bar__element {
-        margin-left: $buttonsMargin;
-
-        &:first-child {
-            margin-left: 0;
-        }
-
-        &.--bigger {
-            min-width: 200px;
-        }
     }
 }
 
@@ -928,7 +936,7 @@ body {
 
 .saved__section .footer,
 .about-us__section .footer {
-    height: $footer-height;
+    height: 85px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1040,6 +1048,48 @@ body {
 
     html[lang="ru"] .footer__element:nth-child(2) {
         width: 14%;
+    }
+}
+
+@media (min-width: 769px) {
+    .main-header {
+        overflow: hidden;
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 70%;
+        }
+
+        .logo,
+        .nav-bar {
+            width: max-content;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .logo {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .nav-bar {
+            height: 100%;
+
+            &__element {
+                margin-left: $buttonsMargin;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+
+                &.--bigger {
+                    min-width: 200px;
+                    z-index: 2;
+                }
+            }
+        }
     }
 }
 
@@ -1169,8 +1219,9 @@ body {
     }
 
     .main-header {
-        &__nav-bar {
+        & .nav-bar {
             &__list {
+                background: #000;
                 width: 320px;
                 height: 100dvh;
                 justify-content: center;
@@ -1182,12 +1233,6 @@ body {
                 transform: translateX(100vw);
                 background-color: #ffffff;
                 box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
-                pointer-events: none;
-            }
-
-            &.--active &__list {
-                pointer-events: all;
-                transform: translateX(0);
             }
 
             &__element {
@@ -1196,6 +1241,7 @@ body {
                 padding-bottom: 10px;
                 margin: 50px 0;
                 border-radius: 50px;
+                // transform: translateX(100%);
             }
         }
     }

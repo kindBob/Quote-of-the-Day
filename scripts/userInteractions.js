@@ -1,4 +1,12 @@
-import { changePreviousQuotesVisibility, startSecondarySectionAnimations } from "./animationsManager.js";
+import {
+    changePreviousQuotesVisibility,
+    startSecondarySectionAnimations,
+    scrollToPosition,
+    setupMainHeaderAnim,
+    mainHeaderTl,
+    playNavBarOpeningAnim,
+    navBarTransition,
+} from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
@@ -11,10 +19,12 @@ const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission"
 
 const mainPage = window.location.href;
 
-const burgerMenu = document.querySelector(".nav-bar__burger-menu");
+const burgerMenu = document.querySelector("#main-burger-menu");
 const mainHeader = document.querySelector("#main-header");
+const mainLogo = mainHeader.querySelector(".logo");
 const mainNavBar = mainHeader.querySelector(".nav-bar");
-const mainNavBarList = mainHeader.querySelector(".nav-bar__list");
+const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
+const mainNavBarListElements = mainNavBarList.children;
 
 const savedOpenButton = document.querySelector("#saved-open-button");
 
@@ -63,7 +73,6 @@ const legalTermsLink = document.querySelector("#legal-terms");
 
 let smallScreen = detectSmallScreen();
 const prefersReducedMotion = detectReducedMotion();
-const shareAPINotSupported = detectShareAPISupport();
 
 // Genereal
 gsap.registerPlugin(ScrollToPlugin);
@@ -72,11 +81,17 @@ window.addEventListener("orientationchange", () => {
     smallScreen = detectSmallScreen();
 });
 
+window.addEventListener("resize", () => {
+    smallScreen = detectSmallScreen();
+
+    initialSetup();
+});
+
 document.addEventListener("click", (event) => {
     if (!smallScreen) return;
 
     if (
-        mainNavBar.classList.contains("--active") &&
+        mainNavBarList.classList.contains("--active") &&
         !burgerMenu.contains(event.target) &&
         !mainNavBarList.contains(event.target)
     )
@@ -98,6 +113,16 @@ function initialSetup() {
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
+
+    let headerAnimTimeout = null;
+    //Header
+    if (!smallScreen) {
+        mainLogo.addEventListener("mouseenter", () => changeMainHeaderState("active"));
+        mainHeader.addEventListener("mouseleave", () => changeMainHeaderState("passive"));
+        mainNavBar.addEventListener("mouseleave", () => changeMainHeaderState("passive"));
+
+        setupMainHeaderAnim();
+    }
 }
 
 function detectSmallScreen() {
@@ -125,8 +150,6 @@ function validateEmail(email) {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return regex.test(email);
 }
-
-// document.querySelector("")
 
 function lockScrolling(element = document.body) {
     element.style.overflowY = "hidden";
@@ -213,27 +236,6 @@ function displayRequestResult(options) {
     timeoutId = setTimeout(() => {
         displayElement.classList.remove("--active");
     }, timeoutLength);
-}
-
-function scrollToPosition(cb, options) {
-    if (!options?.y) options.y = 0;
-
-    if (window.scrollY == options.y) {
-        finish();
-
-        return;
-    }
-
-    gsap.to(window, {
-        scrollTo: { y: options?.y || 0, offsetY: options?.offsetY || 0 },
-        duration: prefersReducedMotion ? 0 : options?.speed || 0.3,
-        ease: "power2.inOut",
-        onComplete: finish,
-    });
-
-    function finish() {
-        typeof cb === "function" && cb(options?.funcArgument !== undefined && options.funcArgument);
-    }
 }
 // General ---
 
@@ -396,6 +398,7 @@ async function subscribe() {
 // Email sub ---
 
 // Sharing
+const shareAPINotSupported = detectShareAPISupport();
 let sharingInProcess = false;
 function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");
@@ -532,8 +535,15 @@ function manageSharingResult(result) {
 // Sharing ---
 
 // Header
+function changeMainHeaderState(state) {
+    const progress = mainHeaderTl.progress();
+
+    if (state == "active") mainHeaderTl.reverse(progress);
+    else mainHeaderTl.restart().progress(progress);
+}
+
 burgerMenu.addEventListener("click", () => {
-    if (mainNavBar.classList.contains("--active")) closeNavBar();
+    if (mainNavBarList.classList.contains("--active")) closeNavBar();
     else scrollToPosition(openNavBar);
 });
 
@@ -567,25 +577,30 @@ aboutUsCloseButtons.forEach((button) =>
 );
 
 function closeNavBar(cb) {
-    mainNavBar.classList.remove("--active");
+    mainNavBarList.classList.remove("--active");
     burgerMenu.classList.remove("--active");
     mainSectionBgBlur.classList.remove("--active");
 
-    if (cb && typeof cb == "function") mainNavBarList.addEventListener("transitionend", finish);
-    else finish();
+    gsap.to(mainNavBarList, {
+        x: "100vw",
+        duration: navBarTransition,
+        ease: "power2.inOut",
+        onComplete: finish,
+    });
 
     function finish() {
-        if (cb && typeof cb == "function") cb();
-
         unlockScrolling();
-        mainNavBarList.removeEventListener("transitionend", finish);
+
+        if (cb && typeof cb == "function") cb();
     }
 }
 
 function openNavBar() {
-    mainNavBar.classList.add("--active");
+    mainNavBarList.classList.add("--active");
     burgerMenu.classList.add("--active");
     mainSectionBgBlur.classList.add("--active");
+
+    playNavBarOpeningAnim();
 
     lockScrolling();
 }
@@ -634,16 +649,10 @@ function showLessPreviousQuotes(options) {
     const y = document.querySelector("#index-3");
     const offsetY = screenWidth * (screenWidth > 768 && screenWidth <= 1620 ? 0.12 : 0.2);
 
-    if (!options?.noScroll) scrollToPosition(null, { speed: 1, y, offsetY });
+    scrollToPosition(null, { speed: 1, y, offsetY });
 
     setTimeout(
         () => {
-            // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
-
-            // previousQuotesElements.forEach((el) => {
-            //     !el.classList.contains("--always-shown") && el.classList.add("--hidden");
-            // });
-
             changePreviousQuotesVisibility("showLess");
 
             showMoreBtn.textContent = findTranslation("show-more-btn__show-more");

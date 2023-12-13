@@ -11,14 +11,13 @@
             content="This place is a daily source of inspiration and wisdom. Immerse yourself in a collection of thought-provoking quotes that resonate with the human experience." />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Quote of the Day" />
-        <!-- <meta property="og:title" content="Quote of the Day: Inspire here" /> -->
         <meta property="og:url" content="https://malfo-quote-of-the-day.netlify.app" />
         <meta
             property="og:image"
             content="https://res.cloudinary.com/dbasroxpf/image/upload/v1701447323/xlbed4iiv80khj27k0fn.jpg" />
         <meta property="og:image:alt" content="Logo" />
         <meta name="twitter:card" content="summary_large_image" />
-        <!-- <meta name="twitter:title" content="Quote of the Day: Inspire here" /> -->
+        <meta name="twitter:title" content="Quote of the Day" />
         <meta
             name="twitter:description"
             content="This place is a daily source of inspiration and wisdom. Immerse yourself in a collection of thought-provoking quotes that resonate with the human experience." />
@@ -35,7 +34,6 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-1/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-1/favicon-16x16.png" />
         <link rel="manifest" href="/assets/favicon-1/site.webmanifest" />
-        <link rel="stylesheet" href="./styles/lenis.css" />
         <link rel="stylesheet" href="./styles/normilize.css" />
         <link rel="stylesheet" href="./styles/style.css" />
         <title>Quote of the Day</title>
@@ -70,21 +68,17 @@
         <section id="main-section" class="section main-section --active">
             <header id="main-header" class="header main-header">
                 <div class="container header__container">
-                    <nav class="nav-bar main-header__nav-bar">
-                        <div class="logo header__logo">
-                            <a href="./index.html" draggable="false"
-                                ><img src="./assets//website-logo/logo-3.png" alt="Logo" draggable="false"
-                            /></a>
-                        </div>
+                    <div class="logo header__logo">
+                        <a href="./index.html" draggable="false"
+                            ><img src="./assets//website-logo/logo-3.png" alt="Logo" draggable="false" /></a
+                    ></div>
 
-                        <ul class="button-list nav-bar__list main-header__nav-bar__list">
-                            <li
-                                data-i18n-key="about-us"
-                                id="about-us-open-button"
-                                class="button nav-bar__element main-header__nav-bar__element">
+                    <nav class="nav-bar">
+                        <ul class="button-list nav-bar__list">
+                            <li data-i18n-key="about-us" id="about-us-open-button" class="button nav-bar__element">
                                 About us
                             </li>
-                            <li class="button nav-bar__element main-header__nav-bar__element --bigger">
+                            <li class="button nav-bar__element --bigger">
                                 <a
                                     data-i18n-key="support_us-button"
                                     href="https://donate.stripe.com/test_eVa3evg5Q7JhgesdQQ"
@@ -95,11 +89,11 @@
                             <li
                                 data-i18n-key="saved_section-button"
                                 id="saved-open-button"
-                                class="button nav-bar__element main-header__nav-bar__element">
+                                class="button nav-bar__element">
                                 Saved
                             </li>
                         </ul>
-                        <div class="burger-menu nav-bar__burger-menu main-header__nav-bar__burger-menu">
+                        <div id="main-burger-menu" class="burger-menu">
                             <span></span>
                             <span></span>
                             <span></span>
@@ -380,7 +374,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
         <script type="module" src="./scripts/languageManager.js"></script>
         <script type="module" src="./scripts/quotesManager.js"></script>
         <script type="module" src="./scripts/userInteractions.js"></script>
