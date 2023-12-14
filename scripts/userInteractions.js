@@ -24,7 +24,6 @@ const mainHeader = document.querySelector("#main-header");
 const mainLogo = mainHeader.querySelector(".logo");
 const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
-const mainNavBarListElements = mainNavBarList.children;
 
 const savedOpenButton = document.querySelector("#saved-open-button");
 
@@ -78,14 +77,11 @@ const prefersReducedMotion = detectReducedMotion();
 gsap.registerPlugin(ScrollToPlugin);
 
 window.addEventListener("orientationchange", () => {
-    smallScreen = detectSmallScreen();
+    // smallScreen = detectSmallScreen();
+    location.reload();
 });
 
-window.addEventListener("resize", () => {
-    smallScreen = detectSmallScreen();
-
-    initialSetup();
-});
+window.addEventListener("resize", handleResize);
 
 document.addEventListener("click", (event) => {
     if (!smallScreen) return;
@@ -105,6 +101,12 @@ checkPreviousQuotesReadiness().then(() => {
     // showLessPreviousQuotes({ noScroll: true });
 });
 
+function handleResize() {
+    smallScreen = detectSmallScreen();
+
+    setupMainHeader();
+}
+
 function initialSetup() {
     //Quotes
     if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
@@ -114,15 +116,8 @@ function initialSetup() {
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
 
-    let headerAnimTimeout = null;
     //Header
-    if (!smallScreen) {
-        mainLogo.addEventListener("mouseenter", () => changeMainHeaderState("active"));
-        mainHeader.addEventListener("mouseleave", () => changeMainHeaderState("passive"));
-        mainNavBar.addEventListener("mouseleave", () => changeMainHeaderState("passive"));
-
-        setupMainHeaderAnim();
-    }
+    setupMainHeader();
 }
 
 function detectSmallScreen() {
@@ -237,8 +232,8 @@ function displayRequestResult(options) {
         displayElement.classList.remove("--active");
     }, timeoutLength);
 }
-// General ---
-
+// General
+//-------
 // Submission
 submissionForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -339,8 +334,8 @@ async function sendSubmission() {
         displayElement: submisssionResult,
     });
 }
-// Submission ---
-
+// Submission
+//-------
 // Email sub
 emailSubForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -395,8 +390,8 @@ async function subscribe() {
         });
     }
 }
-// Email sub ---
-
+// Email sub
+//-------
 // Sharing
 const shareAPINotSupported = detectShareAPISupport();
 let sharingInProcess = false;
@@ -532,14 +527,42 @@ function manageSharingResult(result) {
             break;
     }
 }
-// Sharing ---
-
+// Sharing
+//-------
 // Header
-function changeMainHeaderState(state) {
+function setupMainHeader() {
+    // mainHeaderTl.clear();
+
+    if (!smallScreen) {
+        // gsap.set([mainNavBar, mainLogo], { xPercent: -50, yPercent: -50 });
+
+        mainLogo.addEventListener("mouseenter", setActiveMainHeader);
+        mainNavBar.addEventListener("mouseleave", setPassiveMainHeader);
+        mainLogo.addEventListener("touchstart", setActiveMainHeader);
+        mainNavBar.addEventListener("touchend", setPassiveMainHeader);
+
+        setupMainHeaderAnim();
+
+        return;
+    }
+
+    // gsap.set([mainLogo, mainNavBar], { xPercent: 0, yPercent: 0 });
+
+    // mainHeaderTl.seek("logoNext");
+    // mainHeaderTl.reverse();
+
+    // mainLogo.removeEventListener("mouseenter", setActiveMainHeader);
+    // mainNavBar.removeEventListener("mouseleave", setPassiveMainHeader);
+}
+
+function setActiveMainHeader() {
+    mainHeaderTl.reverse();
+}
+
+function setPassiveMainHeader() {
     const progress = mainHeaderTl.progress();
 
-    if (state == "active") mainHeaderTl.reverse(progress);
-    else mainHeaderTl.restart().progress(progress);
+    mainHeaderTl.restart().progress(progress);
 }
 
 burgerMenu.addEventListener("click", () => {
@@ -604,8 +627,8 @@ function openNavBar() {
 
     lockScrolling();
 }
-// Header ---
-
+// Header
+//-------
 // Quotes
 showMoreBtn.addEventListener("click", () => {
     if (showMoreBtn.textContent.includes(findTranslation("show-more-btn__show-more"))) {
@@ -649,7 +672,7 @@ function showLessPreviousQuotes(options) {
     const y = document.querySelector("#index-3");
     const offsetY = screenWidth * (screenWidth > 768 && screenWidth <= 1620 ? 0.12 : 0.2);
 
-    scrollToPosition(null, { speed: 1, y, offsetY });
+    scrollToPosition(null, { duration: 1, y, offsetY });
 
     setTimeout(
         () => {
@@ -738,9 +761,10 @@ function flipQuotesBack(elements) {
 function hideShowMoreBtn() {
     showMoreBtn.style.display = "none";
 }
-// Quotes ---
-
+// Quotes
+//-------
 // Sections
+toggleSection({ section: "about-us" });
 function toggleSection(options) {
     const { section } = options;
 
@@ -758,6 +782,8 @@ function toggleSection(options) {
             });
             tl.to(savedSection, { x: 0 }, "<");
 
+            startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
+
             break;
 
         case "about-us":
@@ -768,6 +794,8 @@ function toggleSection(options) {
                 onComplete: () => (mainSection.style.width = 0),
             });
             tl.to(aboutUsSection, { x: 0 }, "<");
+
+            startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
 
             break;
 
@@ -797,16 +825,16 @@ function toggleSection(options) {
             );
 
             break;
+
+        default:
+            console.log("No section found.");
     }
 
-    startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
     lockScrolling();
-
     overlay.classList.add("--active");
 
     function finish() {
         unlockScrolling();
-
         overlay.classList.remove("--active");
     }
 }

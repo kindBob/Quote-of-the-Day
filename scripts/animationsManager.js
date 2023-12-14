@@ -28,9 +28,9 @@ checkPreviousQuotesReadiness().then(() => {
     previousQuotesTl = gsap.timeline();
 
     previousQuotesTl.to(".history-quote-element:not(.--always-shown)", {
+        keyframes: [{ opacity: 0, yPercent: 100 }, previousQuotesHiddenOptions],
         duration: prefersReducedMotion ? 0 : 0.5,
         ease: "power2.inOut",
-        keyframes: [{ opacity: 0, yPercent: 100 }, previousQuotesHiddenOptions],
     });
     previousQuotesTl.seek(previousQuotesTl.duration());
 });
@@ -47,8 +47,6 @@ function setupInitialAnimations() {
 
 const mainHeaderTl = gsap.timeline({ delay: 2, defaults: { duration: 0.4, ease: "power4.inOut" } });
 function setupMainHeaderAnim() {
-    gsap.set([mainNavBar, mainLogo], { xPercent: -50, yPercent: -50 });
-
     mainHeaderTl.to(mainNavBarListElements[0], {
         x: mainNavBarListElements[0].clientWidth * 1.2 + 15,
     });
@@ -59,8 +57,12 @@ function setupMainHeaderAnim() {
         },
         "<"
     );
-    mainHeaderTl.to(mainNavBar, { rotateZ: 180, scale: 0, opacity: 0 });
-    mainHeaderTl.fromTo(mainLogo, { rotateZ: 180, scale: 0 }, { rotateZ: 360, scale: 1, opacity: 1 }, "<");
+
+    mainHeaderTl.to(mainNavBar, { rotateZ: 180, scale: 0, autoAlpha: 0 });
+
+    mainHeaderTl.fromTo(mainLogo, { rotateZ: 180, scale: 0 }, { rotateZ: 360, scale: 1, autoAlpha: 1 }, "<");
+
+    // mainHeaderTl.addLabel("logoNext");
 }
 
 const navBarTransition = 0.6;
@@ -111,6 +113,7 @@ function startScrollAnimations() {
         },
         ease: "power2.inOut",
     });
+
     gsap.from(".history-title", {
         opacity: 0,
         scrollTrigger: {
@@ -126,7 +129,7 @@ function startScrollAnimations() {
     previousQuotes.forEach((quote) => {
         gsap.from(quote, {
             x: "-100vw",
-            overwrite: true,
+            overwrite: "",
             scrollTrigger: {
                 trigger: quote,
                 scrub: 1.2,
@@ -141,8 +144,6 @@ function startScrollAnimations() {
 const openedSections = [];
 function startSecondarySectionAnimations(options) {
     const { section, delay } = options;
-
-    if (section == "main") return;
 
     for (const el of openedSections) {
         if (el == section) return;
@@ -259,7 +260,7 @@ function scrollToPosition(cb, options = {}) {
 
     gsap.to(window, {
         scrollTo: { y: options.y, offsetY: options?.offsetY || 0 },
-        duration: prefersReducedMotion ? 0 : options?.duration || 0.8,
+        duration: prefersReducedMotion ? 0 : options?.duration || 0.2,
         ease: options?.ease || "power2.inOut",
         onComplete: finish,
     });
