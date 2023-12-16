@@ -4,9 +4,11 @@ $defaultTransitionLength: 0.6s;
 $headerHeight: min(30vw, 120px);
 $buttonsMargin: 15px;
 
-$headerNFooterBg: #fff;
+$mainColor: #fff;
+$secondaryColor: #ef3a32;
 $successColor: #55d355;
 $errorColor: #e26c5a;
+
 // Variables
 //-------
 // Basic styles
@@ -152,22 +154,25 @@ body {
     width: fit-content;
     min-width: 100px;
     padding: 5.5px 25px;
-    background-color: #fff;
-    border: 2px solid #ef3a32;
+    background-color: $mainColor;
+    border: 2px solid $secondaryColor;
     border-radius: 20px;
-    color: #ef3a32;
+    color: $secondaryColor;
     font-weight: bold;
     text-align: center;
     transition: background 0.4s, color 0.4s;
     cursor: pointer;
 
     &:hover,
-    &:hover a {
-        color: #ffffff;
+    &:hover a,
+    &.--hovered,
+    &.--hovered a {
+        color: $mainColor;
     }
 
-    &:hover {
-        background-color: #ef3a32;
+    &:hover,
+    &.--hovered {
+        background-color: $secondaryColor;
     }
 
     a {
@@ -394,7 +399,7 @@ body {
     align-items: center;
     width: 100%;
     height: $headerHeight;
-    background-color: $headerNFooterBg;
+    background-color: $mainColor;
     z-index: 9;
 }
 
@@ -461,6 +466,60 @@ body {
 // Top
 //-------
 // Middle
+.about-us {
+    &__blocks-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 1em;
+        font-size: clamp(20px, 5vw, 26px);
+    }
+
+    &__block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__img {
+        overflow: hidden;
+        background-color: $mainColor;
+        border: 2px solid $secondaryColor;
+
+        animation: borderRadius 20s linear infinite;
+
+        img {
+            width: clamp(150px, 20vw, 240px);
+        }
+
+        &.--smaller {
+            animation-delay: -10s;
+
+            img {
+                width: clamp(120px, 17vw, 200px);
+            }
+        }
+    }
+
+    &__block-title {
+        margin-top: 1em;
+        padding: 0.4em 0.6em;
+        color: $secondaryColor;
+        border: 2px solid $secondaryColor;
+        background-color: $mainColor;
+        font-weight: 300;
+    }
+
+    &__text {
+        margin-top: clamp(40px, 5vw, 60px);
+        text-align: center;
+        font-size: clamp(20px, 4vw, 24px);
+        font-weight: 400;
+    }
+}
+
 .submission {
     width: 700px;
     position: fixed;
@@ -652,18 +711,17 @@ body {
     }
 
     &__placeholder {
-        width: 100%;
-        text-align: center;
+        width: max-content;
+        position: absolute;
+        left: 50%;
+        right: 50%;
+        transform: translate(-50%, -50%);
         font-size: clamp(23px, 4vw, 26px);
         color: #ffffff;
-        opacity: 0;
-        transition: $defaultTransitionLength;
-        display: none;
     }
 
     &__section.--is-empty &__placeholder {
         display: block;
-        -webkit-animation: placeholder-appearance $defaultTransitionLength forwards;
         animation: placeholder-appearance $defaultTransitionLength forwards;
     }
 }
@@ -689,17 +747,19 @@ body {
     }
 
     &__inner-container {
+        width: 100%;
+        min-height: 380px;
         position: relative;
         display: flex;
         flex-wrap: wrap;
-        width: 100%;
-        min-height: 380px;
-        background-color: #ffffff;
-        border-radius: 25px;
         padding-top: max(23.5px, 2.7%) !important;
         padding-bottom: max(23.5px, 2.7%) !important;
         padding-left: max(23.5px, 3.5%) !important;
         padding-right: max(17px, 4%) !important;
+        background-color: #ffffff;
+        border-radius: 25px;
+        transition: transform 0.6s;
+        // box-shadow: 10px 10px 0 0 #bdbdbd4b;
         //transition set in userInteractions.js
     }
 
@@ -880,7 +940,7 @@ body {
 .footer {
     position: relative;
     width: 100%;
-    background-color: $headerNFooterBg;
+    background-color: $mainColor;
     overflow: hidden;
 }
 
@@ -1069,6 +1129,7 @@ body {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            cursor: pointer;
         }
 
         .logo {
@@ -1078,6 +1139,7 @@ body {
 
         .nav-bar {
             height: 100%;
+            z-index: 2;
 
             &__element {
                 margin-left: $buttonsMargin;
@@ -1088,7 +1150,7 @@ body {
 
                 &.--bigger {
                     min-width: 200px;
-                    z-index: 2;
+                    z-index: 3;
                 }
             }
         }
@@ -1414,60 +1476,6 @@ body {
 // Adaptive ---
 
 // Animations
-@-webkit-keyframes quote-card-flip {
-    0% {
-        transform: rotateY(0deg);
-    }
-    30% {
-        transform: rotateY(180deg);
-    }
-    70% {
-        transform: rotateY(180deg);
-    }
-    100% {
-        transform: rotateY(0deg);
-    }
-}
-@keyframes quote-card-flip {
-    0% {
-        transform: rotateY(0deg);
-    }
-    30% {
-        transform: rotateY(180deg);
-    }
-    70% {
-        transform: rotateY(180deg);
-    }
-    100% {
-        transform: rotateY(0deg);
-    }
-}
-
-@-webkit-keyframes placeholder-appearance {
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes placeholder-appearance {
-    to {
-        opacity: 1;
-    }
-}
-
-@-webkit-keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    50% {
-        transform: rotate(720deg);
-    }
-
-    100% {
-        transform: rotate(1080deg);
-    }
-}
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -1488,6 +1496,24 @@ body {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes borderRadius {
+    0% {
+        border-radius: 57% 43% 70% 30% / 30% 36% 64% 70%;
+    }
+    25% {
+        border-radius: 70% 30% 57% 43% / 64% 70% 30% 36%;
+    }
+    50% {
+        border-radius: 30% 70% 43% 57% / 70% 64% 36% 30%;
+    }
+    75% {
+        border-radius: 43% 57% 30% 70% / 36% 30% 70% 64%;
+    }
+    100% {
+        border-radius: 57% 43% 70% 30% / 30% 36% 64% 70%;
     }
 }
 // Animations ---

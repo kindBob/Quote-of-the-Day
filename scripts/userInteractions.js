@@ -1,16 +1,15 @@
 import {
     changePreviousQuotesVisibility,
-    startSecondarySectionAnimations,
     scrollToPosition,
     setupMainHeaderAnim,
     mainHeaderTl,
     playNavBarOpeningAnim,
     navBarTransition,
+    changeSection,
 } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
-const QUOTE_FLIPPING_LENGTH = 600;
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
 const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission";
@@ -24,18 +23,16 @@ const mainHeader = document.querySelector("#main-header");
 const mainLogo = mainHeader.querySelector(".logo");
 const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
+const mainHeaderBtns = mainHeader.querySelectorAll(".button");
 
 const savedOpenButton = document.querySelector("#saved-open-button");
 
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
-const mainSection = document.querySelector("#main-section");
 
 const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
 const aboutUsOpenButton = document.querySelector("#about-us-open-button");
 const aboutUsCloseButtons = aboutUsSection.querySelectorAll(".close-btn");
-
-const historyContainer = document.querySelector("#history-container");
 
 const sharingCard = document.querySelector("#sharing-card");
 const sharingCardQuoteOutput = document.querySelector("#sharing-card-quote");
@@ -70,8 +67,9 @@ const bodyBgBlur = document.querySelector(".bg-blur-body");
 const legalPolicyLink = document.querySelector("#legal-policy");
 const legalTermsLink = document.querySelector("#legal-terms");
 
-let smallScreen = detectSmallScreen();
 const prefersReducedMotion = detectReducedMotion();
+let smallScreen = detectSmallScreen();
+let quoteFlippingDuration = 0;
 
 // Genereal
 gsap.registerPlugin(ScrollToPlugin);
@@ -96,11 +94,6 @@ document.addEventListener("click", (event) => {
     setupQuotesFlipping(event);
 });
 
-checkPreviousQuotesReadiness().then(() => {
-    // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
-    // showLessPreviousQuotes({ noScroll: true });
-});
-
 function handleResize() {
     smallScreen = detectSmallScreen();
 
@@ -112,11 +105,18 @@ function initialSetup() {
     if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
     else quoteHint.classList.add("--active");
 
+    quoteFlippingDuration =
+        parseFloat(
+            getComputedStyle(document.querySelector(".quotes-element.--clickable .quotes-element__inner-container"))
+                .transitionDuration
+        ) * 1000;
+
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
 
     //Header
+
     setupMainHeader();
 }
 
@@ -490,7 +490,6 @@ async function shareQuote_navigatorShare(imageFile) {
             text: `${mainPage}`,
             files: [imageFile],
         });
-        console.log("Web share API works!");
     } catch (err) {
         console.log(err);
     }
@@ -530,29 +529,44 @@ function manageSharingResult(result) {
 // Sharing
 //-------
 // Header
+mainHeaderBtns.forEach((el) => {
+    el.addEventListener("mouseover", () => {
+        el.classList.add("--hovered");
+    });
+});
+
+mainHeaderBtns.forEach((el) => {
+    el.addEventListener("mouseleave", () => {
+        el.classList.remove("--hovered");
+    });
+});
+
 function setupMainHeader() {
-    // mainHeaderTl.clear();
-
     if (!smallScreen) {
-        // gsap.set([mainNavBar, mainLogo], { xPercent: -50, yPercent: -50 });
+        mainLogo.addEventListener("mouseenter", () => {
+            mainHeaderBtns[1].classList.add("--hovered");
 
-        mainLogo.addEventListener("mouseenter", setActiveMainHeader);
+            setActiveMainHeader();
+        });
         mainNavBar.addEventListener("mouseleave", setPassiveMainHeader);
-        mainLogo.addEventListener("touchstart", setActiveMainHeader);
+        mainLogo.addEventListener("touchstart", () => {
+            mainHeaderBtns[1].classList.add("--hovered");
+
+            setActiveMainHeader();
+        });
         mainNavBar.addEventListener("touchend", setPassiveMainHeader);
 
         setupMainHeaderAnim();
 
-        return;
+        // mainHeaderTl.seek(0);
+
+        setTimeout(() => {
+            for (const el of mainHeaderBtns) {
+                if (el.classList.contains("--hovered")) return;
+            }
+            setPassiveMainHeader();
+        }, 2000);
     }
-
-    // gsap.set([mainLogo, mainNavBar], { xPercent: 0, yPercent: 0 });
-
-    // mainHeaderTl.seek("logoNext");
-    // mainHeaderTl.reverse();
-
-    // mainLogo.removeEventListener("mouseenter", setActiveMainHeader);
-    // mainNavBar.removeEventListener("mouseleave", setPassiveMainHeader);
 }
 
 function setActiveMainHeader() {
@@ -639,23 +653,6 @@ showMoreBtn.addEventListener("click", () => {
     showLessPreviousQuotes();
 });
 
-function getHistoryQuoteElementsHeight(number) {
-    const historyQuotes = document.querySelectorAll(".history-quote-element");
-
-    let totalHeight = 0;
-
-    for (let i = 0; i < number; i++) {
-        const computedStyles = getComputedStyle(historyQuotes[i]);
-        totalHeight +=
-            historyQuotes[i].offsetHeight +
-            parseInt(computedStyles.marginTop) +
-            parseInt(computedStyles.marginBottom) +
-            15;
-    }
-
-    return totalHeight;
-}
-
 function showMorePreviousQuotes() {
     // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length - 1)}px`;
 
@@ -707,15 +704,9 @@ let quoteAbleToFlip = true;
 function setupQuotesFlipping(event) {
     let allClickableQuotes = Array.from(document.querySelectorAll(".quotes-element.--clickable"));
 
-    allClickableQuotes.forEach((element) => {
-        element.querySelector(".quotes-element__inner-container").style.transition = `${QUOTE_FLIPPING_LENGTH}ms`;
-    });
-
     const clickedQuote = event?.target.classList.contains("--clickable")
-        ? event?.target.classList.contains("--clickable")
+        ? event.target
         : event?.target.closest(".quotes-element");
-
-    allClickableQuotes = allClickableQuotes.filter((element) => element.id !== clickedQuote?.id);
 
     allClickableQuotes = allClickableQuotes.filter((element) => element.id !== clickedQuote?.id);
 
@@ -736,15 +727,12 @@ function flipQuote(event) {
 
     if (!quoteAbleToFlip) return;
 
-    if (
-        !target.classList.contains("quotes-element__buttons-container") &&
-        !target.closest(".quotes-element__buttons-container")
-    ) {
+    if (!target.classList.contains(".button")) {
         element.classList.toggle("--flipped");
     }
 
     quoteAbleToFlip = false;
-    setTimeout(() => (quoteAbleToFlip = true), QUOTE_FLIPPING_LENGTH);
+    setTimeout(() => (quoteAbleToFlip = true), quoteFlippingDuration);
 
     if (quoteHint) {
         localStorage.setItem("quoteFlipped", true);
@@ -764,74 +752,14 @@ function hideShowMoreBtn() {
 // Quotes
 //-------
 // Sections
-toggleSection({ section: "about-us" });
+// toggleSection({ section: "about-us" });
 function toggleSection(options) {
     const { section } = options;
 
-    const tl = gsap.timeline({
-        defaults: { duration: prefersReducedMotion ? 0 : 1, ease: "power2.inOut", onComplete: finish },
-    });
-
-    switch (section) {
-        case "saved":
-            savedSection.style.width = "100%";
-
-            tl.to(mainSection, {
-                x: "-100vw",
-                onComplete: () => (mainSection.style.width = 0),
-            });
-            tl.to(savedSection, { x: 0 }, "<");
-
-            startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
-
-            break;
-
-        case "about-us":
-            aboutUsSection.style.width = "100%";
-
-            tl.to(mainSection, {
-                x: "100vw",
-                onComplete: () => (mainSection.style.width = 0),
-            });
-            tl.to(aboutUsSection, { x: 0 }, "<");
-
-            startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
-
-            break;
-
-        case "main":
-            mainSection.style.width = "100%";
-
-            tl.to(mainSection, { x: 0 });
-            tl.to(
-                aboutUsSection,
-                {
-                    x: "-100vw",
-                    onComplete: () => {
-                        aboutUsSection.style.width = 0;
-                    },
-                },
-                "<"
-            );
-            tl.to(
-                savedSection,
-                {
-                    x: "100vw",
-                    onComplete: () => {
-                        savedSection.style.width = 0;
-                    },
-                },
-                "<"
-            );
-
-            break;
-
-        default:
-            console.log("No section found.");
-    }
-
     lockScrolling();
     overlay.classList.add("--active");
+
+    changeSection(section, finish);
 
     function finish() {
         unlockScrolling();

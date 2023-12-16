@@ -276,12 +276,6 @@ async function manageSavedQuotes(button, quoteElement) {
                 if (previousQuotes[i].id == date) {
                     quoteToSave = previousQuotes[i];
                 }
-
-                console.log(
-                    `Previous quotes id - ${previousQuotes[i].id}\nQuotes element date - ${quoteElement.querySelector(
-                        ".quotes-element__date"
-                    )}`
-                );
             }
         }
 
@@ -326,21 +320,6 @@ async function manageSavedQuotes(button, quoteElement) {
 }
 
 function setupElementRemoval(element) {
-    // const precedingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) + 1}`;
-    // const followingElemId = `#index-${parseInt(element.getAttribute("id").match(/[0-9]/g).join("")) - 1}`;
-    // const precedingElem = document.querySelector(`${precedingElemId}.saved__quote-element`);
-    // const followingElem = document.querySelector(`${followingElemId}.saved__quote-element`);
-
-    // const margin = parseFloat(getComputedStyle(element).height.replace("px", ""));
-    // let initialMargin = 0;
-
-    // const closeElems = [];
-
-    // precedingElem && closeElems.push(precedingElem);
-    // followingElem && closeElems.push(followingElem);
-
-    // if (closeElems[0]) initialMargin = parseInt(getComputedStyle(closeElems[0]).marginTop.replace("px", ""));
-
     gsap.to(element, {
         x: "100vw",
         height: 0,
