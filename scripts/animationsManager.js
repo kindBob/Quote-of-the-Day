@@ -32,6 +32,25 @@ gsap.registerPlugin(ScrollToPlugin);
 
 checkPreviousQuotesReadiness().then(() => {
     if (!prefersReducedMotion) setupInitialAnimations();
+
+    const overlay = document.querySelector("#overlay");
+    const loading = document.querySelector("#loading");
+    const spinner = loading.querySelector(".spinner");
+
+    // loading.classList.add("--active");
+    // spinner.classList.add("--active");
+
+    gsap.to(overlay, {
+        autoAlpha: 0,
+        ease: "power2.inOut",
+        duration: prefersReducedMotion ? 0 : 0.2,
+        onComplete: () => {
+            overlay.classList.remove("--active");
+
+            loading.classList.remove("--active");
+            spinner.classList.remove("--active");
+        },
+    });
 });
 
 function setupInitialAnimations() {
@@ -62,7 +81,6 @@ function setupMainHeaderAnim() {
         x: mainNavBarListElements[0].clientWidth * 1.2 + 15,
         height: 0,
         autoAlpha: 0,
-        // width: 0,
     });
     mainHeaderTl.to(
         mainNavBarListElements[2],
@@ -70,7 +88,6 @@ function setupMainHeaderAnim() {
             x: -mainNavBarListElements[2].clientWidth * 1.2 - 15,
             height: 0,
             autoAlpha: 0,
-            // width: 0,
         },
         "<"
     );
@@ -108,14 +125,15 @@ function startScrollAnimations() {
     previousQuotes = gsap.utils.toArray(".history-quote-element");
 
     gsap.to("#index-0", {
-        y: "-100%",
+        scale: 5,
+        autoAlpha: 0,
         overwrite: "auto",
         ease: "power2.inOut",
         scrollTrigger: {
             trigger: "#index-0",
             scrub: 1.2,
-            start: "-50% top",
-            end: "110% top",
+            start: "center center",
+            end: "75% top",
         },
     });
 
@@ -146,7 +164,7 @@ function startScrollAnimations() {
         gsap.from(quote, {
             yPercent: 50,
             autoAlpha: 0,
-            overwrite: "auto",
+            overwrite: true,
             scrollTrigger: {
                 trigger: quote,
                 scrub: 1.5,

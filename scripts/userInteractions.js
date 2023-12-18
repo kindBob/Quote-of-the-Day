@@ -8,7 +8,7 @@ import {
     changeSection,
 } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
-import { manageSavedQuotes } from "./quotesManager.js";
+import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
@@ -25,12 +25,11 @@ const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
 const mainHeaderBtns = mainHeader.querySelectorAll(".button");
 
-const savedOpenButton = document.querySelector("#saved-open-button");
-
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
 
 const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
+const savedOpenButton = document.querySelector("#saved-open-button");
 const aboutUsOpenButton = document.querySelector("#about-us-open-button");
 const aboutUsCloseButtons = aboutUsSection.querySelectorAll(".close-btn");
 
@@ -94,6 +93,10 @@ document.addEventListener("click", (event) => {
     setupQuotesFlipping(event);
 });
 
+checkPreviousQuotesReadiness().then(() => {
+    setupMainHeader();
+});
+
 function handleResize() {
     smallScreen = detectSmallScreen();
 
@@ -114,10 +117,6 @@ function initialSetup() {
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
-
-    //Header
-
-    setupMainHeader();
 }
 
 function detectSmallScreen() {
@@ -421,9 +420,9 @@ async function setupSharingQuoteProcess() {
         });
 
         if (navigator.share && smallScreen && !shareAPINotSupported) {
-            shareQuote_navigatorShare(imageFile);
+            shareQuoteNavigatorShare(imageFile);
         } else {
-            shareQuote_custom(imageFile);
+            shareQuoteCustom(imageFile);
         }
     } catch (error) {
         manageSharingResult("error");
@@ -433,7 +432,7 @@ async function setupSharingQuoteProcess() {
 }
 
 //Doesn't work on localhost
-async function shareQuote_custom(imageFile) {
+async function shareQuoteCustom(imageFile) {
     if (sharingInProcess) return;
 
     let quoteLink = null;
@@ -484,7 +483,7 @@ async function shareQuote_custom(imageFile) {
     }, 5000);
 }
 
-async function shareQuote_navigatorShare(imageFile) {
+async function shareQuoteNavigatorShare(imageFile) {
     try {
         await navigator.share({
             text: `${mainPage}`,
@@ -544,28 +543,27 @@ mainHeaderBtns.forEach((el) => {
 function setupMainHeader() {
     if (!smallScreen) {
         mainLogo.addEventListener("mouseenter", () => {
-            mainHeaderBtns[1].classList.add("--hovered");
-
             setActiveMainHeader();
         });
+        mainLogo.addEventListener(
+            "touchstart",
+            () => {
+                setActiveMainHeader();
+            },
+            { passive: true }
+        );
+
         mainNavBar.addEventListener("mouseleave", setPassiveMainHeader);
-        mainLogo.addEventListener("touchstart", () => {
-            mainHeaderBtns[1].classList.add("--hovered");
-
-            setActiveMainHeader();
-        });
         mainNavBar.addEventListener("touchend", setPassiveMainHeader);
 
         setupMainHeaderAnim();
-
-        // mainHeaderTl.seek(0);
 
         setTimeout(() => {
             for (const el of mainHeaderBtns) {
                 if (el.classList.contains("--hovered")) return;
             }
             setPassiveMainHeader();
-        }, 2000);
+        }, 2500);
     }
 }
 
@@ -694,7 +692,7 @@ function setupSavingButtonsEL(buttons = []) {
 
 function setupSharingButtonsEL(elements) {
     for (let i = 0; i < elements.length; i++) {
-        elements[i].addEventListener("click", (event) => {
+        elements[i].addEventListener("click", async (event) => {
             setupSharingCard(event);
         });
     }

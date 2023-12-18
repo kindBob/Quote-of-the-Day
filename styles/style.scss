@@ -71,15 +71,19 @@ body {
     }
 }
 
-#overlay {
+.overlay {
     display: none;
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 1000;
+    z-index: 99;
+    opacity: 1;
+    background-color: $mainColor;
 
     &.--active {
-        display: block;
+        display: flex;
+        // justify-content: center;
+        // align-items: center;
     }
 }
 
@@ -326,7 +330,7 @@ body {
     bottom: 25px;
     left: -95px;
     font-size: clamp(20px, 3.2vw, 26px);
-    z-index: 100;
+    z-index: 120;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
     border-radius: 10px;
@@ -363,20 +367,30 @@ body {
 }
 
 .spinner {
-    height: 45px;
     width: 45px;
+    aspect-ratio: 1;
     position: absolute;
     top: 13px;
     right: 22px;
-    border: 6px solid #4b4b4b;
-    border-top: 6px solid #ee5f5f;
-    border-radius: 50%;
     opacity: 0;
-    transition: 0.3s;
+    transition: opacity 0.3s;
+    animation: l5-0 1s infinite steps(1);
 
     &.--active {
         opacity: 1;
-        animation: spin 2s ease-in-out infinite;
+    }
+
+    &::before,
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0 50% 50% 0;
+        transform-origin: bottom right;
+        animation: l5-1 0.5s infinite linear alternate, l5-2 0.5s infinite steps(1) alternate;
+    }
+
+    &::after {
+        --s: -1, -1;
     }
 }
 
@@ -611,7 +625,8 @@ body {
     z-index: 4;
 
     &__container {
-        min-height: min(850px, calc(100svh - $headerHeight));
+        // min-height: min(850px, calc(100svh - $headerHeight));
+        min-height: calc(100svh - $headerHeight);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -1505,4 +1520,31 @@ body {
         border-radius: 57% 43% 70% 30% / 30% 36% 64% 70%;
     }
 }
+// loader
+@keyframes l5-0 {
+    0% {
+        transform: scale(1, 1) rotate(0deg);
+    }
+    50% {
+        transform: scale(1, -1) rotate(90deg);
+    }
+}
+
+@keyframes l5-1 {
+    0% {
+        transform: scale(var(--s, 1)) perspective(150px) rotateX(0deg);
+    }
+    100% {
+        transform: scale(var(--s, 1)) perspective(150px) rotateX(180deg);
+    }
+}
+@keyframes l5-2 {
+    0% {
+        background: $secondaryColor;
+    }
+    50% {
+        background: #4d4d4d;
+    }
+}
+// loader ---
 // Animations ---
