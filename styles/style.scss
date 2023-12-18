@@ -2,6 +2,7 @@
 $defaultTransitionLength: 0.6s;
 
 $headerHeight: min(30vw, 120px);
+$footerHeight: 85px;
 $buttonsMargin: 15px;
 
 $mainColor: #fff;
@@ -122,7 +123,7 @@ body {
     align-items: center;
 
     img {
-        width: clamp(125px, 20vw, 140px);
+        width: clamp(135px, 20vw, 140px);
         aspect-ratio: 2.2 / 1;
     }
 }
@@ -280,12 +281,12 @@ body {
     border-radius: 10px;
     flex-direction: column;
     justify-content: space-between;
-    transition: 0.4s;
+    transition: background 0.4s;
     cursor: pointer;
 
     &:active,
     &:hover {
-        background: #ef3a32;
+        background: $secondaryColor;
     }
 
     &::before,
@@ -295,7 +296,7 @@ body {
         width: 30px;
         height: 2px;
         margin: 0 auto;
-        background: #ef3a32;
+        background: $secondaryColor;
         border-radius: 10px;
         display: block;
         transition: $defaultTransitionLength;
@@ -313,7 +314,7 @@ body {
     &:active::before,
     &:hover::after,
     &:hover::before {
-        background: #fff;
+        background: $mainColor;
     }
 }
 
@@ -431,21 +432,6 @@ body {
     }
 }
 
-.saved-header .nav-bar {
-    &__list {
-        justify-content: flex-end;
-        width: 100px;
-    }
-
-    &__element {
-        width: 100%;
-    }
-
-    * {
-        max-width: 50%;
-    }
-}
-
 .nav-bar {
     width: 100%;
     display: flex;
@@ -454,12 +440,11 @@ body {
 
     &__list {
         justify-content: flex-end;
-        // transition: $defaultTransitionLength;
         z-index: 10;
     }
 
-    &__element .back-button.--cross {
-        display: none;
+    &__element .close-btn.--cross {
+        // display: none;
     }
 }
 
@@ -626,13 +611,11 @@ body {
     z-index: 4;
 
     &__container {
-        min-height: min(650px, calc(100svh - $headerHeight));
+        min-height: min(850px, calc(100svh - $headerHeight));
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        // padding-top: 55px;
-        // background-color: #000;
     }
 }
 
@@ -687,8 +670,8 @@ body {
     flex-direction: column;
 
     & .container.--main {
-        flex: 1;
-        // min-height: calc(100dvh - $headerHeight - 85px);
+        // flex: 1;
+        min-height: calc(100vh - $headerHeight - $footerHeight);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -711,18 +694,17 @@ body {
     }
 
     &__placeholder {
+        display: none;
         width: max-content;
+        height: 1.75em;
         position: absolute;
         left: 50%;
         right: 50%;
+        overflow: hidden;
         transform: translate(-50%, -50%);
         font-size: clamp(23px, 4vw, 26px);
-        color: #ffffff;
-    }
-
-    &__section.--is-empty &__placeholder {
-        display: block;
-        animation: placeholder-appearance $defaultTransitionLength forwards;
+        color: $mainColor;
+        // clip-path: polygon(0% 0%, 100% 0%, 100% 90%, 0% 100%);
     }
 }
 
@@ -829,8 +811,9 @@ body {
         letter-spacing: -0.2vw;
 
         &.--cyrillic {
-            text-transform: capitalize;
+            // text-transform: capitalize;
             letter-spacing: 0;
+            line-height: 1;
         }
     }
 
@@ -995,12 +978,18 @@ body {
     }
 }
 
-.saved__section .footer,
-.about-us__section .footer {
-    height: 85px;
+.section.--secondary .footer {
+    height: $footerHeight;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    &__content {
+        display: none;
+        overflow: hidden;
+        height: 1.75em;
+        // background-color: #000;
+    }
 }
 
 .action-btn-container {
@@ -1254,13 +1243,13 @@ body {
     }
 
     .nav-bar {
-        .close-btn.--cross {
-            display: flex;
-        }
+        // .close-btn.--cross {
+        //     display: flex;
+        // }
 
-        .close-btn:not(.--cross) {
-            display: none;
-        }
+        // .close-btn:not(.--cross) {
+        //     display: none;
+        // }
     }
 
     .burger-menu {

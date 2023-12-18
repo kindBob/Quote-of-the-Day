@@ -8,7 +8,7 @@ import {
     changeSection,
 } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
-import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
+import { manageSavedQuotes } from "./quotesManager.js";
 
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
@@ -71,7 +71,7 @@ const prefersReducedMotion = detectReducedMotion();
 let smallScreen = detectSmallScreen();
 let quoteFlippingDuration = 0;
 
-// Genereal
+// General
 gsap.registerPlugin(ScrollToPlugin);
 
 window.addEventListener("orientationchange", () => {
@@ -586,11 +586,11 @@ burgerMenu.addEventListener("click", () => {
 
 let savedOpened = false;
 savedOpenButton.addEventListener("click", () => {
+    savedOpened = true;
+
     smallScreen
         ? closeNavBar(() => toggleSection({ section: "saved" }))
         : scrollToPosition(toggleSection, { funcArgument: { section: "saved" } });
-
-    savedOpened = true;
 });
 
 aboutUsOpenButton.addEventListener("click", () => {
@@ -663,7 +663,7 @@ function showMorePreviousQuotes() {
     showMoreBtn.textContent = findTranslation("show-more-btn__show-less");
 }
 
-function showLessPreviousQuotes(options) {
+function showLessPreviousQuotes() {
     const screenWidth = window.screen.width;
 
     const y = document.querySelector("#index-3");
@@ -727,7 +727,7 @@ function flipQuote(event) {
 
     if (!quoteAbleToFlip) return;
 
-    if (!target.classList.contains(".button")) {
+    if (!target.classList.contains("button")) {
         element.classList.toggle("--flipped");
     }
 
@@ -752,7 +752,6 @@ function hideShowMoreBtn() {
 // Quotes
 //-------
 // Sections
-// toggleSection({ section: "about-us" });
 function toggleSection(options) {
     const { section } = options;
 
@@ -775,4 +774,5 @@ export {
     initialSetup,
     savedOpened,
     prefersReducedMotion,
+    smallScreen,
 };

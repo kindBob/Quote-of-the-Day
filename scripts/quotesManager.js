@@ -1,4 +1,5 @@
 import { initialLocale, findTranslation } from "./languageManager.js";
+import { showSplitText } from "./animationsManager.js";
 import {
     savedOpened,
     setupSavingButtonsEL,
@@ -19,6 +20,8 @@ const savedContainer = document.querySelector("#saved-container");
 const historyContainer = document.querySelector("#history-container");
 
 const savedSection = document.querySelector("#saved-section");
+
+const savedPlaceholder = savedSection.querySelector("#saved-placeholder");
 
 let previousQuotesElements = [];
 
@@ -96,6 +99,13 @@ async function setupQuotes() {
 
         !currentQuote.hasOwnProperty("author-uk") ? (quoteObjectAuthor = currentQuote["author-ru"]) : null;
     }
+
+    quoteObjectAuthor = quoteObjectAuthor.split(" ");
+    quoteObjectAuthor.forEach((part, index, array) => {
+        if (part.length >= 9) array[index] = `${part.slice(0, 2)}.`;
+    });
+
+    quoteObjectAuthor = quoteObjectAuthor.join(" ");
 
     currentQuoteOutput.textContent = quoteObjectQuote;
     currentAuthorOutput.textContent = quoteObjectAuthor;
@@ -187,14 +197,14 @@ function setupSavedQuotes() {
     setupSavedCentering();
 
     if (!isEmpty) {
-        savedSection.classList.remove("--is-empty");
+        savedPlaceholder.style.display = "none";
 
         createSavedQuotesElements();
         setupSavingButtonsText();
         setupSavedQuotesElementsText();
         setupQuotesIds();
     } else {
-        savedSection.classList.add("--is-empty");
+        if (savedOpened) showSplitText(savedPlaceholder);
     }
 }
 
@@ -342,4 +352,11 @@ function finishElementRemoval(element) {
     setupSavedQuotes();
 }
 
-export { previousQuotes, checkPreviousQuotesReadiness, manageSavedQuotes, fetchQuotes, previousQuotesElements };
+export {
+    previousQuotes,
+    checkPreviousQuotesReadiness,
+    manageSavedQuotes,
+    fetchQuotes,
+    previousQuotesElements,
+    savedQuotes,
+};

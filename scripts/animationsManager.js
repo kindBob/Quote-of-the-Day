@@ -1,5 +1,5 @@
-import { checkPreviousQuotesReadiness } from "./quotesManager.js";
-import { prefersReducedMotion } from "./userInteractions.js";
+import { checkPreviousQuotesReadiness, savedQuotes } from "./quotesManager.js";
+import { prefersReducedMotion, smallScreen, savedOpened } from "./userInteractions.js";
 
 const mainHeader = document.querySelector("#main-header");
 const mainLogo = mainHeader.querySelector(".logo");
@@ -11,6 +11,10 @@ const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
 const mainSection = document.querySelector("#main-section");
 
+const footersContent = document.querySelectorAll(".footer__content");
+
+const savedPlaceholder = savedSection.querySelector("#saved-placeholder");
+
 let previousQuotesTl = null;
 let previousQuotes = [];
 
@@ -21,26 +25,29 @@ const previousQuotesHiddenOptions = {
     padding: 0,
     overflow: "hidden",
     opacity: 0,
-    ease: "none",
+    yPercent: 200,
 };
 
 gsap.registerPlugin(ScrollToPlugin);
 
 checkPreviousQuotesReadiness().then(() => {
     if (!prefersReducedMotion) setupInitialAnimations();
+});
+
+function setupInitialAnimations() {
+    !smallScreen && startScrollAnimations();
 
     previousQuotesTl = gsap.timeline();
 
     previousQuotesTl.to(".history-quote-element:not(.--always-shown)", {
-        keyframes: [{ opacity: 0, yPercent: 100 }, previousQuotesHiddenOptions],
+        keyframes: [{ opacity: 0, yPercent: 200 }, previousQuotesHiddenOptions],
         duration: prefersReducedMotion ? 0 : 0.5,
-        ease: "power2.inOut",
     });
     previousQuotesTl.seek(previousQuotesTl.duration());
-});
 
-function setupInitialAnimations() {
-    startScrollAnimations();
+    footersContent.forEach((content) => splitText(content));
+
+    splitText(document.querySelector("#saved-placeholder"));
 }
 
 let mainHeaderTl = null;
@@ -53,18 +60,24 @@ function setupMainHeaderAnim() {
 
     mainHeaderTl.to(mainNavBarListElements[0], {
         x: mainNavBarListElements[0].clientWidth * 1.2 + 15,
+        height: 0,
+        autoAlpha: 0,
+        // width: 0,
     });
     mainHeaderTl.to(
         mainNavBarListElements[2],
         {
             x: -mainNavBarListElements[2].clientWidth * 1.2 - 15,
+            height: 0,
+            autoAlpha: 0,
+            // width: 0,
         },
         "<"
     );
 
-    mainHeaderTl.to(mainNavBar, { rotateZ: 180, scale: 0, autoAlpha: 0 });
+    mainHeaderTl.to(mainNavBar, { y: mainHeader.clientHeight });
 
-    mainHeaderTl.fromTo(mainLogo, { rotateZ: 180, scale: 0 }, { rotateZ: 360, scale: 1, autoAlpha: 1 }, "<");
+    mainHeaderTl.fromTo(mainLogo, { y: -mainHeader.clientHeight }, { y: "auto", autoAlpha: 1 }, "<");
 }
 
 const navBarTransition = 0.6;
@@ -81,8 +94,8 @@ function playNavBarOpeningAnim() {
         mainNavBarListElements,
         {
             x: mainNavBarList.clientWidth,
-            duration: prefersReducedMotion ? 0 : 0.75,
-            ease: "elastic(1, 0.75)",
+            duration: prefersReducedMotion ? 0 : 0.5,
+            ease: "elastic(0.9, 1)",
             stagger: {
                 each: 0.1,
             },
@@ -111,7 +124,7 @@ function startScrollAnimations() {
         scrollTrigger: {
             trigger: ".history-title",
             scrub: 1.2,
-            start: "200% bottom",
+            start: "center center",
             end: "bottom center",
         },
         ease: "power2.inOut",
@@ -122,8 +135,8 @@ function startScrollAnimations() {
         scrollTrigger: {
             trigger: ".history-title",
             scrub: 1.2,
-            start: "200% bottom",
-            end: "center center",
+            start: "center center",
+            end: "bottom center",
         },
 
         ease: "power2.inOut",
@@ -131,13 +144,14 @@ function startScrollAnimations() {
 
     previousQuotes.forEach((quote) => {
         gsap.from(quote, {
-            x: "-100vw",
-            overwrite: "",
+            yPercent: 50,
+            autoAlpha: 0,
+            overwrite: "auto",
             scrollTrigger: {
                 trigger: quote,
                 scrub: 1.5,
-                start: "50% bottom",
-                end: "center center",
+                start: "top 70%",
+                end: "center bottom",
             },
             ease: "power2",
         });
@@ -145,25 +159,22 @@ function startScrollAnimations() {
 }
 
 const openedSections = [];
+
+function showFooter(el, section, tl) {
+    if (section == "saved")
+        tl.from(el, {
+            // xPercent: 100,
+            width: 0,
+        });
+    else
+        tl.from(el, {
+            // xPercent: -100,
+            width: 0,
+        });
+}
+
 function startSecondarySectionAnimations(options) {
     const { section, delay } = options;
-
-    for (const el of openedSections) {
-        if (el == section) return;
-    }
-
-    openedSections.push(section);
-
-    const tl = gsap.timeline({
-        delay: `${delay * 0.2}`,
-        defaults: {
-            duration: 0.7,
-            ease: (x) =>
-                x < 0.5
-                    ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
-                    : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2,
-        },
-    });
 
     const sectionElement = document.querySelector(`#${section}-section`);
     const footer = sectionElement.querySelector("footer");
@@ -173,33 +184,40 @@ function startSecondarySectionAnimations(options) {
     const footerContent = footer.querySelector(".content");
     const mainContainer = sectionElement.querySelector(".container.--main");
 
-    const footerHeight = footer.clientHeight;
-    const headerWidth = header.clientWidth;
+    const defaultDuration = 0.7;
+
+    const tl = gsap.timeline({
+        delay: `${delay * 0.4}`,
+        defaults: {
+            duration: defaultDuration,
+            ease: "power3.inOut",
+        },
+    });
 
     tl.addLabel("first");
 
-    tl.from(
-        footer,
-        {
-            yPercent: 100,
-        },
-        "first"
-    );
+    for (const el of openedSections) {
+        if (el == section) return;
+    }
 
-    tl.from(
-        header,
-        {
-            yPercent: -100,
-        },
-        "first"
-    );
+    openedSections.push(section);
+
+    // showFooter(footer, section, tl);
+
+    // tl.from(
+    //     header,
+    //     {
+    //         yPercent: -100,
+    //     },
+    //     "first"
+    // );
 
     tl.addLabel("second", "first+=0.2");
 
     tl.from(
         title,
         {
-            x: -headerWidth / 2,
+            y: -header.clientHeight,
         },
         "second"
     );
@@ -207,28 +225,24 @@ function startSecondarySectionAnimations(options) {
     tl.from(
         closeBtn,
         {
-            x: headerWidth / 2,
+            y: -header.clientHeight,
         },
         "second"
     );
 
-    tl.from(
-        footerContent,
-        {
-            y: footerHeight,
-            skewY: 15,
-        },
-        "second+=75%"
+    tl.call(() =>
+        showSplitText(footerContent, null, () => {
+            if (savedOpened && savedQuotes.length == 0) {
+                showSplitText(savedPlaceholder);
+            }
+        })
     );
 
-    tl.from(
-        mainContainer,
-        {
-            autoAlpha: 0,
-            ease: "none",
-        },
-        ">-=20%"
-    );
+    tl.from(mainContainer, {
+        autoAlpha: 0,
+        ease: "none",
+        duration: 0.4,
+    });
 }
 
 function changePreviousQuotesVisibility(act) {
@@ -236,19 +250,6 @@ function changePreviousQuotesVisibility(act) {
         const firstHiddenElement = document.querySelector("#index-4");
 
         previousQuotesTl.reverse();
-
-        // setTimeout(
-        //     () =>
-        //         scrollToPosition(null, {
-        //             y: parseInt(
-        //                 firstHiddenElement.getBoundingClientRect().top -
-        //                     firstHiddenElement.clientHeight / 2 +
-        //                     window.scrollY
-        //             ),
-        //             ease: "none",
-        //         }),
-        //     prefersReducedMotion ? 0 : 600
-        // );
     } else previousQuotesTl.restart();
 }
 
@@ -276,8 +277,8 @@ function scrollToPosition(cb, options = {}) {
 function changeSection(section, cb) {
     const tl = gsap.timeline({
         defaults: {
-            duration: prefersReducedMotion ? 0 : 0.75,
-            ease: "power1",
+            duration: prefersReducedMotion ? 0 : smallScreen ? 0.6 : 0.9,
+            ease: CustomEase.create("custom", "M0 0 C .3 .16, .24 1, 1 1"),
             onComplete: cb,
         },
     });
@@ -341,6 +342,37 @@ function changeSection(section, cb) {
     }
 }
 
+function splitText(el) {
+    const chars = el.textContent.split("");
+
+    el.textContent = null;
+
+    chars.forEach((char) => {
+        const newEl = document.createElement("div");
+        const content = document.createTextNode(char);
+
+        newEl.style.display = "inline-block";
+
+        if (char === " ") newEl.style.width = "0.4em";
+
+        newEl.append(content);
+
+        el.append(newEl);
+    });
+}
+
+function showSplitText(el, options, cb) {
+    el.style.display = "block";
+
+    gsap.from(el.children, {
+        y: options?.y || el.clientHeight,
+        stagger: options?.stagger || { amount: 0.3 },
+        ease: options?.ease || "expo.inOut",
+        delay: options?.delay || 0,
+        onComplete: cb,
+    });
+}
+
 export {
     changePreviousQuotesVisibility,
     scrollToPosition,
@@ -349,4 +381,5 @@ export {
     mainHeaderTl,
     navBarTransition,
     changeSection,
+    showSplitText,
 };
