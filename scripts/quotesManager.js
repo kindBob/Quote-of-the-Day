@@ -352,11 +352,4 @@ function finishElementRemoval(element) {
     setupSavedQuotes();
 }
 
-export {
-    previousQuotes,
-    checkPreviousQuotesReadiness,
-    manageSavedQuotes,
-    fetchQuotes,
-    previousQuotesElements,
-    savedQuotes,
-};
+export { previousQuotes, checkPreviousQuotesReadiness, manageSavedQuotes, fetchQuotes, savedQuotes };

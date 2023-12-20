@@ -1,14 +1,16 @@
 import {
-    changePreviousQuotesVisibility,
     scrollToPosition,
     setupMainHeaderAnim,
     mainHeaderTl,
     playNavBarOpeningAnim,
     navBarTransition,
     changeSection,
+    showModal,
+    hideModals,
+    modalOpened,
 } from "./animationsManager.js";
 import { findTranslation, initialLocale } from "./languageManager.js";
-import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
+import { manageSavedQuotes, checkPreviousQuotesReadiness, previousQuotes } from "./quotesManager.js";
 
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
@@ -60,25 +62,28 @@ const showMoreBtn = document.querySelector("#show-more");
 
 const quoteHint = document.querySelector("#quote-hint");
 const overlay = document.querySelector("#overlay");
-const mainSectionBgBlur = document.querySelector(".bg-blur-section");
-const bodyBgBlur = document.querySelector(".bg-blur-body");
+const mainSectionBgBlur = document.querySelector("#main-section__bg-blur");
+const bodyBgBlur = document.querySelector("#body__bg-blur");
+
+const modals = document.querySelectorAll(".modal");
+const sharingModal = document.querySelector("#sharing-modal");
+const sharingModalBtn = sharingModal.querySelector(".button");
+
+const historyContainer = document.querySelector("#history-container");
 
 const legalPolicyLink = document.querySelector("#legal-policy");
 const legalTermsLink = document.querySelector("#legal-terms");
 
 const prefersReducedMotion = detectReducedMotion();
+
 let smallScreen = detectSmallScreen();
+
 let quoteFlippingDuration = 0;
 
 // General
 gsap.registerPlugin(ScrollToPlugin);
 
-window.addEventListener("orientationchange", () => {
-    // smallScreen = detectSmallScreen();
-    location.reload();
-});
-
-window.addEventListener("resize", handleResize);
+window.addEventListener("orientationchange", handleResize);
 
 document.addEventListener("click", (event) => {
     if (!smallScreen) return;
@@ -95,12 +100,11 @@ document.addEventListener("click", (event) => {
 
 checkPreviousQuotesReadiness().then(() => {
     setupMainHeader();
+    showLessPreviousQuotes({ noScroll: true });
 });
 
 function handleResize() {
-    smallScreen = detectSmallScreen();
-
-    setupMainHeader();
+    location.reload();
 }
 
 function initialSetup() {
@@ -134,9 +138,9 @@ function detectShareAPISupport() {
         screen.height == 896 &&
         screen.width == 414
     )
-        return true;
+        return false;
 
-    return false;
+    return true;
 }
 
 function validateEmail(email) {
@@ -199,7 +203,7 @@ function dataURItoBlob(dataURI) {
     return new Blob([ab], { type: mimeString });
 }
 
-let timeoutId = null;
+let requestResultMessageTimeoutId = null;
 function displayRequestResult(options) {
     let { success, message, displayElement } = options;
 
@@ -225,12 +229,13 @@ function displayRequestResult(options) {
 
     displayElement.classList.add("--active");
 
-    if (timeoutId) clearTimeout(timeoutId);
+    if (requestResultMessageTimeoutId) clearTimeout(requestResultMessageTimeoutId);
 
-    timeoutId = setTimeout(() => {
+    requestResultMessageTimeoutId = setTimeout(() => {
         displayElement.classList.remove("--active");
     }, timeoutLength);
 }
+
 // General
 //-------
 // Submission
@@ -255,7 +260,7 @@ actionBtn.addEventListener("click", () => {
 });
 
 bodyBgBlur.addEventListener("click", () => {
-    if (submissionElement.classList.contains("--active")) closeSubmissions();
+    hideModals(modals);
 });
 
 submissionCloseBtn.addEventListener("click", () => {
@@ -263,19 +268,11 @@ submissionCloseBtn.addEventListener("click", () => {
 });
 
 function openSubmission() {
-    submissionElement.classList.add("--active");
-
-    bodyBgBlur.classList.add("--active");
-
-    lockScrolling();
+    showModal(submissionElement);
 }
 
 function closeSubmissions() {
-    submissionElement.classList.remove("--active");
-
-    bodyBgBlur.classList.remove("--active");
-
-    unlockScrolling();
+    hideModals([submissionElement]);
 }
 
 function checkSubmission() {
@@ -392,8 +389,12 @@ async function subscribe() {
 // Email sub
 //-------
 // Sharing
-const shareAPINotSupported = detectShareAPISupport();
+const shareAPISupported = detectShareAPISupport();
 let sharingInProcess = false;
+let sharingImageFile = null;
+
+sharingModalBtn.addEventListener("click", () => shareQuoteNavigatorShare(sharingImageFile));
+
 function setupSharingCard(event) {
     const parent = event.target.closest(".quotes-element");
 
@@ -419,7 +420,9 @@ async function setupSharingQuoteProcess() {
             type: "image/png",
         });
 
-        if (navigator.share && smallScreen && !shareAPINotSupported) {
+        sharingImageFile = imageFile;
+
+        if (navigator.share && smallScreen && shareAPISupported) {
             shareQuoteNavigatorShare(imageFile);
         } else {
             shareQuoteCustom(imageFile);
@@ -446,7 +449,6 @@ async function shareQuoteCustom(imageFile) {
     const formData = new FormData();
     formData.append("image", imageFile);
     formData.append("album", "RjJ0L6QBBeESsCn");
-
     try {
         const res = await fetch(IMAGE_UPLOAD_ENDPOINT, {
             method: "POST",
@@ -462,9 +464,10 @@ async function shareQuoteCustom(imageFile) {
 
         quoteLink = `https://imgur.com/${data.data.id}`;
 
-        if ((smallScreen && shareAPINotSupported) || !navigator.clipboard) {
-            window.open(quoteLink, "_blank");
+        if ((smallScreen && !shareAPISupported) || !navigator.clipboard) {
             manageSharingResult();
+
+            showModal(sharingModal);
 
             return;
         }
@@ -489,6 +492,8 @@ async function shareQuoteNavigatorShare(imageFile) {
             text: `${mainPage}`,
             files: [imageFile],
         });
+
+        hideModals([sharingModal]);
     } catch (err) {
         console.log(err);
     }
@@ -651,27 +656,50 @@ showMoreBtn.addEventListener("click", () => {
     showLessPreviousQuotes();
 });
 
+function getHistoryQuoteElementsHeight(number) {
+    const historyQuotes = document.querySelectorAll(".history-quote-element");
+
+    let totalHeight = 0;
+
+    for (let i = 0; i < number; i++) {
+        const computedStyles = getComputedStyle(historyQuotes[i]);
+        totalHeight +=
+            historyQuotes[i].offsetHeight +
+            parseInt(computedStyles.marginTop) +
+            parseInt(computedStyles.marginBottom) +
+            15;
+    }
+
+    return totalHeight;
+}
+
 function showMorePreviousQuotes() {
-    // historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length - 1)}px`;
+    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length)}px`;
 
     // previousQuotesElements.forEach((el) => el.classList.remove("--hidden"));
 
-    changePreviousQuotesVisibility("showMore");
+    // changePreviousQuotesVisibility("showMore");
 
     showMoreBtn.textContent = findTranslation("show-more-btn__show-less");
 }
 
-function showLessPreviousQuotes() {
+function showLessPreviousQuotes(options) {
     const screenWidth = window.screen.width;
 
     const y = document.querySelector("#index-3");
     const offsetY = screenWidth * (screenWidth > 768 && screenWidth <= 1620 ? 0.12 : 0.2);
 
-    scrollToPosition(null, { duration: 1, y, offsetY });
+    !options?.noScroll && scrollToPosition(null, { duration: 1, y, offsetY });
 
     setTimeout(
         () => {
-            changePreviousQuotesVisibility("showLess");
+            // changePreviousQuotesVisibility("showLess");
+
+            historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
+
+            // previousQuotesElements.forEach((el) => {
+            //     !el.classList.contains("--always-shown") && el.classList.add("--hidden");
+            // });
 
             showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
         },
@@ -698,13 +726,14 @@ function setupSharingButtonsEL(elements) {
     }
 }
 
-let quoteAbleToFlip = true;
 function setupQuotesFlipping(event) {
+    if (event.target.classList.contains("button") || modalOpened) return;
+
     let allClickableQuotes = Array.from(document.querySelectorAll(".quotes-element.--clickable"));
 
     const clickedQuote = event?.target.classList.contains("--clickable")
         ? event.target
-        : event?.target.closest(".quotes-element");
+        : event?.target.closest(".quotes-element") || {};
 
     allClickableQuotes = allClickableQuotes.filter((element) => element.id !== clickedQuote?.id);
 
@@ -715,6 +744,7 @@ function setupQuotesFlipping(event) {
     }
 }
 
+let quoteAbleToFlip = true;
 function flipQuote(event) {
     const target = event.target;
     let element = event.target.closest(".quotes-element");
@@ -725,9 +755,7 @@ function flipQuote(event) {
 
     if (!quoteAbleToFlip) return;
 
-    if (!target.classList.contains("button")) {
-        element.classList.toggle("--flipped");
-    }
+    element.classList.toggle("--flipped");
 
     quoteAbleToFlip = false;
     setTimeout(() => (quoteAbleToFlip = true), quoteFlippingDuration);
@@ -773,4 +801,6 @@ export {
     savedOpened,
     prefersReducedMotion,
     smallScreen,
+    lockScrolling,
+    unlockScrolling,
 };

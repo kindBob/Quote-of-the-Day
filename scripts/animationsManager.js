@@ -1,5 +1,5 @@
 import { checkPreviousQuotesReadiness, savedQuotes } from "./quotesManager.js";
-import { prefersReducedMotion, smallScreen, savedOpened } from "./userInteractions.js";
+import { prefersReducedMotion, smallScreen, savedOpened, lockScrolling, unlockScrolling } from "./userInteractions.js";
 
 const mainHeader = document.querySelector("#main-header");
 const mainLogo = mainHeader.querySelector(".logo");
@@ -11,11 +11,12 @@ const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
 const mainSection = document.querySelector("#main-section");
 
+const bodyBgBlur = document.querySelector("#body__bg-blur");
+
 const footersContent = document.querySelectorAll(".footer__content");
 
 const savedPlaceholder = savedSection.querySelector("#saved-placeholder");
 
-let previousQuotesTl = null;
 let previousQuotes = [];
 
 const previousQuotesHiddenOptions = {
@@ -37,9 +38,6 @@ checkPreviousQuotesReadiness().then(() => {
     const loading = document.querySelector("#loading");
     const spinner = loading.querySelector(".spinner");
 
-    // loading.classList.add("--active");
-    // spinner.classList.add("--active");
-
     gsap.to(overlay, {
         autoAlpha: 0,
         ease: "power2.inOut",
@@ -54,15 +52,7 @@ checkPreviousQuotesReadiness().then(() => {
 });
 
 function setupInitialAnimations() {
-    !smallScreen && startScrollAnimations();
-
-    previousQuotesTl = gsap.timeline();
-
-    previousQuotesTl.to(".history-quote-element:not(.--always-shown)", {
-        keyframes: [{ opacity: 0, yPercent: 200 }, previousQuotesHiddenOptions],
-        duration: prefersReducedMotion ? 0 : 0.5,
-    });
-    previousQuotesTl.seek(previousQuotesTl.duration());
+    startScrollAnimations();
 
     footersContent.forEach((content) => splitText(content));
 
@@ -122,19 +112,19 @@ function playNavBarOpeningAnim() {
 }
 
 function startScrollAnimations() {
-    previousQuotes = gsap.utils.toArray(".history-quote-element");
+    previousQuotes = gsap.utils.toArray(".history-quote-element:not(.history-quote-element:nth-child(1))");
 
     gsap.to("#index-0", {
         scale: 5,
         autoAlpha: 0,
         overwrite: "auto",
-        ease: "power2.inOut",
         scrollTrigger: {
             trigger: "#index-0",
             scrub: 1.2,
             start: "center center",
-            end: "75% top",
+            end: "bottom 20%",
         },
+        ease: "power2.inOut",
     });
 
     gsap.from(".separator", {
@@ -160,16 +150,27 @@ function startScrollAnimations() {
         ease: "power2.inOut",
     });
 
+    gsap.from(".history-quote-element:nth-child(1)", {
+        yPercent: 50,
+        autoAlpha: 0,
+        scrollTrigger: {
+            trigger: ".history-quote-element:nth-child(1)",
+            scrub: 1.2,
+            start: "center bottom",
+            end: "top center",
+        },
+        ease: "power2",
+    });
+
     previousQuotes.forEach((quote) => {
         gsap.from(quote, {
             yPercent: 50,
-            autoAlpha: 0,
-            overwrite: true,
+            autoAlpha: 0.2,
             scrollTrigger: {
                 trigger: quote,
-                scrub: 1.5,
-                start: "top 70%",
-                end: "center bottom",
+                scrub: 1.2,
+                start: "top bottom",
+                end: "top center",
             },
             ease: "power2",
         });
@@ -177,30 +178,18 @@ function startScrollAnimations() {
 }
 
 const openedSections = [];
-
-function showFooter(el, section, tl) {
-    if (section == "saved")
-        tl.from(el, {
-            // xPercent: 100,
-            width: 0,
-        });
-    else
-        tl.from(el, {
-            // xPercent: -100,
-            width: 0,
-        });
-}
-
 function startSecondarySectionAnimations(options) {
     const { section, delay } = options;
 
     const sectionElement = document.querySelector(`#${section}-section`);
     const footer = sectionElement.querySelector("footer");
-    const header = sectionElement.querySelector("header");
-    const title = sectionElement.querySelector(".section-title");
-    const closeBtn = sectionElement.querySelector(".close-btn");
     const footerContent = footer.querySelector(".content");
     const mainContainer = sectionElement.querySelector(".container.--main");
+
+    const heartChar = Array.from(footerContent.children).find((char) => {
+        return char.textContent == "❤";
+    });
+    const heartCharIndex = Array.from(footerContent.children).indexOf(heartChar);
 
     const defaultDuration = 0.7;
 
@@ -212,63 +201,28 @@ function startSecondarySectionAnimations(options) {
         },
     });
 
-    tl.addLabel("first");
-
     for (const el of openedSections) {
         if (el == section) return;
     }
 
     openedSections.push(section);
 
-    // showFooter(footer, section, tl);
-
-    // tl.from(
-    //     header,
-    //     {
-    //         yPercent: -100,
-    //     },
-    //     "first"
-    // );
-
-    tl.addLabel("second", "first+=0.2");
-
-    tl.from(
-        title,
-        {
-            y: -header.clientHeight,
-        },
-        "second"
-    );
-
-    tl.from(
-        closeBtn,
-        {
-            y: -header.clientHeight,
-        },
-        "second"
-    );
-
-    tl.call(() =>
-        showSplitText(footerContent, null, () => {
-            if (savedOpened && savedQuotes.length == 0) {
-                showSplitText(savedPlaceholder);
-            }
-        })
-    );
+    tl.call(() => {
+        if (savedOpened && savedQuotes.length == 0) {
+            showSplitText(savedPlaceholder);
+        }
+    });
 
     tl.from(mainContainer, {
         autoAlpha: 0,
         ease: "none",
+    });
+
+    tl.from(footerContent.children[heartCharIndex], {
+        width: 0,
+        autoAlpha: 0,
         duration: 0.4,
     });
-}
-
-function changePreviousQuotesVisibility(act) {
-    if (act == "showMore") {
-        const firstHiddenElement = document.querySelector("#index-4");
-
-        previousQuotesTl.reverse();
-    } else previousQuotesTl.restart();
 }
 
 function scrollToPosition(cb, options = {}) {
@@ -371,7 +325,7 @@ function splitText(el) {
 
         newEl.style.display = "inline-block";
 
-        if (char === " ") newEl.style.width = "0.4em";
+        if (char === " ") newEl.style.width = "0.22em";
 
         newEl.append(content);
 
@@ -380,9 +334,9 @@ function splitText(el) {
 }
 
 function showSplitText(el, options, cb) {
-    el.style.display = "block";
+    el.style.display = "flex";
 
-    gsap.from(el.children, {
+    gsap.from(options?.index ? el.children[options.index] : el.children, {
         y: options?.y || el.clientHeight,
         stagger: options?.stagger || { amount: 0.3 },
         ease: options?.ease || "expo.inOut",
@@ -391,8 +345,55 @@ function showSplitText(el, options, cb) {
     });
 }
 
+// showModal(document.querySelector("#sharing-modal"));
+
+// Modals
+let modalOpened = false;
+function showModal(modal) {
+    modalOpened = true;
+
+    bodyBgBlur.classList.add("--active");
+
+    lockScrolling();
+
+    gsap.fromTo(
+        modal,
+        {
+            y: "-200%",
+            x: "-50%",
+            autoAlpha: 0,
+        },
+        {
+            y: "-50%",
+            autoAlpha: 1,
+            pointerEvents: "all",
+            duration: prefersReducedMotion ? 0 : 0.6,
+            ease: "power2.inOut",
+        }
+    );
+}
+
+function hideModals(modals) {
+    bodyBgBlur.classList.remove("--active");
+
+    unlockScrolling();
+
+    modals.forEach((modal) => {
+        gsap.to(modal, {
+            y: "200%",
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: prefersReducedMotion ? 0 : 0.6,
+            ease: "power2.inOut",
+            onComplete: () => {
+                modalOpened = false;
+            },
+        });
+    });
+}
+// Modals ---
+
 export {
-    changePreviousQuotesVisibility,
     scrollToPosition,
     setupMainHeaderAnim,
     playNavBarOpeningAnim,
@@ -400,4 +401,7 @@ export {
     navBarTransition,
     changeSection,
     showSplitText,
+    showModal,
+    hideModals,
+    modalOpened,
 };

@@ -83,7 +83,7 @@
             </div>
 
             <footer class="footer about-us__footer">
-                <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p>
+                <p data-i18n-key="footer-text" class="content footer__content --unselectable">Made with ❤ by Malfo</p>
             </footer>
         </section>
 
@@ -161,7 +161,6 @@
                 <div data-i18n-key="previous-quotes-title" class="history-title">Previous Quotes</div>
             </div>
 
-            <div class="bg-blur-section"></div>
             <div id="history-container" class="container history-container">
                 <div class="quotes-element history-quote-element main-page-quote --clickable --always-shown">
                     <div class="quotes-element__inner-container">
@@ -274,6 +273,8 @@
                     </div>
                 </div>
             </footer>
+
+            <div id="main-section__bg-blur" class="bg-blur"></div>
         </section>
 
         <section id="saved-section" class="section saved__section --secondary">
@@ -316,17 +317,17 @@
                     </div>
                 </div>
 
-                <p data-i18n-key="saved-placeholder" id="saved-placeholder" class="saved__placeholder"
+                <p data-i18n-key="saved-placeholder" id="saved-placeholder" class="saved__placeholder --unselectable"
                     >It's empty here...</p
                 >
             </div>
 
             <footer class="footer saved__footer">
-                <p data-i18n-key="footer-text" class="content footer__content">Made with ❤ by Malfo</p>
+                <p data-i18n-key="footer-text" class="content footer__content --unselectable">Made with ❤ by Malfo</p>
             </footer>
         </section>
 
-        <div id="submission" class="submission">
+        <div id="submission" class="modal submission">
             <div class="submission__title" data-i18n-key="submission-slogan">
                 Propose a quote that speaks to you, and let's inspire together!
             </div>
@@ -383,6 +384,11 @@
             </div>
         </div>
 
+        <div id="sharing-modal" class="modal sharing-modal">
+            <p data-i18n-key="sharing-modal-text" class="sharing-modal__text">The quote is ready!</p>
+            <button data-i18n-key="send" class="button">Send</button>
+        </div>
+
         <div id="loading" class="loading --active">
             <div class="status">
                 <span class="status__text"></span>
@@ -390,7 +396,7 @@
             <div class="spinner loader --active"></div>
         </div>
 
-        <div class="bg-blur-body"></div>
+        <div id="body__bg-blur" class="bg-blur"></div>
 
         <div id="overlay" class="overlay --active"><div class="loader"></div></div>
 
