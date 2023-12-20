@@ -75,17 +75,28 @@ body {
     width: 100vw;
     height: 100vh;
     display: none;
+    justify-content: center;
+    align-items: center;
     position: fixed;
     left: 0;
     top: 0;
     z-index: 99;
-    opacity: 1;
     background-color: $mainColor;
 
     &.--active {
-        display: flex;
-        // justify-content: center;
-        // align-items: center;
+        display: block;
+    }
+
+    p {
+        max-width: 90%;
+        text-align: center;
+        opacity: 0;
+        font-size: clamp(18px, 3vw, 22px);
+        transition: 0.4s;
+
+        &.--active {
+            opacity: 1;
+        }
     }
 }
 
@@ -1458,6 +1469,18 @@ body {
     }
 }
 // Adaptive ---
+
+// Other media
+@media (max-width: 767px) and (orientation: landscape) {
+    .loading {
+        display: none !important;
+    }
+
+    .overlay {
+        display: flex;
+    }
+}
+// Other media ---
 
 // Animations
 @keyframes spin {

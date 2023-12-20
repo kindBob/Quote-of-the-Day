@@ -76,14 +76,25 @@ const legalTermsLink = document.querySelector("#legal-terms");
 
 const prefersReducedMotion = detectReducedMotion();
 
+let overlayInitialHTML = null;
+
 let smallScreen = detectSmallScreen();
 
 let quoteFlippingDuration = 0;
 
 // General
+document.addEventListener("DOMContentLoaded", () => {
+    overlayInitialHTML = overlay;
+
+    if (window.matchMedia("(orientation: landscape)").matches && smallScreen) {
+        checkForHTMLChanges();
+        checkForCSSChanges();
+    }
+});
+
 gsap.registerPlugin(ScrollToPlugin);
 
-window.addEventListener("orientationchange", handleResize);
+window.addEventListener("orientationchange", handleOrientationChange);
 
 document.addEventListener("click", (event) => {
     if (!smallScreen) return;
@@ -103,7 +114,22 @@ checkPreviousQuotesReadiness().then(() => {
     showLessPreviousQuotes({ noScroll: true });
 });
 
-function handleResize() {
+function checkForHTMLChanges() {
+    if (overlayInitialHTML !== document.querySelector("#overlay")) location.reload();
+
+    setTimeout(checkForHTMLChanges, 10);
+}
+
+function checkForCSSChanges() {
+    const computedStyle = getComputedStyle(overlay);
+
+    if (computedStyle.display !== "flex" || computedStyle.opacity == "0" || computedStyle.visibility !== "visible")
+        location.reload();
+
+    setTimeout(checkForCSSChanges, 10);
+}
+
+function handleOrientationChange() {
     location.reload();
 }
 
@@ -124,7 +150,7 @@ function initialSetup() {
 }
 
 function detectSmallScreen() {
-    return window.screen.width <= 768;
+    return window.matchMedia("(max-width: 767px)").matches;
 }
 
 function detectReducedMotion() {

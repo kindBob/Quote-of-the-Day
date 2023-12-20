@@ -19,16 +19,6 @@ const savedPlaceholder = savedSection.querySelector("#saved-placeholder");
 
 let previousQuotes = [];
 
-const previousQuotesHiddenOptions = {
-    height: 0,
-    width: 0,
-    margin: 0,
-    padding: 0,
-    overflow: "hidden",
-    opacity: 0,
-    yPercent: 200,
-};
-
 gsap.registerPlugin(ScrollToPlugin);
 
 checkPreviousQuotesReadiness().then(() => {
@@ -38,17 +28,22 @@ checkPreviousQuotesReadiness().then(() => {
     const loading = document.querySelector("#loading");
     const spinner = loading.querySelector(".spinner");
 
+    if (window.matchMedia("(orientation: landscape)").matches && smallScreen) {
+        overlay.querySelector("p").classList.add("--active");
+
+        return;
+    }
+
     gsap.to(overlay, {
         autoAlpha: 0,
         ease: "power2.inOut",
-        duration: prefersReducedMotion ? 0 : 0.2,
-        onComplete: () => {
-            overlay.classList.remove("--active");
-
-            loading.classList.remove("--active");
-            spinner.classList.remove("--active");
-        },
+        duration: prefersReducedMotion ? 0 : 0.6,
+        onComplete: () => {},
     });
+
+    overlay.classList.remove("--active");
+    loading.classList.remove("--active");
+    spinner.classList.remove("--active");
 });
 
 function setupInitialAnimations() {
