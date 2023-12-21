@@ -1,4 +1,4 @@
-import { initialLocale, findTranslation } from "./languageManager.js";
+import { initialLocale, getTranslation } from "./languageManager.js";
 import { showSplitText } from "./animationsManager.js";
 import {
     savedOpened,
@@ -6,10 +6,11 @@ import {
     setupSharingButtonsEL,
     hideShowMoreBtn,
     prefersReducedMotion,
+    MAIN_API_URL,
 } from "./userInteractions.js";
 
 // const QUOTES_API = "http://localhost:3000/quotes";
-const QUOTES_API = "https://quote-of-the-day-api.up.railway.app/quotes";
+const QUOTES_API = `${MAIN_API_URL}/quotes`;
 
 const currentQuoteElement = document.querySelector("#index-0");
 const currentQuoteOutput = currentQuoteElement.querySelector(".quotes-element__quote");
@@ -231,7 +232,7 @@ async function setupSavingButtonsText() {
                 savedQuotes[i].id ==
                 buttonText.closest(".quotes-element").querySelector(".quotes-element__date").textContent
             ) {
-                buttonText.textContent = findTranslation("unsave-button");
+                buttonText.textContent = getTranslation("unsave-button");
             }
         });
     }
@@ -275,7 +276,7 @@ function setupSavedCentering() {
 
 async function manageSavedQuotes(button, quoteElement) {
     // Saved quote addition
-    if (button.textContent == findTranslation("save-button")) {
+    if (button.textContent == getTranslation("save-button")) {
         const date = quoteElement.querySelector(".quotes-element__date").textContent;
         let quoteToSave = null;
 
@@ -313,7 +314,7 @@ async function manageSavedQuotes(button, quoteElement) {
                     if (element) {
                         const savingButton = element.querySelector(".quotes-element__saving-button");
                         if (savingButton) {
-                            savingButton.textContent = findTranslation("save-button");
+                            savingButton.textContent = getTranslation("save-button");
                         }
                     }
 

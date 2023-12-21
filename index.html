@@ -351,7 +351,6 @@
                     type="text"
                     placeholder="Aristotle"
                     autocomplete="off"
-                    minlength="4"
                     required />
 
                 <label for="submission-form__quote" data-i18n-key="quote">Quote</label>
@@ -363,10 +362,9 @@
                     type="text"
                     placeholder="It is during our darkest moments that we must focus to see the light."
                     autocomplete="off"
-                    minlength="8"
-                    required
                     cols="8"
-                    rows="3"></textarea>
+                    rows="3"
+                    required></textarea>
 
                 <button class="form-btn" type="submit" data-i18n-key="send">Send</button>
 
@@ -410,6 +408,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/CustomEase.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
         <script type="module" src="./scripts/languageManager.js"></script>
         <script type="module" src="./scripts/quotesManager.js"></script>
         <script type="module" src="./scripts/userInteractions.js"></script>

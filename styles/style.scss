@@ -84,7 +84,7 @@ body {
     background-color: $mainColor;
 
     &.--active {
-        display: block;
+        display: flex;
     }
 
     p {
@@ -346,7 +346,7 @@ body {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
     border-radius: 10px;
-    transition: $defaultTransitionLength;
+    transition: $defaultTransitionLength cubic-bezier(0.77, 0, 0.175, 1);
     overflow: hidden;
 
     &.--active {

@@ -9,15 +9,14 @@ import {
     hideModals,
     modalOpened,
 } from "./animationsManager.js";
-import { findTranslation, initialLocale } from "./languageManager.js";
+import { getTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, checkPreviousQuotesReadiness, previousQuotes } from "./quotesManager.js";
 
+//https://quote-of-the-day-api.up.railway.app
+const MAIN_API_URL = "https://quote-of-the-day-api-6tl9.onrender.com";
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
-const EMAIL_SUBSCRIPTION_API = "https://quote-of-the-day-api.up.railway.app/subscribe";
-const SUBMISSIONS_API = "https://quote-of-the-day-api.up.railway.app/submission";
-// const SUBMISSIONS_API = "http://localhost:3000/submission";
-// const EMAIL_SUBSCRIPTION_API = "http://localhost:3000/subscribe";
-
+const EMAIL_SUBSCRIPTION_API = `${MAIN_API_URL}/subscribe`;
+const SUBMISSIONS_API = `${MAIN_API_URL}/submission`;
 const mainPage = window.location.href;
 
 const burgerMenu = document.querySelector("#main-burger-menu");
@@ -83,6 +82,8 @@ let smallScreen = detectSmallScreen();
 let quoteFlippingDuration = 0;
 
 // General
+gsap.registerPlugin(ScrollToPlugin);
+
 document.addEventListener("DOMContentLoaded", () => {
     overlayInitialHTML = overlay;
 
@@ -91,8 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
         checkForCSSChanges();
     }
 });
-
-gsap.registerPlugin(ScrollToPlugin);
 
 window.addEventListener("orientationchange", handleOrientationChange);
 
@@ -111,7 +110,6 @@ document.addEventListener("click", (event) => {
 
 checkPreviousQuotesReadiness().then(() => {
     setupMainHeader();
-    showLessPreviousQuotes({ noScroll: true });
 });
 
 function checkForHTMLChanges() {
@@ -201,15 +199,15 @@ function getEmailErrorMessage(errCode) {
 
     switch (errCode) {
         case 1:
-            errMessage = findTranslation("duplicate-email");
+            errMessage = getTranslation("duplicate-email");
             break;
 
         case 2:
-            errMessage = findTranslation("invalid-email");
+            errMessage = getTranslation("invalid-email");
             break;
 
         default:
-            errMessage = findTranslation("general-error");
+            errMessage = getTranslation("general-error");
             break;
     }
 
@@ -244,7 +242,7 @@ function displayRequestResult(options) {
             displayElement.classList.add("--success");
         }
 
-        message = message;
+        message = message.replace(".", "");
         timeoutLength = 5000;
     } else {
         message = message + "..";
@@ -328,7 +326,7 @@ async function sendSubmission() {
         lang: initialLocale,
     });
 
-    displayRequestResult({ success: null, message: findTranslation("loading"), displayElement: submisssionResult });
+    displayRequestResult({ success: null, message: getTranslation("loading"), displayElement: submisssionResult });
 
     const response = await fetch(SUBMISSIONS_API, {
         method: "POST",
@@ -339,7 +337,7 @@ async function sendSubmission() {
     if (response.ok) {
         displayRequestResult({
             success: true,
-            message: findTranslation("submission-success"),
+            message: getTranslation("submission-success"),
             displayElement: submisssionResult,
         });
 
@@ -377,7 +375,7 @@ async function subscribe() {
     } else {
         displayRequestResult({
             success: null,
-            message: findTranslation("loading"),
+            message: getTranslation("loading"),
             displayElement: emailSubResult,
         });
 
@@ -395,7 +393,7 @@ async function subscribe() {
         if (response.ok) {
             displayRequestResult({
                 success: true,
-                message: findTranslation("sub-success"),
+                message: getTranslation("sub-success"),
                 displayElement: emailSubResult,
             });
             resetInputs([emailSubEmailInput]);
@@ -531,7 +529,7 @@ function manageSharingResult(result) {
 
     switch (result) {
         case "success":
-            loadingStatusText.textContent = findTranslation("saved-to-clipboard");
+            loadingStatusText.textContent = getTranslation("saved-to-clipboard").replace(".", "");
             loadingElement.classList.add("--success");
 
             loadingElement.style.width = loadingStatus.offsetWidth + "px";
@@ -539,7 +537,7 @@ function manageSharingResult(result) {
             break;
 
         case "error":
-            loadingStatusText.textContent = findTranslation("general-error");
+            loadingStatusText.textContent = getTranslation("general-error").replace(".", "");
             loadingElement.classList.add("--error");
 
             loadingElement.style.width = loadingStatus.offsetWidth + "px";
@@ -594,7 +592,7 @@ function setupMainHeader() {
                 if (el.classList.contains("--hovered")) return;
             }
             setPassiveMainHeader();
-        }, 2500);
+        }, 3500);
     }
 }
 
@@ -674,7 +672,7 @@ function openNavBar() {
 //-------
 // Quotes
 showMoreBtn.addEventListener("click", () => {
-    if (showMoreBtn.textContent.includes(findTranslation("show-more-btn__show-more"))) {
+    if (showMoreBtn.textContent.includes(getTranslation("show-more-btn__show-more"))) {
         showMorePreviousQuotes();
         return;
     }
@@ -702,11 +700,7 @@ function getHistoryQuoteElementsHeight(number) {
 function showMorePreviousQuotes() {
     historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length)}px`;
 
-    // previousQuotesElements.forEach((el) => el.classList.remove("--hidden"));
-
-    // changePreviousQuotesVisibility("showMore");
-
-    showMoreBtn.textContent = findTranslation("show-more-btn__show-less");
+    showMoreBtn.textContent = getTranslation("show-more-btn__show-less");
 }
 
 function showLessPreviousQuotes(options) {
@@ -719,15 +713,9 @@ function showLessPreviousQuotes(options) {
 
     setTimeout(
         () => {
-            // changePreviousQuotesVisibility("showLess");
-
             historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
 
-            // previousQuotesElements.forEach((el) => {
-            //     !el.classList.contains("--always-shown") && el.classList.add("--hidden");
-            // });
-
-            showMoreBtn.textContent = findTranslation("show-more-btn__show-more");
+            showMoreBtn.textContent = getTranslation("show-more-btn__show-more");
         },
         prefersReducedMotion ? 0 : 700
     );
@@ -829,4 +817,6 @@ export {
     smallScreen,
     lockScrolling,
     unlockScrolling,
+    showLessPreviousQuotes,
+    MAIN_API_URL,
 };

@@ -1,5 +1,6 @@
 import { checkPreviousQuotesReadiness, savedQuotes } from "./quotesManager.js";
 import { prefersReducedMotion, smallScreen, savedOpened, lockScrolling, unlockScrolling } from "./userInteractions.js";
+import { getTranslation } from "./languageManager.js";
 
 const mainHeader = document.querySelector("#main-header");
 const mainLogo = mainHeader.querySelector(".logo");
@@ -10,6 +11,11 @@ const mainNavBarListElements = mainNavBarList.children;
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
 const mainSection = document.querySelector("#main-section");
+
+const overlay = document.querySelector("#overlay");
+
+const loading = document.querySelector("#loading");
+const spinner = loading.querySelector(".spinner");
 
 const bodyBgBlur = document.querySelector("#body__bg-blur");
 
@@ -24,12 +30,10 @@ gsap.registerPlugin(ScrollToPlugin);
 checkPreviousQuotesReadiness().then(() => {
     if (!prefersReducedMotion) setupInitialAnimations();
 
-    const overlay = document.querySelector("#overlay");
-    const loading = document.querySelector("#loading");
-    const spinner = loading.querySelector(".spinner");
-
     if (window.matchMedia("(orientation: landscape)").matches && smallScreen) {
-        overlay.querySelector("p").classList.add("--active");
+        const overlayText = overlay.querySelector("p");
+        overlayText.textContent = getTranslation("error_landscape-mode");
+        overlayText.classList.add("--active");
 
         return;
     }
@@ -38,12 +42,27 @@ checkPreviousQuotesReadiness().then(() => {
         autoAlpha: 0,
         ease: "power2.inOut",
         duration: prefersReducedMotion ? 0 : 0.6,
-        onComplete: () => {},
+        onComplete: () => {
+            overlay.classList.remove("--active");
+        },
     });
 
-    overlay.classList.remove("--active");
-    loading.classList.remove("--active");
-    spinner.classList.remove("--active");
+    hideLoadingSpinner();
+
+    // const lenis = new Lenis({ normalizeWheel: true });
+
+    // lenis.on("scroll", (e) => {
+    //     console.log(e);
+    // });
+
+    // function raf(time) {
+    //     lenis.raf(time);
+    //     requestAnimationFrame(raf);
+    // }
+
+    // requestAnimationFrame(raf);
+
+    // showLessPreviousQuotes({ noScroll: true });
 });
 
 function setupInitialAnimations() {
@@ -340,9 +359,11 @@ function showSplitText(el, options, cb) {
     });
 }
 
-// showModal(document.querySelector("#sharing-modal"));
+function hideLoadingSpinner() {
+    loading.classList.remove("--active");
+    spinner.classList.remove("--active");
+}
 
-// Modals
 let modalOpened = false;
 function showModal(modal) {
     modalOpened = true;
@@ -386,7 +407,6 @@ function hideModals(modals) {
         });
     });
 }
-// Modals ---
 
 export {
     scrollToPosition,
@@ -399,4 +419,5 @@ export {
     showModal,
     hideModals,
     modalOpened,
+    hideLoadingSpinner,
 };

@@ -1,8 +1,12 @@
+import { hideLoadingSpinner } from "./animationsManager.js";
 import { fetchQuotes } from "./quotesManager.js";
-import { initialSetup } from "./userInteractions.js";
+import { initialSetup, MAIN_API_URL } from "./userInteractions.js";
 
-const TRANSLATION_API = "https://quote-of-the-day-api.up.railway.app/translations";
+const TRANSLATION_API = `${MAIN_API_URL}/translations`;
 // const TRANSLATION_API = "http://localhost:3000/translations";
+
+const overlay = document.querySelector("#overlay");
+const overlayText = overlay.querySelector("p");
 
 const defaultLocale = "en";
 const supportedLocales = ["en", "ru", "uk"];
@@ -15,10 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function setupInitialLocale() {
+    translations = await fetchTranslations(initialLocale);
+
+    if (!translations) return;
+
     const userLocales = navigator.languages.map((locale) => locale.split("-")[0]);
     initialLocale = userLocales.find((locale) => isLocaleSupported(locale)) || defaultLocale;
-
-    translations = await fetchTranslations(initialLocale);
 
     document.querySelector("html").setAttribute("lang", initialLocale);
 
@@ -31,11 +37,32 @@ function isLocaleSupported(locale) {
 }
 
 async function fetchTranslations() {
-    const res = await fetch(TRANSLATION_API);
-    if (!res.ok) return console.log("Something went wrong");
+    const maxRetries = 3;
+    const delay = 1000;
+    let retries = 0;
 
-    const data = await res.json();
-    return data.translations;
+    while (retries <= maxRetries) {
+        try {
+            const res = await fetch(TRANSLATION_API);
+            if (!res.ok) throw new Error("Bad response.");
+
+            const data = await res.json();
+            return data.translations;
+        } catch (err) {
+            console.log("An error occured fetching quotes. Retrying...");
+
+            retries++;
+
+            await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+    }
+
+    overlayText.textContent = "Something went wrong. Check your Internet connection.";
+    overlayText.classList.add("--active");
+
+    hideLoadingSpinner();
+
+    return null;
 }
 
 function translatePage() {
@@ -51,7 +78,7 @@ function translateElement(element) {
     } else element.innerHTML = translation[initialLocale].replace("<n>", "<br />");
 }
 
-function findTranslation(keyWord) {
+function getTranslation(keyWord) {
     const translation = translations.find((translation) => translation.keyWord === keyWord);
     return translation[initialLocale];
 }
@@ -61,4 +88,4 @@ function callAwaitingFunctions() {
     initialSetup();
 }
 
-export { initialLocale, findTranslation };
+export { initialLocale, getTranslation };
