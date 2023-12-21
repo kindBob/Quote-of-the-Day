@@ -110,6 +110,8 @@ document.addEventListener("click", (event) => {
 
 checkPreviousQuotesReadiness().then(() => {
     setupMainHeader();
+
+    showLessPreviousQuotes({ noScroll: true });
 });
 
 function checkForHTMLChanges() {

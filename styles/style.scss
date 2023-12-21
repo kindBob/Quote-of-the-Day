@@ -1374,6 +1374,12 @@ body {
             }
         }
     }
+
+    .about-us {
+        &__blocks-container {
+            gap: 2.5em;
+        }
+    }
 }
 
 @media (max-width: 476px) {
