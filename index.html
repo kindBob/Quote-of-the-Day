@@ -34,7 +34,7 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-1/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-1/favicon-16x16.png" />
         <link rel="manifest" href="/assets/favicon-1/site.webmanifest" /> -->
-        <link rel="shortcut icon" href="/assets/favicon-1/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon" />
         <link rel="stylesheet" href="./styles/normilize.css" />
         <link rel="stylesheet" href="./styles/style.css" />
         <title>Quote of the Day</title>
@@ -65,17 +65,19 @@
                         <div class="about-us__img --smaller">
                             <img src="./assets/img/horseHead.webp" alt="horse" draggable="false" />
                         </div>
-                        <div class="about-us__block-title"> horse/designer </div>
+                        <div class="about-us__block-title"> horse/<span data-i18n-key="designer">designer</span> </div>
                     </div>
                     <div class="about-us__block">
                         <div class="about-us__img">
                             <img src="./assets/img/kindBob.png" alt="ma3stro" draggable="false" />
                         </div>
-                        <div class="about-us__block-title"> ma3stro/programmer </div>
+                        <div class="about-us__block-title">
+                            ma3stro/<span data-i18n-key="programmer">programmer</span>
+                        </div>
                     </div>
                 </div>
 
-                <p class="about-us__text">
+                <p data-i18n-key="about-us-text" class="about-us__text">
                     Meet Malfo's dynamic duo: Horse, the 18-year-old designer, and Ma3stro, the 16-year-old programmer.
                     Horse, known for his creative flair, loves to sleep and savor tea. Ma3stro, our programming prodigy,
                     aspires to move to the US while constantly refining his skills. Together, they bring passion and
@@ -84,7 +86,25 @@
             </div>
 
             <footer class="footer about-us__footer">
-                <p data-i18n-key="footer-text" class="content footer__content --unselectable">Made with ❤ by Malfo</p>
+                <p class="content footer__content --unselectable"
+                    ><span data-i18n-key="secondary-footer-text-part-1">Made with</span>
+                    <svg
+                        class="heart-icon"
+                        version="1.1"
+                        id="Layer_1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        x="0px"
+                        y="0px"
+                        viewBox="0 0 15 15"
+                        style="enable-background: new 0 0 15 15"
+                        xml:space="preserve">
+                        <path
+                            d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75
+                   C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z" />
+                    </svg>
+                    <span data-i18n-key="secondary-footer-text-part-2">by Malfo</span></p
+                >
             </footer>
         </section>
 
@@ -92,10 +112,7 @@
             <header id="main-header" class="header main-header">
                 <div class="container header__container">
                     <div class="logo header__logo">
-                        <!-- <a href="./index.html" draggable="false"
-                            ><img src="./assets//website-logo/logo-3.png" alt="Logo" draggable="false" /></a
-                    > -->
-                        <img src="./assets//website-logo/logo-3.png" alt="Logo" draggable="false" />
+                        <img src="./assets/website-logo/logo-3.png" alt="Logo" draggable="false" />
                     </div>
 
                     <nav class="nav-bar">
@@ -106,7 +123,7 @@
                             <li class="button nav-bar__element --bigger">
                                 <a
                                     data-i18n-key="support_us-button"
-                                    href="https://donate.stripe.com/test_eVa3evg5Q7JhgesdQQ"
+                                    href="https://donate.stripe.com/6oE2b59ACc324z63cd"
                                     target="_blank">
                                     Support Us
                                 </a>
@@ -128,7 +145,7 @@
             </header>
 
             <div class="container main-section__container">
-                <div id="index-0" class="quotes-element main-page-quote --clickable">
+                <div class="quotes-element --clickable">
                     <div class="quotes-element__inner-container">
                         <img
                             id="quote-hint"
@@ -146,9 +163,7 @@
                                     <li data-i18n-key="share-button" class="share-button button quotes-element__button">
                                         Share
                                     </li>
-                                    <li
-                                        data-i18n-key="save-button"
-                                        class="button quotes-element__button quotes-element__saving-button">
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
                                         Save
                                     </li>
                                 </ul>
@@ -157,13 +172,14 @@
                     </div>
                 </div>
             </div>
+
             <div class="container">
                 <div class="separator"> </div>
                 <div data-i18n-key="previous-quotes-title" class="history-title">Previous Quotes</div>
             </div>
 
             <div id="history-container" class="container history-container">
-                <div class="quotes-element history-quote-element main-page-quote --clickable --always-shown">
+                <div class="quotes-element --clickable">
                     <div class="quotes-element__inner-container">
                         <div class="quotes-element__front-container">
                             <div class="quotes-element__date history__quotes-element-date"></div>
@@ -176,9 +192,196 @@
                                     <li data-i18n-key="share-button" class="share-button button quotes-element__button">
                                         Share
                                     </li>
-                                    <li
-                                        data-i18n-key="save-button"
-                                        class="button quotes-element__button quotes-element__saving-button">
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
+                                        Save
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quotes-element --clickable">
+                    <div class="quotes-element__inner-container">
+                        <div class="quotes-element__front-container">
+                            <div class="quotes-element__date history__quotes-element-date"></div>
+                            <div class="quotes-element__author history__quotes-element-author"></div>
+                            <div class="quotes-element__quote history__quotes-element-quote"></div>
+                        </div>
+                        <div class="quotes-element__back-container">
+                            <div class="quotes-element__buttons-container">
+                                <ul class="button-list quotes-element__buttons-list">
+                                    <li data-i18n-key="share-button" class="share-button button quotes-element__button">
+                                        Share
+                                    </li>
+                                    <li data-i18n-key="save-button" class="save-button button quotes-element__button">
                                         Save
                                     </li>
                                 </ul>
@@ -222,7 +425,7 @@
                                 </a></li
                             >
                             <li class="footer__list-item footer__text"
-                                ><a href="https://discord.gg/bt6xCyTx" target="_blank"> Discord </a></li
+                                ><a href="https://discord.gg/U3HkwRbatW" target="_blank"> Discord </a></li
                             >
                         </ul>
                     </div>
@@ -292,39 +495,31 @@
             </header>
 
             <div id="saved-container" class="container saved__container --main">
-                <div class="quotes-element --dummy">
-                    <div class="quotes-element__inner-container">
-                        <div class="quotes-element__front-container">
-                            <div class="quotes-element__date saved__quotes-element-date --dummy"></div>
-                            <div class="quotes-element__author saved__quotes-element-author"></div>
-                            <div class="quotes-element__quote saved__quotes-element-quote"></div>
-                        </div>
-                        <div class="quotes-element__back-container">
-                            <div class="quotes-element__buttons-container">
-                                <ul class="button-list quotes-element__buttons-list saved__quotes-element-buttons-list">
-                                    <li
-                                        data-i18n-key="share-button"
-                                        class="share-button button quotes-element__button saved__quotes-element-button">
-                                        Share
-                                    </li>
-                                    <li
-                                        data-i18n-key="unsave-button"
-                                        class="button quotes-element__button saved__quotes-element-button quotes-element__saving-button --dummy">
-                                        Unsave
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <p data-i18n-key="saved-placeholder" id="saved-placeholder" class="saved__placeholder --unselectable"
                     >It's empty here...</p
                 >
             </div>
 
             <footer class="footer saved__footer">
-                <p data-i18n-key="footer-text" class="content footer__content --unselectable">Made with ❤ by Malfo</p>
+                <p class="content footer__content --unselectable"
+                    ><span data-i18n-key="secondary-footer-text-part-1">Made with</span>
+                    <svg
+                        class="heart-icon"
+                        version="1.1"
+                        id="Layer_1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        x="0px"
+                        y="0px"
+                        viewBox="0 0 15 15"
+                        style="enable-background: new 0 0 15 15"
+                        xml:space="preserve">
+                        <path
+                            d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75
+                   C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z" />
+                    </svg>
+                    <span data-i18n-key="secondary-footer-text-part-2">by Malfo</span></p
+                >
             </footer>
         </section>
 
@@ -397,12 +592,7 @@
 
         <div id="body__bg-blur" class="bg-blur"></div>
 
-        <div id="overlay" class="overlay --active"
-            ><p data-i18n-key="error_landscape-mode"
-                >This website doesn't support landscape mode. Please, rotate your device to portrait orientation to
-                continue.</p
-            ></div
-        >
+        <div id="overlay" class="overlay --showed-up"><p></p></div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

@@ -19,14 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function setupInitialLocale() {
-    translations = await fetchTranslations(initialLocale);
-
-    if (!translations) return;
-
     const userLocales = navigator.languages.map((locale) => locale.split("-")[0]);
     initialLocale = userLocales.find((locale) => isLocaleSupported(locale)) || defaultLocale;
 
     document.querySelector("html").setAttribute("lang", initialLocale);
+
+    translations = await fetchTranslations(initialLocale);
+
+    if (!translations) return;
 
     translatePage();
     callAwaitingFunctions();
@@ -49,6 +49,7 @@ async function fetchTranslations() {
             const data = await res.json();
             return data.translations;
         } catch (err) {
+            console.clear();
             console.log("An error occured fetching quotes. Retrying...");
 
             retries++;
@@ -57,7 +58,10 @@ async function fetchTranslations() {
         }
     }
 
-    overlayText.textContent = "Something went wrong. Check your Internet connection.";
+    overlayText.textContent =
+        initialLocale == "ru" || initialLocale == "uk"
+            ? "Произошла ошибка. Проверьте ваше интернет подключение и перезагрузитe страницу."
+            : "An error occured. Check your Internet connection and reload the page.";
     overlayText.classList.add("--active");
 
     hideLoadingSpinner();
@@ -73,9 +77,13 @@ function translateElement(element) {
     const key = element.getAttribute("data-i18n-key");
     const translation = translations.find((translation) => translation.keyWord === key);
 
-    if (key.includes("<placeholder>")) {
-        element.setAttribute("placeholder", translation[initialLocale]);
-    } else element.innerHTML = translation[initialLocale].replace("<n>", "<br />");
+    try {
+        if (key.includes("<placeholder>")) {
+            element.setAttribute("placeholder", translation[initialLocale]);
+        } else element.innerHTML = translation[initialLocale].replace("<n>", "<br />");
+    } catch (err) {
+        console.log(`Translation is not found - ${key}`);
+    }
 }
 
 function getTranslation(keyWord) {

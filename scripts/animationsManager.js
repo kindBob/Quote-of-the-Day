@@ -8,9 +8,9 @@ const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
 const mainNavBarListElements = mainNavBarList.children;
 
-const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
-const mainSection = document.querySelector("#main-section");
+
+const historyContainer = document.querySelector("#history-container");
 
 const overlay = document.querySelector("#overlay");
 
@@ -19,41 +19,22 @@ const spinner = loading.querySelector(".spinner");
 
 const bodyBgBlur = document.querySelector("#body__bg-blur");
 
-const footersContent = document.querySelectorAll(".footer__content");
-
 const savedPlaceholder = savedSection.querySelector("#saved-placeholder");
 
 let previousQuotes = [];
 
 gsap.registerPlugin(ScrollToPlugin);
 
-checkPreviousQuotesReadiness().then(() => {
+checkPreviousQuotesReadiness().then(async () => {
     if (!prefersReducedMotion) setupInitialAnimations();
 
-    if (window.matchMedia("(orientation: landscape)").matches && smallScreen) {
-        const overlayText = overlay.querySelector("p");
-        overlayText.textContent = getTranslation("error_landscape-mode");
-        overlayText.classList.add("--active");
-
-        return;
-    }
-
-    gsap.to(overlay, {
-        autoAlpha: 0,
-        ease: "power2.inOut",
-        duration: prefersReducedMotion ? 0 : 0.6,
-        onComplete: () => {
-            overlay.classList.remove("--active");
-        },
-    });
+    overlay.classList.remove("--showed-up");
 
     hideLoadingSpinner();
 
-    // const lenis = new Lenis({ normalizeWheel: true });
+    unlockScrolling();
 
-    // lenis.on("scroll", (e) => {
-    //     console.log(e);
-    // });
+    // const lenis = new Lenis({ normalizeWheel: true });
 
     // function raf(time) {
     //     lenis.raf(time);
@@ -61,25 +42,26 @@ checkPreviousQuotesReadiness().then(() => {
     // }
 
     // requestAnimationFrame(raf);
-
-    // showLessPreviousQuotes({ noScroll: true });
 });
 
 function setupInitialAnimations() {
-    startScrollAnimations();
+    previousQuotes = historyContainer.querySelectorAll(".quotes-element");
 
-    footersContent.forEach((content) => splitText(content));
+    startScrollAnimations();
 
     splitText(document.querySelector("#saved-placeholder"));
 }
 
 let mainHeaderTl = null;
-function setupMainHeaderAnim() {
-    if (!mainHeaderTl)
+function setupMainHeaderAnimation() {
+    if (!mainHeaderTl) {
         mainHeaderTl = gsap.timeline({
             paused: true,
             defaults: { duration: prefersReducedMotion ? 0 : 0.35, ease: "power3.inOut" },
         });
+    }
+
+    mainHeaderTl.clear();
 
     mainHeaderTl.to(mainNavBarListElements[0], {
         x: mainNavBarListElements[0].clientWidth * 1.2 + 15,
@@ -101,33 +83,7 @@ function setupMainHeaderAnim() {
     mainHeaderTl.fromTo(mainLogo, { y: -mainHeader.clientHeight }, { y: "auto", autoAlpha: 1 }, "<");
 }
 
-const navBarTransition = 0.6;
-function playNavBarOpeningAnim() {
-    const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
-
-    tl.to(mainNavBarList, {
-        x: 0,
-        duration: navBarTransition,
-        ease: "power2.inOut",
-    });
-
-    tl.from(
-        mainNavBarListElements,
-        {
-            x: mainNavBarList.clientWidth,
-            duration: prefersReducedMotion ? 0 : 0.5,
-            ease: "elastic(0.9, 1)",
-            stagger: {
-                each: 0.1,
-            },
-        },
-        "<+=40%"
-    );
-}
-
 function startScrollAnimations() {
-    previousQuotes = gsap.utils.toArray(".history-quote-element:not(.history-quote-element:nth-child(1))");
-
     gsap.to("#index-0", {
         scale: 5,
         autoAlpha: 0,
@@ -164,11 +120,11 @@ function startScrollAnimations() {
         ease: "power2.inOut",
     });
 
-    gsap.from(".history-quote-element:nth-child(1)", {
+    gsap.from(previousQuotes[0], {
         yPercent: 50,
         autoAlpha: 0,
         scrollTrigger: {
-            trigger: ".history-quote-element:nth-child(1)",
+            trigger: previousQuotes[0],
             scrub: 1.2,
             start: "center bottom",
             end: "top center",
@@ -176,7 +132,9 @@ function startScrollAnimations() {
         ease: "power2",
     });
 
-    previousQuotes.forEach((quote) => {
+    previousQuotes.forEach((quote, i) => {
+        if (i == 0) return;
+
         gsap.from(quote, {
             yPercent: 50,
             autoAlpha: 0.2,
@@ -198,12 +156,8 @@ function startSecondarySectionAnimations(options) {
     const sectionElement = document.querySelector(`#${section}-section`);
     const footer = sectionElement.querySelector("footer");
     const footerContent = footer.querySelector(".content");
+    const footerHeartIcon = footer.querySelector(".heart-icon");
     const mainContainer = sectionElement.querySelector(".container.--main");
-
-    const heartChar = Array.from(footerContent.children).find((char) => {
-        return char.textContent == "❤";
-    });
-    const heartCharIndex = Array.from(footerContent.children).indexOf(heartChar);
 
     const defaultDuration = 0.7;
 
@@ -232,10 +186,8 @@ function startSecondarySectionAnimations(options) {
         ease: "none",
     });
 
-    tl.from(footerContent.children[heartCharIndex], {
-        width: 0,
+    tl.from(footerHeartIcon, {
         autoAlpha: 0,
-        duration: 0.4,
     });
 }
 
@@ -257,74 +209,6 @@ function scrollToPosition(cb, options = {}) {
 
     function finish() {
         typeof cb === "function" && cb(options?.funcArgument !== undefined && options.funcArgument);
-    }
-}
-
-function changeSection(section, cb) {
-    const tl = gsap.timeline({
-        defaults: {
-            duration: prefersReducedMotion ? 0 : smallScreen ? 0.6 : 0.9,
-            ease: CustomEase.create("custom", "M0 0 C .3 .16, .24 1, 1 1"),
-            onComplete: cb,
-        },
-    });
-
-    switch (section) {
-        case "saved":
-            savedSection.style.width = "100%";
-
-            tl.to(mainSection, {
-                x: "-100vw",
-                onComplete: () => (mainSection.style.width = 0),
-            });
-            tl.to(savedSection, { x: 0 }, "<");
-
-            startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
-
-            break;
-
-        case "about-us":
-            aboutUsSection.style.width = "100%";
-
-            tl.to(mainSection, {
-                x: "100vw",
-                onComplete: () => (mainSection.style.width = 0),
-            });
-            tl.to(aboutUsSection, { x: 0 }, "<");
-
-            startSecondarySectionAnimations({ section, delay: tl.totalDuration() });
-
-            break;
-
-        case "main":
-            mainSection.style.width = "100%";
-
-            tl.to(mainSection, { x: 0 });
-            tl.to(
-                aboutUsSection,
-                {
-                    x: "-100vw",
-                    onComplete: () => {
-                        aboutUsSection.style.width = 0;
-                    },
-                },
-                "<"
-            );
-            tl.to(
-                savedSection,
-                {
-                    x: "100vw",
-                    onComplete: () => {
-                        savedSection.style.width = 0;
-                    },
-                },
-                "<"
-            );
-
-            break;
-
-        default:
-            console.log("No section found.");
     }
 }
 
@@ -410,14 +294,12 @@ function hideModals(modals) {
 
 export {
     scrollToPosition,
-    setupMainHeaderAnim,
-    playNavBarOpeningAnim,
+    setupMainHeaderAnimation,
     mainHeaderTl,
-    navBarTransition,
-    changeSection,
     showSplitText,
     showModal,
     hideModals,
     modalOpened,
     hideLoadingSpinner,
+    startSecondarySectionAnimations,
 };

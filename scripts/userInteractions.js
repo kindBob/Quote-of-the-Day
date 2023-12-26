@@ -1,19 +1,17 @@
 import {
     scrollToPosition,
-    setupMainHeaderAnim,
+    setupMainHeaderAnimation,
     mainHeaderTl,
-    playNavBarOpeningAnim,
-    navBarTransition,
-    changeSection,
     showModal,
     hideModals,
     modalOpened,
+    startSecondarySectionAnimations,
 } from "./animationsManager.js";
 import { getTranslation, initialLocale } from "./languageManager.js";
-import { manageSavedQuotes, checkPreviousQuotesReadiness, previousQuotes } from "./quotesManager.js";
+import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
 //https://quote-of-the-day-api.up.railway.app
-const MAIN_API_URL = "https://quote-of-the-day-api-6tl9.onrender.com";
+const MAIN_API_URL = "https://quote-of-the-day-api.up.railway.app";
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = `${MAIN_API_URL}/subscribe`;
 const SUBMISSIONS_API = `${MAIN_API_URL}/submission`;
@@ -26,8 +24,10 @@ const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
 const mainHeaderBtns = mainHeader.querySelectorAll(".button");
 
+const sections = document.querySelectorAll(".section");
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
+const mainSection = document.querySelector("#main-section");
 
 const savedCloseButtons = savedSection.querySelectorAll(".close-btn");
 const savedOpenButton = document.querySelector("#saved-open-button");
@@ -75,25 +75,23 @@ const legalTermsLink = document.querySelector("#legal-terms");
 
 const prefersReducedMotion = detectReducedMotion();
 
-let overlayInitialHTML = null;
-
+let withMouse = detectMouse();
 let smallScreen = detectSmallScreen();
+let smallScreenInitially = detectSmallScreen();
+let screenWidth = window.innerWidth || document.documentElement.clientWidth;
 
-let quoteFlippingDuration = 0;
+let quoteInnerContainerTransitionTime = 0;
+let navBarListTransitionTime = 0;
+let sectionsTranstionTime = 0;
 
 // General
 gsap.registerPlugin(ScrollToPlugin);
 
 document.addEventListener("DOMContentLoaded", () => {
-    overlayInitialHTML = overlay;
-
-    if (window.matchMedia("(orientation: landscape)").matches && smallScreen) {
-        checkForHTMLChanges();
-        checkForCSSChanges();
-    }
+    lockScrolling();
 });
 
-window.addEventListener("orientationchange", handleOrientationChange);
+window.addEventListener("resize", handleWindowResize);
 
 document.addEventListener("click", (event) => {
     if (!smallScreen) return;
@@ -114,23 +112,17 @@ checkPreviousQuotesReadiness().then(() => {
     showLessPreviousQuotes({ noScroll: true });
 });
 
-function checkForHTMLChanges() {
-    if (overlayInitialHTML !== document.querySelector("#overlay")) location.reload();
+function handleWindowResize() {
+    const updatedScreenWidth = window.innerWidth || document.documentElement.clientWidth;
 
-    setTimeout(checkForHTMLChanges, 10);
-}
+    if (screenWidth == updatedScreenWidth) return;
 
-function checkForCSSChanges() {
-    const computedStyle = getComputedStyle(overlay);
+    smallScreen = detectSmallScreen();
 
-    if (computedStyle.display !== "flex" || computedStyle.opacity == "0" || computedStyle.visibility !== "visible")
-        location.reload();
-
-    setTimeout(checkForCSSChanges, 10);
-}
-
-function handleOrientationChange() {
-    location.reload();
+    if (smallScreen != smallScreenInitially) {
+        setupMainHeader();
+        smallScreenInitially = !smallScreenInitially;
+    }
 }
 
 function initialSetup() {
@@ -138,11 +130,16 @@ function initialSetup() {
     if (localStorage.getItem("quoteFlipped")) quoteHint.remove();
     else quoteHint.classList.add("--active");
 
-    quoteFlippingDuration =
+    quoteInnerContainerTransitionTime =
         parseFloat(
             getComputedStyle(document.querySelector(".quotes-element.--clickable .quotes-element__inner-container"))
                 .transitionDuration
         ) * 1000;
+
+    navBarListTransitionTime =
+        parseFloat(getComputedStyle(document.querySelector(".main-header .nav-bar__list")).transitionDuration) * 1000;
+
+    sectionsTranstionTime = parseFloat(getComputedStyle(document.querySelector(".section")).transitionDuration) * 1000;
 
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
@@ -150,7 +147,12 @@ function initialSetup() {
 }
 
 function detectSmallScreen() {
-    return window.matchMedia("(max-width: 767px)").matches;
+    const screenWidth = window.innerWidth || document.documentElement.clientWidth;
+    return screenWidth < 769;
+}
+
+function detectMouse() {
+    return window.matchMedia("(pointer: fine)").matches;
 }
 
 function detectReducedMotion() {
@@ -261,7 +263,6 @@ function displayRequestResult(options) {
         displayElement.classList.remove("--active");
     }, timeoutLength);
 }
-
 // General
 //-------
 // Submission
@@ -421,16 +422,14 @@ let sharingImageFile = null;
 
 sharingModalBtn.addEventListener("click", () => shareQuoteNavigatorShare(sharingImageFile));
 
-function setupSharingCard(event) {
-    const parent = event.target.closest(".quotes-element");
+function setupSharingCard(el) {
+    const dateOutput = el.querySelector(".quotes-element__date").textContent;
+    const authorOutput = el.querySelector(".quotes-element__author").textContent;
+    const quoteOutput = el.querySelector(".quotes-element__quote").textContent;
 
-    const quoteOutput = parent.querySelector(".quotes-element__quote");
-    const authorOutput = parent.querySelector(".quotes-element__author");
-    const dateOutput = parent.querySelector(".quotes-element__date");
-
-    sharingCardAuthorOutput.textContent = authorOutput.textContent;
-    sharingCardQuoteOutput.textContent = quoteOutput.textContent;
-    sharingCardDateOutput.textContent = dateOutput.textContent;
+    sharingCardAuthorOutput.textContent = authorOutput;
+    sharingCardQuoteOutput.textContent = quoteOutput;
+    sharingCardDateOutput.textContent = dateOutput;
 
     setupSharingQuoteProcess();
 }
@@ -548,8 +547,13 @@ function manageSharingResult(result) {
 
         default:
             loadingElement.classList.remove("--active");
-            loadingStatus.classList.remove("--active");
+
             loadingElement.style.width = "90px";
+
+            setTimeout(
+                () => loadingStatus.classList.remove("--active"),
+                parseFloat(getComputedStyle(loadingElement).transitionDuration) * 1000
+            );
 
             sharingInProcess = false;
 
@@ -559,54 +563,31 @@ function manageSharingResult(result) {
 // Sharing
 //-------
 // Header
-mainHeaderBtns.forEach((el) => {
-    el.addEventListener("mouseover", () => {
-        el.classList.add("--hovered");
-    });
-});
-
-mainHeaderBtns.forEach((el) => {
-    el.addEventListener("mouseleave", () => {
-        el.classList.remove("--hovered");
-    });
-});
-
-function setupMainHeader() {
+const navBarTimeoutTime = 3500;
+let passiveHeaderTimeoutId = null;
+mainLogo.addEventListener("mouseenter", () => {
     if (!smallScreen) {
-        mainLogo.addEventListener("mouseenter", () => {
-            setActiveMainHeader();
-        });
-        mainLogo.addEventListener(
-            "touchstart",
-            () => {
-                setActiveMainHeader();
-            },
-            { passive: true }
-        );
+        setActiveMainHeader();
 
-        mainNavBar.addEventListener("mouseleave", setPassiveMainHeader);
-        mainNavBar.addEventListener("touchend", setPassiveMainHeader);
-
-        setupMainHeaderAnim();
-
-        setTimeout(() => {
-            for (const el of mainHeaderBtns) {
-                if (el.classList.contains("--hovered")) return;
-            }
-            setPassiveMainHeader();
-        }, 3500);
+        !withMouse && (passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime));
     }
-}
+});
 
-function setActiveMainHeader() {
-    mainHeaderTl.reverse();
-}
+mainLogo.addEventListener("touchstart", () => {
+    if (!smallScreen) {
+        setActiveMainHeader();
 
-function setPassiveMainHeader() {
-    const progress = mainHeaderTl.progress();
+        passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
+    }
+});
 
-    mainHeaderTl.restart().progress(progress);
-}
+mainNavBarList.addEventListener("mouseenter", () => {
+    if (!smallScreen) passiveHeaderTimeoutId != null && clearTimeout(passiveHeaderTimeoutId);
+});
+
+mainNavBarList.addEventListener("mouseleave", () => {
+    if (!smallScreen) passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
+});
 
 burgerMenu.addEventListener("click", () => {
     if (mainNavBarList.classList.contains("--active")) closeNavBar();
@@ -642,17 +623,51 @@ aboutUsCloseButtons.forEach((button) =>
     })
 );
 
+function setupMainHeader() {
+    passiveHeaderTimeoutId != null && clearTimeout(passiveHeaderTimeoutId);
+
+    if (!smallScreen) {
+        // resetHeaderElements();
+        setupMainHeaderAnimation();
+
+        passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
+    } else {
+        mainHeaderTl && mainHeaderTl.revert();
+        resetHeaderElements();
+    }
+}
+
+function resetHeaderElements() {
+    mainNavBar.style = "";
+    mainLogo.style = "";
+    mainNavBarList.children[0].style = "";
+    mainNavBarList.children[2].style = "";
+}
+
+function setActiveMainHeader() {
+    mainHeaderTl.reverse();
+}
+
+function setPassiveMainHeader() {
+    const progress = mainHeaderTl.progress();
+
+    mainHeaderTl.restart().progress(progress);
+}
+
+let navBarTimeoutId = null;
 function closeNavBar(cb) {
     mainNavBarList.classList.remove("--active");
     burgerMenu.classList.remove("--active");
     mainSectionBgBlur.classList.remove("--active");
 
-    gsap.to(mainNavBarList, {
-        x: "100vw",
-        duration: navBarTransition,
-        ease: "power2.inOut",
-        onComplete: finish,
-    });
+    // gsap.to(mainNavBarList, {
+    //     x: "100vw",
+    //     duration: navBarTransition,
+    //     ease: "power2.inOut",
+    //     onComplete: finish,
+    // });
+
+    navBarTimeoutId = setTimeout(finish, navBarListTransitionTime * 0.75);
 
     function finish() {
         unlockScrolling();
@@ -666,7 +681,9 @@ function openNavBar() {
     burgerMenu.classList.add("--active");
     mainSectionBgBlur.classList.add("--active");
 
-    playNavBarOpeningAnim();
+    // playNavBarOpeningAnim();
+
+    navBarTimeoutId && clearTimeout(navBarTimeoutId);
 
     lockScrolling();
 }
@@ -683,7 +700,7 @@ showMoreBtn.addEventListener("click", () => {
 });
 
 function getHistoryQuoteElementsHeight(number) {
-    const historyQuotes = document.querySelectorAll(".history-quote-element");
+    const historyQuotes = historyContainer.querySelectorAll(".quotes-element");
 
     let totalHeight = 0;
 
@@ -700,7 +717,7 @@ function getHistoryQuoteElementsHeight(number) {
 }
 
 function showMorePreviousQuotes() {
-    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(previousQuotes.length)}px`;
+    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(10)}px`;
 
     showMoreBtn.textContent = getTranslation("show-more-btn__show-less");
 }
@@ -723,27 +740,17 @@ function showLessPreviousQuotes(options) {
     );
 }
 
-function setupSavingButtonsEL(buttons = []) {
-    buttons.forEach((button) => {
-        if (!button.classList.contains("--hasEL")) {
-            button.addEventListener("click", (event) => {
-                manageSavedQuotes(button, event.target.closest(".quotes-element"));
-            });
-            button.classList.add("--hasEL");
-        }
-    });
-}
+function setupQuoteElementButtons(el) {
+    const saveBtn = el.querySelector(".save-button");
+    const shareBtn = el.querySelector(".share-button");
 
-function setupSharingButtonsEL(elements) {
-    for (let i = 0; i < elements.length; i++) {
-        elements[i].addEventListener("click", async (event) => {
-            setupSharingCard(event);
-        });
-    }
+    saveBtn.addEventListener("click", () => manageSavedQuotes(el));
+
+    shareBtn.addEventListener("click", () => setupSharingCard(el));
 }
 
 function setupQuotesFlipping(event) {
-    if (event.target.classList.contains("button") || modalOpened) return;
+    if (event.target.classList.contains("button") || event.target.closest(".button") || modalOpened) return;
 
     let allClickableQuotes = Array.from(document.querySelectorAll(".quotes-element.--clickable"));
 
@@ -774,7 +781,7 @@ function flipQuote(event) {
     element.classList.toggle("--flipped");
 
     quoteAbleToFlip = false;
-    setTimeout(() => (quoteAbleToFlip = true), quoteFlippingDuration);
+    setTimeout(() => (quoteAbleToFlip = true), quoteInnerContainerTransitionTime);
 
     if (quoteHint) {
         localStorage.setItem("quoteFlipped", true);
@@ -787,10 +794,6 @@ function flipQuotesBack(elements) {
     if (!quoteAbleToFlip) return;
     elements.forEach((element) => element.classList.remove("--flipped"));
 }
-
-function hideShowMoreBtn() {
-    showMoreBtn.style.display = "none";
-}
 // Quotes
 //-------
 // Sections
@@ -800,7 +803,58 @@ function toggleSection(options) {
     lockScrolling();
     overlay.classList.add("--active");
 
-    changeSection(section, finish);
+    switch (section) {
+        case "saved":
+            savedSection.style.width = "100%";
+
+            mainSection.style.transform = "translateX(-100vw)";
+            savedSection.style.transform = "translateX(0)";
+
+            startSecondarySectionAnimations({ section, delay: sectionsTranstionTime / 1000 });
+
+            setTimeout(() => {
+                mainSection.style.width = 0;
+
+                finish();
+            }, sectionsTranstionTime);
+
+            break;
+
+        case "about-us":
+            aboutUsSection.style.width = "100%";
+
+            mainSection.style.transform = "translateX(100vw)";
+            aboutUsSection.style.transform = "translateX(0)";
+
+            startSecondarySectionAnimations({ section, delay: sectionsTranstionTime / 1000 });
+
+            setTimeout(() => {
+                mainSection.style.width = 0;
+
+                finish();
+            }, sectionsTranstionTime);
+
+            break;
+
+        case "main":
+            mainSection.style.width = "100%";
+
+            mainSection.style.transform = "translateX(0)";
+            savedSection.style.transform = "translateX(100vw)";
+            aboutUsSection.style.transform = "translateX(-100vw)";
+
+            setTimeout(() => {
+                savedSection.style.width = 0;
+                aboutUsSection.style.width = 0;
+
+                finish();
+            }, sectionsTranstionTime);
+
+            break;
+
+        default:
+            console.log("No section found.");
+    }
 
     function finish() {
         unlockScrolling();
@@ -810,9 +864,6 @@ function toggleSection(options) {
 // Sections ---
 
 export {
-    hideShowMoreBtn,
-    setupSavingButtonsEL,
-    setupSharingButtonsEL,
     initialSetup,
     savedOpened,
     prefersReducedMotion,
@@ -821,4 +872,5 @@ export {
     unlockScrolling,
     showLessPreviousQuotes,
     MAIN_API_URL,
+    setupQuoteElementButtons,
 };
