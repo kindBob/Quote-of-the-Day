@@ -22,9 +22,7 @@ const mainHeader = document.querySelector("#main-header");
 const mainLogo = mainHeader.querySelector(".logo");
 const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
-const mainHeaderBtns = mainHeader.querySelectorAll(".button");
 
-const sections = document.querySelectorAll(".section");
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
 const mainSection = document.querySelector("#main-section");
@@ -69,9 +67,12 @@ const sharingModal = document.querySelector("#sharing-modal");
 const sharingModalBtn = sharingModal.querySelector(".button");
 
 const historyContainer = document.querySelector("#history-container");
+const mainSectionMainContainer = document.querySelector("#main-section-container");
 
 const legalPolicyLink = document.querySelector("#legal-policy");
 const legalTermsLink = document.querySelector("#legal-terms");
+
+const timer = document.querySelector("#timer");
 
 const prefersReducedMotion = detectReducedMotion();
 
@@ -107,9 +108,7 @@ document.addEventListener("click", (event) => {
 });
 
 checkPreviousQuotesReadiness().then(() => {
-    setupMainHeader();
-
-    showLessPreviousQuotes({ noScroll: true });
+    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
 });
 
 function handleWindowResize() {
@@ -117,12 +116,15 @@ function handleWindowResize() {
 
     if (screenWidth == updatedScreenWidth) return;
 
+    screenWidth = updatedScreenWidth;
     smallScreen = detectSmallScreen();
 
     if (smallScreen != smallScreenInitially) {
         setupMainHeader();
         smallScreenInitially = !smallScreenInitially;
     }
+
+    historyContainer.style.maxHeight = `${getHistoryQuoteElementsHeight(3)}px`;
 }
 
 function initialSetup() {
@@ -144,6 +146,14 @@ function initialSetup() {
     //Links
     legalPolicyLink.setAttribute("href", `/pages/${initialLocale}/privacy-policy.html`);
     legalTermsLink.setAttribute("href", `/pages/${initialLocale}/terms-of-service.html`);
+    legalPolicyLink.setAttribute("hreflang", initialLocale);
+    legalTermsLink.setAttribute("hreflang", initialLocale);
+
+    //Timer
+    getTimeLeftTillNextQuote();
+
+    //Header
+    setupMainHeader();
 }
 
 function detectSmallScreen() {
@@ -265,6 +275,57 @@ function displayRequestResult(options) {
 }
 // General
 //-------
+// Features
+window.addEventListener("wheel", handleScrollOrSwipeToTop);
+window.addEventListener("touchmove", handleScrollOrSwipeToTop);
+
+function handleScrollOrSwipeToTop() {
+    if (modalOpened || navBarOpened) return;
+    if (window.scrollY == 0) {
+        timer.classList.add("--active");
+
+        mainSectionMainContainer.style.paddingTop = `${timer.clientHeight * 1.2}px`;
+    } else {
+        timer.classList.remove("--active");
+
+        mainSectionMainContainer.style.paddingTop = 0;
+    }
+}
+
+let timeLeft = null;
+async function getTimeLeftTillNextQuote() {
+    try {
+        const res = await fetch(`${MAIN_API_URL}/timeTillTomorrow`);
+
+        if (!res.ok) throw new Error("Bad response.");
+
+        const data = await res.json();
+        timeLeft = data.timeLeft;
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    } catch (err) {
+        console.log(`An error occured while fetching time left till tomorrow: ${err}`);
+    }
+}
+
+function updateTimer() {
+    if (timeLeft <= 0) location.reload();
+
+    timeLeft -= 1000;
+
+    let seconds = Math.floor(timeLeft / 1000);
+    let minutes = Math.floor(seconds / 60);
+    let hours = Math.floor(minutes / 60);
+
+    seconds = (seconds % 60).toString().padStart(2, "0");
+    minutes = (minutes % 60).toString().padStart(2, "0");
+    hours = (hours % 24).toString().padStart(2, "0");
+
+    timer.textContent = `${hours}:${minutes}:${seconds}`;
+}
+// Features
+// ------
 // Submission
 submissionForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -363,10 +424,10 @@ async function sendSubmission() {
 emailSubForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    subscribe();
+    subscribeToNewsletter();
 });
 
-async function subscribe() {
+async function subscribeToNewsletter() {
     const inputValue = emailSubEmailInput.value;
 
     if (!validateEmail(inputValue)) {
@@ -627,7 +688,7 @@ function setupMainHeader() {
     passiveHeaderTimeoutId != null && clearTimeout(passiveHeaderTimeoutId);
 
     if (!smallScreen) {
-        // resetHeaderElements();
+        resetHeaderElements();
         setupMainHeaderAnimation();
 
         passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
@@ -655,22 +716,20 @@ function setPassiveMainHeader() {
 }
 
 let navBarTimeoutId = null;
+let navBarOpened = false;
 function closeNavBar(cb) {
     mainNavBarList.classList.remove("--active");
     burgerMenu.classList.remove("--active");
     mainSectionBgBlur.classList.remove("--active");
 
-    // gsap.to(mainNavBarList, {
-    //     x: "100vw",
-    //     duration: navBarTransition,
-    //     ease: "power2.inOut",
-    //     onComplete: finish,
-    // });
-
-    navBarTimeoutId = setTimeout(finish, navBarListTransitionTime * 0.75);
+    navBarTimeoutId = setTimeout(finish, navBarListTransitionTime);
 
     function finish() {
         unlockScrolling();
+
+        mainNavBarList.style.visibility = "hidden";
+
+        navBarOpened = false;
 
         if (cb && typeof cb == "function") cb();
     }
@@ -681,9 +740,11 @@ function openNavBar() {
     burgerMenu.classList.add("--active");
     mainSectionBgBlur.classList.add("--active");
 
-    // playNavBarOpeningAnim();
-
     navBarTimeoutId && clearTimeout(navBarTimeoutId);
+
+    mainNavBarList.style.visibility = "visible";
+
+    navBarOpened = true;
 
     lockScrolling();
 }

@@ -47,7 +47,7 @@ checkPreviousQuotesReadiness().then(async () => {
 function setupInitialAnimations() {
     previousQuotes = historyContainer.querySelectorAll(".quotes-element");
 
-    startScrollAnimations();
+    // startScrollAnimations();
 
     splitText(document.querySelector("#saved-placeholder"));
 }
@@ -78,9 +78,10 @@ function setupMainHeaderAnimation() {
         "<"
     );
 
-    mainHeaderTl.to(mainNavBar, { y: mainHeader.clientHeight });
+    mainHeaderTl.to(mainNavBar, { y: "100%" });
 
-    mainHeaderTl.fromTo(mainLogo, { y: -mainHeader.clientHeight }, { y: "auto", autoAlpha: 1 }, "<");
+    if (prefersReducedMotion) mainHeaderTl.to(mainLogo, { y: "-50%", x: "-50%" }, "<");
+    else mainHeaderTl.from(mainLogo, { y: -mainHeader.clientHeight }, "<");
 }
 
 function startScrollAnimations() {
@@ -155,7 +156,6 @@ function startSecondarySectionAnimations(options) {
 
     const sectionElement = document.querySelector(`#${section}-section`);
     const footer = sectionElement.querySelector("footer");
-    const footerContent = footer.querySelector(".content");
     const footerHeartIcon = footer.querySelector(".heart-icon");
     const mainContainer = sectionElement.querySelector(".container.--main");
 
@@ -164,7 +164,7 @@ function startSecondarySectionAnimations(options) {
     const tl = gsap.timeline({
         delay: `${delay * 0.4}`,
         defaults: {
-            duration: defaultDuration,
+            duration: prefersReducedMotion ? 0 : defaultDuration,
             ease: "power3.inOut",
         },
     });
@@ -234,8 +234,11 @@ function splitText(el) {
 function showSplitText(el, options, cb) {
     el.style.display = "flex";
 
+    if (prefersReducedMotion) return;
+
     gsap.from(options?.index ? el.children[options.index] : el.children, {
         y: options?.y || el.clientHeight,
+        duration: options?.duration || 0.6,
         stagger: options?.stagger || { amount: 0.3 },
         ease: options?.ease || "expo.inOut",
         delay: options?.delay || 0,

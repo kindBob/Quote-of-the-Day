@@ -83,6 +83,13 @@ function setQuoteElementContent(element, content) {
     element.querySelector(".quotes-element__date").textContent = content.id;
     element.querySelector(".quotes-element__author").textContent = content[initialLocaleAuthor];
     element.querySelector(".quotes-element__quote").textContent = content[initialLocaleQuote];
+    element.querySelector(".quotes-element__quote p")
+        ? (element.querySelector(".quotes-element__quote > p").textContent = content[initialLocaleQuote])
+        : (element.querySelector(".quotes-element__quote").textContent = content[initialLocaleQuote]);
+
+    element
+        .querySelector(".quotes-element__author")
+        .setAttribute("lang", initialLocale == "en" ? "en-us" : initialLocale);
 }
 
 function checkPreviousQuotesReadiness() {
@@ -150,13 +157,13 @@ function removeSavedQuote(quoteElement) {
         if (date == savedQuotes[savedQuoteIndex].id) el.classList.remove("--saved");
     });
 
-    savedOpened ? setupSavedQuoteElementRemoval(savedQuoteElement) : finishSavedQuoteElementRemoval(savedQuoteElement);
-    setSavedContainerCentering();
-
-    if (!quoteElement.closest(".section").classList.contains("saved__section")) changeSaveButtonText(saveBtn, true);
+    !quoteElement.parentNode.classList.contains("saved__container") && changeSaveButtonText(saveBtn, true);
 
     savedQuotes.splice(savedQuoteIndex, 1);
     localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
+
+    savedOpened ? setupSavedQuoteElementRemoval(savedQuoteElement) : finishSavedQuoteElementRemoval(savedQuoteElement);
+    setSavedContainerCentering();
 }
 
 function saveQuote(quoteElement) {

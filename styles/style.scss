@@ -56,18 +56,16 @@ body {
         width: 90vmax;
         height: 100vmax;
         background: rgba(176, 176, 176, 0.15);
-        animation: bodyBackground 130s linear infinite;
     }
 
     &:after {
         left: 15vw;
+        transform: rotateZ(40deg);
     }
 
     &:before {
         left: -5vw;
-        animation-duration: 110s;
-        animation-delay: -70s;
-        animation-direction: reverse;
+        transform: rotateZ(-180deg);
     }
 }
 
@@ -147,7 +145,7 @@ body {
     align-items: center;
 
     img {
-        width: clamp(125px, 20vw, 140px);
+        width: clamp(120px, 20vw, 140px);
         aspect-ratio: 2.2 / 1;
     }
 }
@@ -444,6 +442,8 @@ body {
 }
 
 .main-header {
+    position: relative;
+
     .container {
         display: flex;
         align-items: center;
@@ -485,6 +485,28 @@ body {
 // Top
 //-------
 // Middle
+.timer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateY(-100%);
+    background-color: #b1b1b1;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    color: $mainColor;
+    font-size: clamp(30px, 5vw, 40px);
+    transition: 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+
+    &.--active {
+        transform: translateY(0);
+        box-shadow: 10px 12px 0 2px #b1b1b187;
+    }
+}
+
 .modal {
     position: fixed;
     left: 50%;
@@ -593,7 +615,7 @@ body {
     &::after {
         content: "";
         position: absolute;
-        top: calc(50% + 1px);
+        top: 50%;
         width: 10px;
         height: 10px;
         background-color: inherit;
@@ -650,6 +672,8 @@ body {
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        position: relative;
+        transition: padding 0.6s cubic-bezier(0.77, 0, 0.175, 1);
     }
 }
 
@@ -679,7 +703,7 @@ body {
         overflow: hidden;
         background-color: $mainColor;
         border: 2px solid $secondaryColor;
-
+        border-radius: 57% 43% 70% 30% / 30% 36% 64% 70%;
         animation: borderRadius 20s linear infinite;
 
         img {
@@ -847,8 +871,6 @@ body {
         line-height: 0.9;
         word-spacing: -0.05vw;
         letter-spacing: -0.2vw;
-        // word-break: break-all;
-        // hyphens: auto;
 
         &.--cyrillic {
             letter-spacing: 0;
@@ -862,9 +884,13 @@ body {
         align-items: flex-end;
         flex: 1;
         padding: 1.2em 0 0 2.2em;
-        font-size: clamp(17px, 1rem + 0.5vw, 26px);
+        font-size: clamp(17px, 1rem + 0.7vw, 26px);
         font-weight: 300;
         line-height: 1.4;
+
+        &::first-line {
+            color: red;
+        }
     }
 
     &__tap-hint {
@@ -1110,7 +1136,7 @@ body {
     }
 }
 // Bottom ---
-// Adaptive
+// Queries
 @media (min-width: 1280px) {
     html[lang="ru"] .footer__element:nth-child(3) {
         width: 20%;
@@ -1139,11 +1165,6 @@ body {
             left: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
-        }
-
-        .logo {
-            position: absolute;
-            visibility: hidden;
         }
 
         .nav-bar {
@@ -1292,10 +1313,11 @@ body {
                 top: 0;
                 right: 0;
                 z-index: 10;
-                transform: translateX(100%);
-                background-color: #ffffff;
+                transform: translateX(110%);
+                background-color: #fff;
                 box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
-                transition: transform 0.6s;
+                visibility: hidden;
+                transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
 
                 &.--active {
                     transform: translateX(0);
@@ -1312,7 +1334,7 @@ body {
 
             &__list.--active .button {
                 transform: translateX(100%);
-                animation: navBarElementsShowUp 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+                animation: navBarElementsShowUp 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 
                 &:nth-child(2) {
                     animation-delay: 0.1s;
@@ -1498,15 +1520,39 @@ body {
         }
 
         &__author {
+            max-width: 50%;
             font-size: clamp(32px, 1rem + 4vw, 95px);
         }
 
         &__quote {
-            font-size: clamp(12px, 1.65vw, 26px);
+            font-size: clamp(12px, 1.7vw, 26px);
         }
     }
 }
-// Adaptive ---
+
+@media (prefers-reduced-motion: no-preference) {
+    body {
+        &::after,
+        &::before {
+            animation: bodyBackground 130s linear infinite;
+        }
+
+        &::before {
+            animation-duration: 110s;
+            animation-delay: -50s;
+            animation-direction: reverse;
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .main-header {
+        .logo {
+            transform: translateY(-200%);
+        }
+    }
+}
+// Queries ---
 
 // Animations
 @keyframes spin {

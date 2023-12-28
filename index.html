@@ -35,8 +35,8 @@
         <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-1/favicon-16x16.png" />
         <link rel="manifest" href="/assets/favicon-1/site.webmanifest" /> -->
         <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon" />
-        <link rel="stylesheet" href="./styles/normilize.css" />
         <link rel="stylesheet" href="./styles/style.css" />
+        <link rel="stylesheet" href="./styles/normilize.css" />
         <title>Quote of the Day</title>
     </head>
     <body>
@@ -142,9 +142,13 @@
                         </div>
                     </nav>
                 </div>
+
+                <div id="main-section__bg-blur" class="bg-blur"></div>
             </header>
 
-            <div class="container main-section__container">
+            <div id="main-section-container" class="container main-section__container">
+                <div id="timer" class="timer"> 17:25:12 </div>
+
                 <div class="quotes-element --clickable">
                     <div class="quotes-element__inner-container">
                         <img
@@ -437,6 +441,7 @@
                                 <a
                                     data-i18n-key="legal__terms"
                                     id="legal-terms"
+                                    hreflang="en"
                                     href="./terms-of-service.html"
                                     target="_blank"></a>
                             </li>
@@ -444,6 +449,7 @@
                                 <a
                                     data-i18n-key="legal__policy"
                                     id="legal-policy"
+                                    hreflang="en"
                                     href="./privacy-policy.html"
                                     target="_blank"></a>
                             </li>
@@ -477,8 +483,6 @@
                     </div>
                 </div>
             </footer>
-
-            <div id="main-section__bg-blur" class="bg-blur"></div>
         </section>
 
         <section id="saved-section" class="section saved__section --secondary">
@@ -604,5 +608,27 @@
         <script type="module" src="./scripts/quotesManager.js"></script>
         <script type="module" src="./scripts/userInteractions.js"></script>
         <script type="module" src="scripts/animationsManager.js"></script>
+        <script src="./src/hyphenopoly/Hyphenopoly_Loader.js"></script>
+        <script type="module">
+            import { checkPreviousQuotesReadiness } from "./scripts/quotesManager.js";
+            checkPreviousQuotesReadiness().then(() => {
+                Hyphenopoly.config({
+                    require: {
+                        "en-us": "FORCEHYPHENOPOLY",
+                        ru: "FORCEHYPHENOPOLY",
+                        uk: "FORCEHYPHENOPOLY",
+                    },
+                    paths: {
+                        patterndir: "./src/hyphenopoly/patterns/",
+                        maindir: "./src/hyphenopoly/",
+                    },
+                    setup: {
+                        selectors: {
+                            ".quotes-element__author": {},
+                        },
+                    },
+                });
+            });
+        </script>
     </body>
 </html>
