@@ -66,6 +66,8 @@ function setupMainSectionQuoteElements() {
                 changeSaveButtonText(saveBtn, false);
             }
         });
+
+        if (i == 0) el.querySelector(".quotes-element__author").textContent = "Аристотель";
     });
 }
 

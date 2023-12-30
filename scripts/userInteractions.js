@@ -119,6 +119,14 @@ function handleWindowResize() {
     screenWidth = updatedScreenWidth;
     smallScreen = detectSmallScreen();
 
+    if (!smallScreen) {
+        closeNavBar(null, { withTimeout: false });
+
+        mainNavBarList.style.opacity = "1";
+    } else {
+        mainNavBarList.style.opacity = "0";
+    }
+
     if (smallScreen != smallScreenInitially) {
         setupMainHeader();
         smallScreenInitially = !smallScreenInitially;
@@ -634,7 +642,7 @@ mainLogo.addEventListener("mouseenter", () => {
     }
 });
 
-mainLogo.addEventListener("touchstart", () => {
+mainLogo.addEventListener("click", () => {
     if (!smallScreen) {
         setActiveMainHeader();
 
@@ -651,6 +659,8 @@ mainNavBarList.addEventListener("mouseleave", () => {
 });
 
 burgerMenu.addEventListener("click", () => {
+    if (navBarIsMoving) return;
+
     if (mainNavBarList.classList.contains("--active")) closeNavBar();
     else scrollToPosition(openNavBar);
 });
@@ -686,15 +696,14 @@ aboutUsCloseButtons.forEach((button) =>
 
 function setupMainHeader() {
     passiveHeaderTimeoutId != null && clearTimeout(passiveHeaderTimeoutId);
+    resetHeaderElements();
 
     if (!smallScreen) {
-        resetHeaderElements();
         setupMainHeaderAnimation();
 
         passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
     } else {
         mainHeaderTl && mainHeaderTl.revert();
-        resetHeaderElements();
     }
 }
 
@@ -713,23 +722,31 @@ function setPassiveMainHeader() {
     const progress = mainHeaderTl.progress();
 
     mainHeaderTl.restart().progress(progress);
+
+    console.log(1);
 }
 
-let navBarTimeoutId = null;
-let navBarOpened = false;
-function closeNavBar(cb) {
+let navBarIsMoving = false;
+function closeNavBar(cb, options) {
     mainNavBarList.classList.remove("--active");
     burgerMenu.classList.remove("--active");
     mainSectionBgBlur.classList.remove("--active");
 
-    navBarTimeoutId = setTimeout(finish, navBarListTransitionTime);
+    if (options?.withTimeout === false) {
+        unlockScrolling();
+
+        return;
+    }
+
+    navBarIsMoving = true;
+
+    setTimeout(finish, navBarListTransitionTime);
 
     function finish() {
         unlockScrolling();
+        smallScreen && (mainNavBarList.style.opacity = "0");
 
-        mainNavBarList.style.visibility = "hidden";
-
-        navBarOpened = false;
+        navBarIsMoving = false;
 
         if (cb && typeof cb == "function") cb();
     }
@@ -740,13 +757,15 @@ function openNavBar() {
     burgerMenu.classList.add("--active");
     mainSectionBgBlur.classList.add("--active");
 
-    navBarTimeoutId && clearTimeout(navBarTimeoutId);
+    mainNavBarList.style.opacity = "1";
 
-    mainNavBarList.style.visibility = "visible";
-
-    navBarOpened = true;
+    navBarIsMoving = true;
 
     lockScrolling();
+
+    setTimeout(() => {
+        navBarIsMoving = false;
+    }, navBarListTransitionTime);
 }
 // Header
 //-------

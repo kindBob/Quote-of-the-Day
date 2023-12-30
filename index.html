@@ -123,7 +123,7 @@
                             <li class="button nav-bar__element --bigger">
                                 <a
                                     data-i18n-key="support_us-button"
-                                    href="https://donate.stripe.com/6oE2b59ACc324z63cd"
+                                    href="https://www.buymeacoffee.com/malfo"
                                     target="_blank">
                                     Support Us
                                 </a>
@@ -608,27 +608,29 @@
         <script type="module" src="./scripts/quotesManager.js"></script>
         <script type="module" src="./scripts/userInteractions.js"></script>
         <script type="module" src="scripts/animationsManager.js"></script>
-        <script src="./src/hyphenopoly/Hyphenopoly_Loader.js"></script>
+        <!-- <script src="./src/hyphenopoly/Hyphenopoly_Loader.js"></script> -->
         <script type="module">
-            import { checkPreviousQuotesReadiness } from "./scripts/quotesManager.js";
-            checkPreviousQuotesReadiness().then(() => {
-                Hyphenopoly.config({
-                    require: {
-                        "en-us": "FORCEHYPHENOPOLY",
-                        ru: "FORCEHYPHENOPOLY",
-                        uk: "FORCEHYPHENOPOLY",
-                    },
-                    paths: {
-                        patterndir: "./src/hyphenopoly/patterns/",
-                        maindir: "./src/hyphenopoly/",
-                    },
-                    setup: {
-                        selectors: {
-                            ".quotes-element__author": {},
-                        },
-                    },
-                });
-            });
+            // import { checkPreviousQuotesReadiness } from "./scripts/quotesManager.js";
+            // import { initialLocale } from "./scripts/languageManager.js";
+
+            // checkPreviousQuotesReadiness().then(() => {
+            //     const lang = initialLocale == "en" ? "en-us" : initialLocale;
+
+            //     Hyphenopoly.config({
+            //         require: {
+            //             [lang]: "FORCEHYPHENOPOLY",
+            //         },
+            //         paths: {
+            //             patterndir: "./src/hyphenopoly/patterns/",
+            //             maindir: "./src/hyphenopoly/",
+            //         },
+            //         setup: {
+            //             selectors: {
+            //                 ".quotes-element__author": {},
+            //             },
+            //         },
+            //     });
+            // });
         </script>
     </body>
 </html>
