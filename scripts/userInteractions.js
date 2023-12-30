@@ -22,9 +22,7 @@ const mainHeader = document.querySelector("#main-header");
 const mainLogo = mainHeader.querySelector(".logo");
 const mainNavBar = mainHeader.querySelector(".nav-bar");
 const mainNavBarList = mainNavBar.querySelector(".nav-bar__list");
-const mainHeaderBtns = mainHeader.querySelectorAll(".button");
 
-const sections = document.querySelectorAll(".section");
 const aboutUsSection = document.querySelector("#about-us-section");
 const savedSection = document.querySelector("#saved-section");
 const mainSection = document.querySelector("#main-section");
@@ -117,7 +115,17 @@ function handleWindowResize() {
 
     if (screenWidth == updatedScreenWidth) return;
 
+    screenWidth = updatedScreenWidth;
+
     smallScreen = detectSmallScreen();
+
+    if (!smallScreen) {
+        closeNavBar(null, { withTimeout: false });
+
+        mainNavBarList.style.opacity = "1";
+    } else {
+        mainNavBarList.style.opacity = "0";
+    }
 
     if (smallScreen != smallScreenInitially) {
         setupMainHeader();
@@ -573,7 +581,7 @@ mainLogo.addEventListener("mouseenter", () => {
     }
 });
 
-mainLogo.addEventListener("touchstart", () => {
+mainLogo.addEventListener("click", () => {
     if (!smallScreen) {
         setActiveMainHeader();
 
@@ -590,6 +598,8 @@ mainNavBarList.addEventListener("mouseleave", () => {
 });
 
 burgerMenu.addEventListener("click", () => {
+    if (navBarIsMoving) return;
+
     if (mainNavBarList.classList.contains("--active")) closeNavBar();
     else scrollToPosition(openNavBar);
 });
@@ -625,15 +635,14 @@ aboutUsCloseButtons.forEach((button) =>
 
 function setupMainHeader() {
     passiveHeaderTimeoutId != null && clearTimeout(passiveHeaderTimeoutId);
+    resetHeaderElements();
 
     if (!smallScreen) {
-        // resetHeaderElements();
         setupMainHeaderAnimation();
 
         passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
     } else {
         mainHeaderTl && mainHeaderTl.revert();
-        resetHeaderElements();
     }
 }
 
@@ -652,25 +661,31 @@ function setPassiveMainHeader() {
     const progress = mainHeaderTl.progress();
 
     mainHeaderTl.restart().progress(progress);
+
+    console.log(1);
 }
 
-let navBarTimeoutId = null;
-function closeNavBar(cb) {
+let navBarIsMoving = false;
+function closeNavBar(cb, options) {
     mainNavBarList.classList.remove("--active");
     burgerMenu.classList.remove("--active");
     mainSectionBgBlur.classList.remove("--active");
 
-    // gsap.to(mainNavBarList, {
-    //     x: "100vw",
-    //     duration: navBarTransition,
-    //     ease: "power2.inOut",
-    //     onComplete: finish,
-    // });
+    if (options?.withTimeout === false) {
+        unlockScrolling();
 
-    navBarTimeoutId = setTimeout(finish, navBarListTransitionTime * 0.75);
+        return;
+    }
+
+    navBarIsMoving = true;
+
+    setTimeout(finish, navBarListTransitionTime);
 
     function finish() {
         unlockScrolling();
+        smallScreen && (mainNavBarList.style.opacity = "0");
+
+        navBarIsMoving = false;
 
         if (cb && typeof cb == "function") cb();
     }
@@ -681,11 +696,15 @@ function openNavBar() {
     burgerMenu.classList.add("--active");
     mainSectionBgBlur.classList.add("--active");
 
-    // playNavBarOpeningAnim();
+    mainNavBarList.style.opacity = "1";
 
-    navBarTimeoutId && clearTimeout(navBarTimeoutId);
+    navBarIsMoving = true;
 
     lockScrolling();
+
+    setTimeout(() => {
+        navBarIsMoving = false;
+    }, navBarListTransitionTime);
 }
 // Header
 //-------

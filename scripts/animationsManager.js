@@ -56,7 +56,6 @@ let mainHeaderTl = null;
 function setupMainHeaderAnimation() {
     if (!mainHeaderTl) {
         mainHeaderTl = gsap.timeline({
-            paused: true,
             defaults: { duration: prefersReducedMotion ? 0 : 0.35, ease: "power3.inOut" },
         });
     }
@@ -81,6 +80,8 @@ function setupMainHeaderAnimation() {
     mainHeaderTl.to(mainNavBar, { y: mainHeader.clientHeight });
 
     mainHeaderTl.fromTo(mainLogo, { y: -mainHeader.clientHeight }, { y: "auto", autoAlpha: 1 }, "<");
+
+    mainHeaderTl.pause();
 }
 
 function startScrollAnimations() {

@@ -147,7 +147,7 @@ body {
     align-items: center;
 
     img {
-        width: clamp(125px, 20vw, 140px);
+        width: clamp(120px, 22vw, 140px);
         aspect-ratio: 2.2 / 1;
     }
 }
@@ -767,6 +767,7 @@ body {
     position: relative;
     margin: 25px 0;
     background-color: transparent;
+    will-change: transform;
 
     &.--dummy {
         display: none;
@@ -842,13 +843,11 @@ body {
         display: flex;
         align-items: flex-end;
         padding-top: 0.1em;
-        font-size: clamp(32px, 1rem + 5.5vw, 95px);
+        font-size: clamp(32px, 1rem + 4.2vw, 80px);
         text-transform: uppercase;
         line-height: 0.9;
         word-spacing: -0.05vw;
         letter-spacing: -0.2vw;
-        // word-break: break-all;
-        // hyphens: auto;
 
         &.--cyrillic {
             letter-spacing: 0;
@@ -1079,7 +1078,9 @@ body {
 .email-sub-form {
     display: flex;
     flex-wrap: wrap;
+
     &__input {
+        max-width: 65%;
         flex: 1;
         border-right: none;
     }
@@ -1293,9 +1294,10 @@ body {
                 right: 0;
                 z-index: 10;
                 transform: translateX(100%);
+                opacity: 0;
                 background-color: #ffffff;
                 box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
-                transition: transform 0.6s;
+                transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
 
                 &.--active {
                     transform: translateX(0);
@@ -1312,14 +1314,14 @@ body {
 
             &__list.--active .button {
                 transform: translateX(100%);
-                animation: navBarElementsShowUp 0.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+                animation: navBarElementsShowUp 0.6s 0.1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
 
                 &:nth-child(2) {
-                    animation-delay: 0.1s;
+                    animation-delay: 0.2s;
                 }
 
                 &:nth-child(3) {
-                    animation-delay: 0.2s;
+                    animation-delay: 0.3s;
                 }
             }
         }
@@ -1438,6 +1440,7 @@ body {
 
     .email-sub-form {
         &__input {
+            max-width: none;
             border-right: 2px solid #000;
             border-bottom: none;
         }
