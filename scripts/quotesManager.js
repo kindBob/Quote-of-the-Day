@@ -166,7 +166,6 @@ function removeSavedQuote(quoteElement) {
     localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
 
     savedOpened ? setupSavedQuoteElementRemoval(savedQuoteElement) : finishSavedQuoteElementRemoval(savedQuoteElement);
-    setSavedContainerCentering();
 }
 
 function saveQuote(quoteElement) {
@@ -178,11 +177,11 @@ function saveQuote(quoteElement) {
 
     changeSaveButtonText(saveBtn, false);
 
-    createSavedQuoteElement(mainSectionQuotes[index]);
-    setSavedContainerCentering();
-
     savedQuotes.unshift(mainSectionQuotes[index]);
     localStorage.setItem("savedQuotes", JSON.stringify(savedQuotes));
+
+    createSavedQuoteElement(mainSectionQuotes[index]);
+    setSavedContainerCentering();
 }
 
 function manageSavedQuotes(quoteElement) {
@@ -215,6 +214,8 @@ function finishSavedQuoteElementRemoval(element) {
     element.remove();
 
     savedQuotes.length == 0 && showSplitText(savedPlaceholder);
+
+    setSavedContainerCentering();
 }
 
 export { checkPreviousQuotesReadiness, manageSavedQuotes, fetchQuotes, savedQuotes };

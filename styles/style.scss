@@ -86,7 +86,7 @@ body {
     z-index: 99;
     opacity: 0;
     background-color: $mainColor;
-    transition: opacity 0.6s;
+    transition: opacity 1s;
     pointer-events: none;
 
     &.--active {
@@ -150,8 +150,8 @@ body {
     align-items: center;
 
     img {
-        width: clamp(120px, 22vw, 140px);
-        aspect-ratio: 2.2 / 1;
+        width: clamp(140px, 25vw, 160px);
+        // aspect-ratio: 2.7 / 1;
     }
 }
 
@@ -671,8 +671,8 @@ body {
 }
 
 .section {
-    min-height: 100svh;
     min-height: 100vh;
+    min-height: 100svh;
     width: 100%;
     position: absolute;
     left: 0;
@@ -825,7 +825,7 @@ body {
         padding-top: max(23.5px, 2.7%) !important;
         padding-bottom: max(23.5px, 2.7%) !important;
         padding-left: max(23.5px, 3.5%) !important;
-        padding-right: max(17px, 4%) !important;
+        padding-right: max(23px, 4%) !important;
         background-color: $mainColor;
         border-radius: 25px;
         transition: transform 0.6s;
@@ -1532,10 +1532,6 @@ body {
         &__author {
             max-width: 50%;
             font-size: clamp(30px, 1rem + 3.5vw, 80px);
-        }
-
-        &__quote {
-            font-size: clamp(12px, 0.6rem + 1vw, 26px);
         }
     }
 }

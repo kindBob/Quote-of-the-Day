@@ -10,7 +10,6 @@ import {
 import { getTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
-//https://quote-of-the-day-api.up.railway.app
 const MAIN_API_URL = "https://quote-of-the-day-api.up.railway.app";
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = `${MAIN_API_URL}/subscribe`;
@@ -209,16 +208,10 @@ function validateEmail(email) {
 
 function lockScrolling(element = document.body) {
     element.style.overflowY = "hidden";
-    element.style.maxHeight = "100vh";
-
-    // lenis.stop();
 }
 
 function unlockScrolling(element = document.body) {
     element.style.overflowY = "auto";
-    element.style.maxHeight = "auto";
-
-    // lenis.start();
 }
 
 function resetInputs(inputs) {
@@ -301,7 +294,7 @@ window.addEventListener("touchmove", handleScrollOrSwipeToTop);
 
 function handleScrollOrSwipeToTop() {
     if (modalOpened || navBarOpened) return;
-    if ((withMouse && window.scrollY <= 0) || (!withMouse && window.scrollY <= 1)) {
+    if ((withMouse && window.scrollY == 0) || (!withMouse && window.scrollY <= 1)) {
         timer.classList.add("--active");
 
         mainSectionMainContainer.style.paddingTop = `${timer.clientHeight * 1.2}px`;
@@ -603,7 +596,6 @@ async function shareQuoteCustom(imageFile) {
 async function shareQuoteNavigatorShare(imageFile) {
     try {
         await navigator.share({
-            text: `${mainPage}`,
             files: [imageFile],
         });
 
@@ -681,6 +673,10 @@ mainNavBarList.addEventListener("mouseenter", () => {
 });
 
 mainNavBarList.addEventListener("mouseleave", () => {
+    if (!smallScreen) passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, passiveHeaderTimeoutTime);
+});
+
+mainNavBar.addEventListener("mouseleave", () => {
     if (!smallScreen) passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, passiveHeaderTimeoutTime);
 });
 

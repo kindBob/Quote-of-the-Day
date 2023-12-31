@@ -39,21 +39,12 @@ checkPreviousQuotesReadiness().then(async () => {
     hideLoadingSpinner();
 
     unlockScrolling();
-
-    // const lenis = new Lenis({ normalizeWheel: true });
-
-    // function raf(time) {
-    //     lenis.raf(time);
-    //     requestAnimationFrame(raf);
-    // }
-
-    // requestAnimationFrame(raf);
 });
 
 function setupInitialAnimations() {
     previousQuotes = historyContainer.querySelectorAll(".quotes-element");
 
-    // startScrollAnimations();
+    startScrollAnimations();
 
     splitText(document.querySelector("#saved-placeholder"));
 }
@@ -96,10 +87,10 @@ function startScrollAnimations() {
         autoAlpha: 0,
         overwrite: "auto",
         scrollTrigger: {
-            trigger: ".history-title",
+            trigger: "#index-0",
             scrub: 1.2,
-            start: "top bottom",
-            end: "bottom center",
+            start: "center center",
+            end: "bottom top",
         },
         ease: "power2.inOut",
     });
