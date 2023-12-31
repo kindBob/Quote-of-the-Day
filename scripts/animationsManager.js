@@ -21,12 +21,18 @@ const bodyBgBlur = document.querySelector("#body__bg-blur");
 
 const savedPlaceholder = savedSection.querySelector("#saved-placeholder");
 
+const modalTransitionDuration = parseFloat(
+    getComputedStyle(document.body).getPropertyValue("--modalAnimationDuration")
+);
+
 let previousQuotes = [];
 
 gsap.registerPlugin(ScrollToPlugin);
 
 checkPreviousQuotesReadiness().then(async () => {
     if (!prefersReducedMotion) setupInitialAnimations();
+
+    setTimeout(() => {}, 1000);
 
     overlay.classList.remove("--showed-up");
 
@@ -90,10 +96,10 @@ function startScrollAnimations() {
         autoAlpha: 0,
         overwrite: "auto",
         scrollTrigger: {
-            trigger: "#index-0",
+            trigger: ".history-title",
             scrub: 1.2,
-            start: "center center",
-            end: "bottom 20%",
+            start: "top bottom",
+            end: "bottom center",
         },
         ease: "power2.inOut",
     });
@@ -259,40 +265,26 @@ function showModal(modal) {
 
     lockScrolling();
 
-    gsap.fromTo(
-        modal,
-        {
-            y: "-200%",
-            x: "-50%",
-            autoAlpha: 0,
-        },
-        {
-            y: "-50%",
-            autoAlpha: 1,
-            pointerEvents: "all",
-            duration: prefersReducedMotion ? 0 : 0.6,
-            ease: "power2.inOut",
-        }
-    );
+    modal.classList.remove("--hidden");
+    modal.classList.add("--active");
 }
 
+let modalHidingTiemoutId = null;
 function hideModals(modals) {
     bodyBgBlur.classList.remove("--active");
 
     unlockScrolling();
 
     modals.forEach((modal) => {
-        gsap.to(modal, {
-            y: "200%",
-            autoAlpha: 0,
-            pointerEvents: "none",
-            duration: prefersReducedMotion ? 0 : 0.6,
-            ease: "power2.inOut",
-            onComplete: () => {
-                modalOpened = false;
-            },
-        });
+        modal.classList.remove("--active");
+        modal.classList.add("--hidden");
     });
+
+    modalHidingTiemoutId && clearTimeout(modalHidingTiemoutId);
+
+    modalHidingTiemoutId = setTimeout(() => {
+        modalOpened = false;
+    }, modalTransitionDuration);
 }
 
 export {

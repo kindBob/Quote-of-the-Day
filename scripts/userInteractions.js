@@ -76,6 +76,7 @@ const timer = document.querySelector("#timer");
 
 const prefersReducedMotion = detectReducedMotion();
 
+const isMobile = detectMobile();
 let withMouse = detectMouse();
 let smallScreen = detectSmallScreen();
 let smallScreenInitially = detectSmallScreen();
@@ -90,6 +91,8 @@ gsap.registerPlugin(ScrollToPlugin);
 
 document.addEventListener("DOMContentLoaded", () => {
     lockScrolling();
+
+    mainSectionMainContainer.style.minHeight = document.documentElement.clientHeight - mainHeader.clientHeight + "px";
 });
 
 window.addEventListener("resize", handleWindowResize);
@@ -119,6 +122,10 @@ function handleWindowResize() {
     screenWidth = updatedScreenWidth;
     smallScreen = detectSmallScreen();
 
+    sharingResultShowed && (loadingElement.style.width = loadingStatus.offsetWidth + "px");
+
+    mainSectionMainContainer.style.minHeight = document.documentElement.clientHeight - mainHeader.clientHeight + "px";
+
     if (!smallScreen) {
         closeNavBar(null, { withTimeout: false });
 
@@ -146,8 +153,9 @@ function initialSetup() {
                 .transitionDuration
         ) * 1000;
 
-    navBarListTransitionTime =
-        parseFloat(getComputedStyle(document.querySelector(".main-header .nav-bar__list")).transitionDuration) * 1000;
+    navBarListTransitionTime = parseFloat(
+        getComputedStyle(document.body).getPropertyValue("--navBarListTransitionTime")
+    );
 
     sectionsTranstionTime = parseFloat(getComputedStyle(document.querySelector(".section")).transitionDuration) * 1000;
 
@@ -171,6 +179,10 @@ function detectSmallScreen() {
 
 function detectMouse() {
     return window.matchMedia("(pointer: fine)").matches;
+}
+
+function detectMobile() {
+    return Boolean("ontouchstart" in window || (navigator.maxTouchPoints && window.innerWidth < 769));
 }
 
 function detectReducedMotion() {
@@ -289,7 +301,7 @@ window.addEventListener("touchmove", handleScrollOrSwipeToTop);
 
 function handleScrollOrSwipeToTop() {
     if (modalOpened || navBarOpened) return;
-    if (window.scrollY == 0) {
+    if ((withMouse && window.scrollY <= 0) || (!withMouse && window.scrollY <= 1)) {
         timer.classList.add("--active");
 
         mainSectionMainContainer.style.paddingTop = `${timer.clientHeight * 1.2}px`;
@@ -502,7 +514,7 @@ function setupSharingCard(el) {
 
     setupSharingQuoteProcess();
 }
-
+//REMOVE SMALL SCREEN CHECK
 async function setupSharingQuoteProcess() {
     try {
         const canvas = await html2canvas(sharingCard, { dpi: 600 });
@@ -516,11 +528,13 @@ async function setupSharingQuoteProcess() {
 
         sharingImageFile = imageFile;
 
-        if (navigator.share && smallScreen && shareAPISupported) {
+        if (navigator.share && shareAPISupported && isMobile) {
             shareQuoteNavigatorShare(imageFile);
         } else {
             shareQuoteCustom(imageFile);
         }
+
+        console.clear();
     } catch (error) {
         manageSharingResult("error");
 
@@ -558,7 +572,13 @@ async function shareQuoteCustom(imageFile) {
 
         quoteLink = `https://imgur.com/${data.data.id}`;
 
-        if ((smallScreen && !shareAPISupported) || !navigator.clipboard) {
+        if (!shareAPISupported && !navigator.clipboard && !navigator.share) {
+            manageSharingResult("error");
+
+            return;
+        }
+
+        if ((!shareAPISupported || !navigator.clipboard) && navigator.share) {
             manageSharingResult();
 
             showModal(sharingModal);
@@ -593,12 +613,15 @@ async function shareQuoteNavigatorShare(imageFile) {
     }
 }
 
+let sharingResultShowed = false;
 function manageSharingResult(result) {
     !loadingElement.classList.contains("--active") && loadingElement.classList.add("--active");
     loadingElementSpinner.classList.remove("--active");
 
     switch (result) {
         case "success":
+            sharingResultShowed = true;
+
             loadingStatusText.textContent = getTranslation("saved-to-clipboard").replace(".", "");
             loadingElement.classList.add("--success");
 
@@ -607,6 +630,8 @@ function manageSharingResult(result) {
             break;
 
         case "error":
+            sharingResultShowed = true;
+
             loadingStatusText.textContent = getTranslation("general-error").replace(".", "");
             loadingElement.classList.add("--error");
 
@@ -619,10 +644,11 @@ function manageSharingResult(result) {
 
             loadingElement.style.width = "90px";
 
-            setTimeout(
-                () => loadingStatus.classList.remove("--active"),
-                parseFloat(getComputedStyle(loadingElement).transitionDuration) * 1000
-            );
+            setTimeout(() => {
+                loadingStatus.classList.remove("--active");
+
+                sharingResultShowed = false;
+            }, parseFloat(getComputedStyle(loadingElement).transitionDuration) * 1000);
 
             sharingInProcess = false;
 
@@ -632,13 +658,13 @@ function manageSharingResult(result) {
 // Sharing
 //-------
 // Header
-const navBarTimeoutTime = 3500;
+const passiveHeaderTimeoutTime = 3500;
 let passiveHeaderTimeoutId = null;
 mainLogo.addEventListener("mouseenter", () => {
     if (!smallScreen) {
         setActiveMainHeader();
 
-        !withMouse && (passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime));
+        !withMouse && (passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, passiveHeaderTimeoutTime));
     }
 });
 
@@ -646,7 +672,7 @@ mainLogo.addEventListener("click", () => {
     if (!smallScreen) {
         setActiveMainHeader();
 
-        passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
+        passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, passiveHeaderTimeoutTime);
     }
 });
 
@@ -655,7 +681,7 @@ mainNavBarList.addEventListener("mouseenter", () => {
 });
 
 mainNavBarList.addEventListener("mouseleave", () => {
-    if (!smallScreen) passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
+    if (!smallScreen) passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, passiveHeaderTimeoutTime);
 });
 
 burgerMenu.addEventListener("click", () => {
@@ -701,7 +727,7 @@ function setupMainHeader() {
     if (!smallScreen) {
         setupMainHeaderAnimation();
 
-        passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, navBarTimeoutTime);
+        passiveHeaderTimeoutId = setTimeout(setPassiveMainHeader, passiveHeaderTimeoutTime);
     } else {
         mainHeaderTl && mainHeaderTl.revert();
     }
@@ -722,15 +748,16 @@ function setPassiveMainHeader() {
     const progress = mainHeaderTl.progress();
 
     mainHeaderTl.restart().progress(progress);
-
-    console.log(1);
 }
 
 let navBarIsMoving = false;
+let navBarOpened = false;
 function closeNavBar(cb, options) {
     mainNavBarList.classList.remove("--active");
     burgerMenu.classList.remove("--active");
     mainSectionBgBlur.classList.remove("--active");
+
+    navBarOpened = false;
 
     if (options?.withTimeout === false) {
         unlockScrolling();
@@ -745,7 +772,6 @@ function closeNavBar(cb, options) {
     function finish() {
         unlockScrolling();
         smallScreen && (mainNavBarList.style.opacity = "0");
-
         navBarIsMoving = false;
 
         if (cb && typeof cb == "function") cb();
@@ -760,6 +786,7 @@ function openNavBar() {
     mainNavBarList.style.opacity = "1";
 
     navBarIsMoving = true;
+    navBarOpened = true;
 
     lockScrolling();
 

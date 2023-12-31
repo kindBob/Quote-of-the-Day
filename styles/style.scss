@@ -1,14 +1,18 @@
 // Variables
 $defaultTransitionLength: 0.6s;
 
-$headerHeight: min(30svw, 120px);
+$headerHeight: min(30vh, 120px);
 $footerHeight: 85px;
 $buttonsMargin: 15px;
 
 $mainColor: #fff;
 $secondaryColor: #ef3a32;
-$successColor: #55d355;
-$errorColor: #e26c5a;
+$successColor: #53c553;
+
+:root {
+    --navBarListTransitionTime: 550ms;
+    --modalAnimationDuration: 550ms;
+}
 
 // Variables
 //-------
@@ -37,6 +41,7 @@ html {
 
 body {
     max-width: 100vw;
+    min-height: 100vh;
     min-height: 100svh;
     padding: 0;
     margin: 0;
@@ -185,7 +190,7 @@ body {
     cursor: pointer;
 
     a {
-        transition: 0.2s;
+        transition: background 0.4s, color 0.4s, border 0.4s;
         text-decoration: none;
         color: inherit;
     }
@@ -352,7 +357,7 @@ body {
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
     border-radius: 10px;
     font-size: clamp(20px, 3.2vw, 26px);
-    transition: transform $defaultTransitionLength cubic-bezier(0.77, 0, 0.175, 1);
+    transition: transform $defaultTransitionLength ease, width $defaultTransitionLength ease;
     overflow: hidden;
 
     &.--active {
@@ -363,18 +368,19 @@ body {
 .status {
     max-width: 95vw;
     width: max-content;
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    transform: translateY(-50%);
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 0 1em 0 1.2em;
-    transition: $defaultTransitionLength;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    padding: 0 0.9em 0 1.2em;
+    opacity: 0;
+    transition: opacity $defaultTransitionLength ease;
 
     &.--active {
-        left: 0px;
+        opacity: 1;
     }
 
     &__text {
@@ -389,7 +395,7 @@ body {
     aspect-ratio: 1;
     position: absolute;
     top: 13px;
-    right: 22px;
+    right: 18px;
     opacity: 0;
     transition: opacity 0.3s;
     animation: l5-0 1s infinite steps(1);
@@ -417,7 +423,7 @@ body {
 }
 
 .loading.--error .status__text {
-    color: $errorColor;
+    color: $secondaryColor;
 }
 
 .--content-centered {
@@ -443,7 +449,6 @@ body {
 
 .main-header {
     position: relative;
-
     .container {
         display: flex;
         align-items: center;
@@ -486,14 +491,16 @@ body {
 //-------
 // Middle
 .timer {
-    width: 100%;
+    width: 97%;
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    left: 0;
+    left: 50%;
     top: 0;
-    transform: translateY(-100%);
+    transform: translate(-50%, -100%);
+    padding: 0.2em 0;
+    visibility: hidden;
     background-color: #b1b1b1;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
@@ -502,8 +509,9 @@ body {
     transition: 0.6s cubic-bezier(0.77, 0, 0.175, 1);
 
     &.--active {
-        transform: translateY(0);
-        box-shadow: 10px 12px 0 2px #b1b1b187;
+        visibility: visible;
+        transform: translate(-50%, 0);
+        box-shadow: 0.2em 0.3em 0 2px #b1b1b187;
     }
 }
 
@@ -514,11 +522,20 @@ body {
     z-index: 10;
     display: flex;
     flex-direction: column;
+    pointer-events: none;
     opacity: 0;
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
-    pointer-events: none;
+
+    &.--active {
+        pointer-events: all;
+        animation: modalShowUp var(--modalAnimationDuration) ease forwards;
+    }
+
+    &.--hidden {
+        animation: modalHide var(--modalAnimationDuration) ease forwards;
+    }
 }
 
 .sharing-modal {
@@ -643,15 +660,19 @@ body {
 }
 
 .history-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    padding: 30px 25px;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
     overflow-y: hidden;
     transition: $defaultTransitionLength;
 }
 
 .section {
     min-height: 100svh;
+    min-height: 100vh;
     width: 100%;
     position: absolute;
     left: 0;
@@ -659,7 +680,7 @@ body {
     transform: translateX(0);
     z-index: 3;
     overflow: hidden;
-    transition: transform 0.85s;
+    transition: transform 0.85s ease;
 }
 
 .main-section {
@@ -667,7 +688,6 @@ body {
     z-index: 4;
 
     &__container {
-        min-height: calc(100svh - $headerHeight);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -791,7 +811,6 @@ body {
     position: relative;
     margin: 25px 0;
     background-color: transparent;
-    will-change: transform;
 
     &.--dummy {
         display: none;
@@ -810,7 +829,6 @@ body {
         background-color: $mainColor;
         border-radius: 25px;
         transition: transform 0.6s;
-        //transition set in userInteractions.js
     }
 
     &__front-container {
@@ -818,6 +836,10 @@ body {
         min-height: 100%;
         display: flex;
         flex-wrap: wrap;
+    }
+
+    &.--compact &__front-container {
+        flex-direction: column;
     }
 
     &__back-container {
@@ -855,7 +877,7 @@ body {
         height: min-content;
         align-items: center;
         width: 100%;
-        font-size: clamp(32px, 1rem + 3.8vw, 55px);
+        font-size: clamp(30px, 1rem + 3.8vw, 55px);
         color: #ef3a32;
         font-weight: 300;
         line-height: 1;
@@ -867,7 +889,7 @@ body {
         display: flex;
         align-items: flex-end;
         padding-top: 0.1em;
-        font-size: clamp(32px, 1rem + 4.2vw, 80px);
+        font-size: clamp(30px, 1rem + 4.5vw, 90px);
         text-transform: uppercase;
         line-height: 0.9;
         word-spacing: -0.05vw;
@@ -885,13 +907,19 @@ body {
         align-items: flex-end;
         flex: 1;
         padding: 1.2em 0 0 2.2em;
-        font-size: clamp(17px, 1rem + 0.7vw, 26px);
+        font-size: clamp(16px, 0.8rem + 1.2vw, 26px);
         font-weight: 300;
         line-height: 1.4;
 
         &::first-line {
             color: red;
         }
+    }
+
+    &.--compact &__quote {
+        padding-left: 0;
+        padding-top: 3em;
+        justify-content: flex-start;
     }
 
     &__tap-hint {
@@ -1134,7 +1162,7 @@ body {
         }
 
         &.--failure {
-            color: $errorColor;
+            color: $secondaryColor;
         }
     }
 }
@@ -1217,10 +1245,6 @@ body {
 
 @media (max-width: 1024px) {
     .quotes-element {
-        &__inner-container {
-            padding: 25px 35px 0 30px;
-        }
-
         &__front-container {
             flex-direction: column;
         }
@@ -1232,16 +1256,16 @@ body {
         &__quote {
             width: 100%;
             min-height: auto;
-            align-items: flex-end;
             justify-content: flex-start;
             padding-left: 0;
+            padding-top: 1.5em;
         }
     }
 }
 
 @media (max-width: 768px) {
     .section {
-        transition: transform 0.75s;
+        transition-duration: 0.7s;
     }
 
     .history-title {
@@ -1320,7 +1344,7 @@ body {
                 opacity: 0;
                 background-color: #ffffff;
                 box-shadow: 0 0 10px rgba(85, 85, 85, 0.4);
-                transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+                transition: transform var(--navBarListTransitionTime) ease;
 
                 &.--active {
                     transform: translateX(0);
@@ -1337,7 +1361,7 @@ body {
 
             &__list.--active .button {
                 transform: translateX(100%);
-                animation: navBarElementsShowUp 0.6s 0.1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+                animation: navBarElementsShowUp 0.4s 0.1s ease forwards;
 
                 &:nth-child(2) {
                     animation-delay: 0.2s;
@@ -1392,9 +1416,6 @@ body {
 
         &__inner-container {
             transform-style: preserve-3d;
-            padding: 20px 35px 0 27.5px;
-            // -webkit-animation: 2s flip 1s ease-in-out;
-            //animation: 2s flip 1s ease-in-out;
         }
 
         &.--flipped &__inner-container {
@@ -1500,36 +1521,21 @@ body {
             }
         }
     }
-
-    .quotes-element {
-        &__inner-container {
-            padding-right: 17px;
-            padding-left: 20px;
-            padding-top: 15px;
-        }
-        &__author {
-            padding-right: 0;
-        }
-
-        &__quote {
-            padding-right: 0;
-        }
-    }
 }
 
-@media screen and (orientation: landscape) and (min-aspect-ratio: 19.5 / 9) {
+@media screen and (orientation: landscape) and (min-aspect-ratio: 19.5 / 10) {
     .quotes-element {
         &__date {
-            font-size: clamp(32px, 1rem + 3vw, 55px);
+            font-size: clamp(30px, 1rem + 2.5vw, 55px);
         }
 
         &__author {
             max-width: 50%;
-            font-size: clamp(32px, 1rem + 4vw, 95px);
+            font-size: clamp(30px, 1rem + 3.5vw, 80px);
         }
 
         &__quote {
-            font-size: clamp(12px, 1.7vw, 26px);
+            font-size: clamp(12px, 0.6rem + 1vw, 26px);
         }
     }
 }
@@ -1603,6 +1609,28 @@ body {
 @keyframes navBarElementsShowUp {
     to {
         transform: translate(0);
+    }
+}
+
+@keyframes modalShowUp {
+    from {
+        transform: translate(-50%, -100vh);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+@keyframes modalHide {
+    from {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+    to {
+        transform: translate(-50%, 100vh);
+        opacity: 0;
     }
 }
 

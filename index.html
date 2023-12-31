@@ -527,7 +527,7 @@
             </footer>
         </section>
 
-        <div id="submission" class="modal submission">
+        <div id="submission" class="modal submission --hidden">
             <div class="submission__title" data-i18n-key="submission-slogan">
                 Propose a quote that speaks to you, and let's inspire together!
             </div>
@@ -589,7 +589,7 @@
 
         <div id="loading" class="loading --active">
             <div class="status">
-                <span class="status__text"></span>
+                <span lang="ru" class="status__text hyphenate"></span>
             </div>
             <div class="spinner loader --active"></div>
         </div>
@@ -608,29 +608,42 @@
         <script type="module" src="./scripts/quotesManager.js"></script>
         <script type="module" src="./scripts/userInteractions.js"></script>
         <script type="module" src="scripts/animationsManager.js"></script>
-        <!-- <script src="./src/hyphenopoly/Hyphenopoly_Loader.js"></script> -->
+        <script src="./src/hyphenopoly/Hyphenopoly_Loader.js"></script>
         <script type="module">
-            // import { checkPreviousQuotesReadiness } from "./scripts/quotesManager.js";
-            // import { initialLocale } from "./scripts/languageManager.js";
+            import { checkPreviousQuotesReadiness } from "./scripts/quotesManager.js";
+            import { initialLocale } from "./scripts/languageManager.js";
 
-            // checkPreviousQuotesReadiness().then(() => {
-            //     const lang = initialLocale == "en" ? "en-us" : initialLocale;
+            checkPreviousQuotesReadiness().then(() => {
+                const lang = initialLocale == "en" ? "en-us" : initialLocale;
 
-            //     Hyphenopoly.config({
-            //         require: {
-            //             [lang]: "FORCEHYPHENOPOLY",
-            //         },
-            //         paths: {
-            //             patterndir: "./src/hyphenopoly/patterns/",
-            //             maindir: "./src/hyphenopoly/",
-            //         },
-            //         setup: {
-            //             selectors: {
-            //                 ".quotes-element__author": {},
-            //             },
-            //         },
-            //     });
-            // });
+                const langElements = document.querySelectorAll("[lang]");
+                const usedLanguages = [];
+
+                const requireObject = {};
+
+                langElements.forEach((el) => {
+                    const lang = el.getAttribute("lang");
+
+                    if (lang && !usedLanguages.includes(lang)) {
+                        usedLanguages.push(lang);
+                        requireObject[lang] = "FORCEHYPHENOPOLY";
+                    }
+                });
+
+                Hyphenopoly.config({
+                    require: requireObject,
+                    paths: {
+                        patterndir: "./src/hyphenopoly/patterns/",
+                        maindir: "./src/hyphenopoly/",
+                    },
+                    setup: {
+                        selectors: {
+                            ".quotes-element__quote": {},
+                            ".hyphenate": {},
+                        },
+                    },
+                });
+            });
         </script>
     </body>
 </html>

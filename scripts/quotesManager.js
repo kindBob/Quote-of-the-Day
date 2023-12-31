@@ -40,10 +40,6 @@ async function initQuotesSetup() {
 
     if (initialLocale == "uk" || initialLocale == "ru") {
         document.querySelectorAll(".quotes-element__author").forEach((element) => element.classList.add("--cyrillic"));
-
-        !mainSectionQuotes[0].hasOwnProperty("quote-uk") && (quoteObjectQuote = mainSectionQuotes[0]["quote-ru"]);
-
-        !mainSectionQuotes[0].hasOwnProperty("author-uk") && (quoteObjectAuthor = mainSectionQuotes[0]["author-ru"]);
     }
 
     setupMainSectionQuoteElements();
@@ -66,8 +62,6 @@ function setupMainSectionQuoteElements() {
                 changeSaveButtonText(saveBtn, false);
             }
         });
-
-        if (i == 0) el.querySelector(".quotes-element__author").textContent = "Аристотель";
     });
 }
 
@@ -82,15 +76,22 @@ function setupSavedQuotes() {
 }
 
 function setQuoteElementContent(element, content) {
-    element.querySelector(".quotes-element__date").textContent = content.id;
-    element.querySelector(".quotes-element__author").textContent = content[initialLocaleAuthor];
-    element.querySelector(".quotes-element__quote").textContent = content[initialLocaleQuote];
-    element.querySelector(".quotes-element__quote p")
-        ? (element.querySelector(".quotes-element__quote > p").textContent = content[initialLocaleQuote])
-        : (element.querySelector(".quotes-element__quote").textContent = content[initialLocaleQuote]);
+    const date = element.querySelector(".quotes-element__date");
+    const author = element.querySelector(".quotes-element__author");
+    const quote = element.querySelector(".quotes-element__quote");
+
+    date.textContent = content.id;
+    author.textContent = content[initialLocaleAuthor] || content["author-ru"];
+    quote.textContent = content[initialLocaleQuote] || content["quote-ru"];
+
+    const splitAuthorContent = author.textContent.split(" ");
+
+    splitAuthorContent.forEach((word) => {
+        if (word.length >= 8) element.classList.add("--compact");
+    });
 
     element
-        .querySelector(".quotes-element__author")
+        .querySelector(".quotes-element__quote")
         .setAttribute("lang", initialLocale == "en" ? "en-us" : initialLocale);
 }
 

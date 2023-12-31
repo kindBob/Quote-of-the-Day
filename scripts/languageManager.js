@@ -13,6 +13,7 @@ const supportedLocales = ["en", "ru", "uk"];
 
 let translations = [];
 let initialLocale = null;
+let pageTranslationsLocale = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     setupInitialLocale();
@@ -22,9 +23,11 @@ async function setupInitialLocale() {
     const userLocales = navigator.languages.map((locale) => locale.split("-")[0]);
     initialLocale = userLocales.find((locale) => isLocaleSupported(locale)) || defaultLocale;
 
-    document.querySelector("html").setAttribute("lang", initialLocale);
+    pageTranslationsLocale = initialLocale == "uk" ? "ru" : initialLocale;
 
-    translations = await fetchTranslations(initialLocale);
+    document.querySelector("html").setAttribute("lang", pageTranslationsLocale);
+
+    translations = await fetchTranslations(pageTranslationsLocale);
 
     if (!translations) return;
 
@@ -59,7 +62,7 @@ async function fetchTranslations() {
     }
 
     overlayText.textContent =
-        initialLocale == "ru" || initialLocale == "uk"
+        pageTranslationsLocale == "ru" || pageTranslationsLocale == "uk"
             ? "Произошла ошибка. Проверьте ваше интернет подключение и перезагрузитe страницу."
             : "An error occured. Check your Internet connection and reload the page.";
     overlayText.classList.add("--active");
@@ -79,8 +82,8 @@ function translateElement(element) {
 
     try {
         if (key.includes("<placeholder>")) {
-            element.setAttribute("placeholder", translation[initialLocale]);
-        } else element.innerHTML = translation[initialLocale].replace("<n>", "<br />");
+            element.setAttribute("placeholder", translation[pageTranslationsLocale]);
+        } else element.innerHTML = translation[pageTranslationsLocale].replace("<n>", "<br />");
     } catch (err) {
         console.log(`Translation is not found - ${key}`);
     }
@@ -88,7 +91,7 @@ function translateElement(element) {
 
 function getTranslation(keyWord) {
     const translation = translations.find((translation) => translation.keyWord === keyWord);
-    return translation[initialLocale];
+    return translation[pageTranslationsLocale];
 }
 
 function callAwaitingFunctions() {
