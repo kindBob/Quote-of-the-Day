@@ -150,8 +150,7 @@ body {
     align-items: center;
 
     img {
-        width: clamp(140px, 25vw, 160px);
-        // aspect-ratio: 2.7 / 1;
+        width: clamp(140px, 27vw, 165px);
     }
 }
 
@@ -889,7 +888,7 @@ body {
         display: flex;
         align-items: flex-end;
         padding-top: 0.1em;
-        font-size: clamp(30px, 1rem + 4.5vw, 90px);
+        font-size: clamp(30px, 1rem + 5vw, 90px);
         text-transform: uppercase;
         line-height: 0.9;
         word-spacing: -0.05vw;
