@@ -10,11 +10,11 @@ import {
 import { getTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
-const MAIN_API_URL = "https://quote-of-the-day-api.up.railway.app";
+//https://quote-of-the-day-api.up.railway.app
+const MAIN_API_URL = "http://localhost:3000";
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = `${MAIN_API_URL}/subscribe`;
 const SUBMISSIONS_API = `${MAIN_API_URL}/submission`;
-const mainPage = window.location.href;
 
 const burgerMenu = document.querySelector("#main-burger-menu");
 const mainHeader = document.querySelector("#main-header");
@@ -510,7 +510,7 @@ function setupSharingCard(el) {
 //REMOVE SMALL SCREEN CHECK
 async function setupSharingQuoteProcess() {
     try {
-        const canvas = await html2canvas(sharingCard, { dpi: 600 });
+        const canvas = await html2canvas(sharingCard, { scale: 2 });
 
         const imageDataUrl = canvas.toDataURL("image/png", 1);
         const blobImage = dataURItoBlob(imageDataUrl);
@@ -527,7 +527,7 @@ async function setupSharingQuoteProcess() {
             shareQuoteCustom(imageFile);
         }
 
-        console.clear();
+        // console.clear();
     } catch (error) {
         manageSharingResult("error");
 

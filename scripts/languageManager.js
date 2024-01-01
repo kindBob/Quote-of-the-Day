@@ -25,7 +25,9 @@ async function setupInitialLocale() {
 
     pageTranslationsLocale = initialLocale == "uk" ? "ru" : initialLocale;
 
-    document.querySelector("html").setAttribute("lang", pageTranslationsLocale);
+    document
+        .querySelector("html")
+        .setAttribute("lang", pageTranslationsLocale == "en" ? "en-us" : pageTranslationsLocale);
 
     translations = await fetchTranslations(pageTranslationsLocale);
 

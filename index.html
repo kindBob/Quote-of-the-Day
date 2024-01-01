@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-us">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -574,7 +574,7 @@
             <div class="quotes-element__inner-container">
                 <div id="sharing-card-date" class="quotes-element__date --sharing-card">22.10</div>
                 <div id="sharing-card-author" class="quotes-element__author"></div>
-                <div id="sharing-card-quote" class="quotes-element__quote"></div>
+                <div id="sharing-card-quote" class="quotes-element__quote dontHyphenate"></div>
             </div>
         </div>
 
@@ -611,7 +611,7 @@
             checkPreviousQuotesReadiness().then(() => {
                 const lang = initialLocale == "en" ? "en-us" : initialLocale;
 
-                const langElements = document.querySelectorAll("[lang]");
+                const langElements = document.querySelectorAll(":not(:root)[lang]");
                 const usedLanguages = [];
 
                 const requireObject = {};
