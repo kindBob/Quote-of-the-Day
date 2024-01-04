@@ -10,8 +10,7 @@ import {
 import { getTranslation, initialLocale } from "./languageManager.js";
 import { manageSavedQuotes, checkPreviousQuotesReadiness } from "./quotesManager.js";
 
-//https://quote-of-the-day-api.up.railway.app
-const MAIN_API_URL = "http://localhost:3000";
+const MAIN_API_URL = "https://quote-of-the-day-api.up.railway.app";
 const IMAGE_UPLOAD_ENDPOINT = "https://api.imgur.com/3/image";
 const EMAIL_SUBSCRIPTION_API = `${MAIN_API_URL}/subscribe`;
 const SUBMISSIONS_API = `${MAIN_API_URL}/submission`;
